@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Punta Arenisca · Resort & Golf, Riviera Nayarit (proyecto de ejemplo)</title>
+<meta name="description" content="Un día en Punta Arenisca: playa, tenis, golf y torres frente al mar, en una maqueta que recorres con el scroll. Proyecto de ejemplo de Héctor Aguilar.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root,.sw-root{
+  /* Laguna de marca #2E8C88; para texto y botones se usa #23716E, que pasa AA (5.7:1 con blanco, 4.8:1 sobre arena) */
+  --sw-bg:#F2EBDF;--sw-ink:#1E1A16;--sw-ink-soft:#6B6158;--sw-accent:#23716E;
+  --sw-font-display:"Cormorant Garamond",Georgia,serif;--sw-font-body:"Jost",system-ui,sans-serif;
+  --arena:#F2EBDF;--mar:#0E3440;--laguna:#23716E;--coral:#E3B7A0;--tinta:#1E1A16;
+  --g:max(24px,calc((100vw - 1280px)/2));
+}
+*{box-sizing:border-box}
+/* el motor pone overflow-x:hidden en html y body, y eso anula position:sticky; clip corta igual sin romperlo */
+html,body{overflow-x:clip!important}
+body{margin:0;font:400 17px/1.6 var(--sw-font-body);color:var(--tinta);background:var(--arena);-webkit-font-smoothing:antialiased}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* franja de proyecto de ejemplo (neutra, igual que las otras demos) */
+.demo{position:fixed;top:0;left:0;right:0;z-index:90;height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 var(--g);background:#0E0F11;color:#E9E5DC;font:500 12px system-ui,sans-serif}
+.demo a{color:inherit;text-decoration:none;min-height:36px;display:inline-flex;align-items:center}
+.demo span{font:500 11px system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#B9B4AB}
+/* en móvil arriba solo va "Volver"; el aviso de proyecto de ejemplo queda en el pie */
+@media (max-width:860px){.demo span{display:none}.demo a{white-space:nowrap}}
+
+/* motor scroll-world con la marca Punta Arenisca */
+.sw-scrollbar{top:36px!important}
+.sw-topbar{top:36px!important;z-index:85!important;transition:background .4s,box-shadow .4s}
+body.past .sw-topbar{background:color-mix(in srgb,var(--arena) 92%,transparent);backdrop-filter:blur(10px);box-shadow:0 1px 0 rgba(30,26,22,.08)}
+.sw-brand__mark{display:none}
+.sw-brand{flex-direction:column;align-items:flex-start;gap:2px}
+.sw-brand__name{font:500 21px/1 var(--sw-font-display)!important;letter-spacing:.14em;text-transform:uppercase}
+.sw-brand::after{content:"Resort & Golf · Riviera Nayarit";font:500 9.5px/1 var(--sw-font-body);letter-spacing:.26em;text-transform:uppercase;color:var(--laguna)}
+.sw-nav{background:color-mix(in srgb,var(--arena) 70%,transparent)!important;border-color:rgba(30,26,22,.1)!important}
+.sw-nav__item{font-family:var(--sw-font-body)!important;letter-spacing:.02em}
+.sw-nav__item.is-active{background:var(--mar)!important}
+.sw-topcta{background:var(--laguna)!important;border-radius:2px!important;font:500 13px var(--sw-font-body)!important;letter-spacing:.14em;text-transform:uppercase;padding:13px 22px!important}
+.sw-copy__num{font-family:var(--sw-font-body)!important;letter-spacing:.2em}
+.sw-copy__eyebrow{font:500 12px var(--sw-font-body)!important;letter-spacing:.24em!important;color:var(--laguna)!important}
+.sw-copy__title{font-weight:500!important;font-size:clamp(2.6rem,5vw,4.2rem)!important;line-height:1!important;letter-spacing:-.005em!important}
+.sw-copy__tags li{border-radius:2px!important;background:color-mix(in srgb,var(--arena) 80%,#fff)!important;color:var(--mar)!important;border-color:rgba(14,52,64,.18)!important;font-weight:500!important}
+.sw-btn{border-radius:2px!important;font:500 13px var(--sw-font-body)!important;letter-spacing:.14em;text-transform:uppercase;padding:15px 24px!important;display:inline-flex;text-decoration:none}
+.sw-btn--primary{background:var(--laguna)!important}
+.sw-route__label{font-family:var(--sw-font-body)}
+.sw-pt{display:none}
+/* velo del lado del texto: más firme que el del motor para que el texto se lea sobre la maqueta */
+.sw-copylayer::before{width:min(62vw,860px)!important;background:linear-gradient(90deg,color-mix(in srgb,var(--arena) 94%,transparent) 0%,color-mix(in srgb,var(--arena) 86%,transparent) 38%,color-mix(in srgb,var(--arena) 45%,transparent) 70%,transparent 100%)!important}
+.sw-copy__body{color:#2E2924!important;text-shadow:none!important}
+/* de noche el velo cambia a mar profundo y el texto a claro (se funde, no corta) */
+.sw-copylayer::before{z-index:0;transition:opacity .6s}
+.sw-copylayer::after{content:"";position:absolute;inset:0;z-index:0;width:min(62vw,860px);background:linear-gradient(90deg,rgba(11,26,34,.9) 0%,rgba(11,26,34,.78) 38%,rgba(11,26,34,.35) 70%,transparent 100%);opacity:0;transition:opacity .6s}
+.sw-copy{z-index:2}
+body.night .sw-copylayer::before{opacity:0}
+body.night .sw-copylayer::after{opacity:1}
+body.night .sw-copy__title{color:#F2EBDF!important;text-shadow:none!important}
+body.night .sw-copy__body{color:rgba(242,235,223,.86)!important}
+body.night .sw-copy__num{color:rgba(242,235,223,.7)!important}
+body.night .sw-copy__eyebrow{color:var(--coral)!important}
+body.night .sw-btn--ghost{color:#F2EBDF!important;border-color:rgba(242,235,223,.4)!important}
+body.night .sw-brand{color:#F2EBDF}
+body.night .sw-brand::after{color:var(--coral)}
+/* Celular en vertical: la foto arriba y limpia, el texto abajo sobre color sólido. Sin velos encima de la imagen.
+   --sw-top y --panel los mide el JS, para que quepa en cualquier pantalla y no brinque entre escenas. */
+@media (max-width:860px) and (orientation:portrait){
+  .sw-copylayer::before,.sw-copylayer::after{display:none!important}
+  .sw-hint,.sw-route{display:none!important}
+  .sw-stage{background:var(--arena);transition:background .5s}
+  body.night .sw-stage{background:#0B1A22}
+  /* Al salir de la última escena la foto se queda, para no dejar un hueco mientras sube la siguiente sección */
+  body.fin .sw-scene:last-child{opacity:1!important}
+  .sw-scene__video,.sw-scene__still{top:var(--sw-top,100px)!important;bottom:auto!important;height:calc(100% - var(--sw-top,100px) - var(--panel,300px) + 2px)!important}
+  .sw-stage::after{content:"";position:absolute;left:0;right:0;bottom:calc(var(--panel,300px) - 1px);height:44px;background:linear-gradient(0deg,var(--arena),transparent);pointer-events:none;z-index:5}
+  body.night .sw-stage::after{background:linear-gradient(0deg,#0B1A22,transparent)}
+  .sw-topbar{background:var(--arena)!important;transition:background .5s}
+  body.night .sw-topbar{background:#0B1A22!important}
+  .sw-brand__name{font-size:17px!important;letter-spacing:.1em;white-space:nowrap}
+  .sw-brand::after{white-space:nowrap}
+  .sw-topcta{white-space:nowrap;padding:11px 15px!important;font-size:12px!important;letter-spacing:.06em}
+  .sw-copy{left:0!important;right:0!important;bottom:0!important;top:auto!important;max-width:none!important;height:var(--panel,auto);display:flex;flex-direction:column;justify-content:center;padding:12px 22px calc(16px + env(safe-area-inset-bottom))}
+  .sw-copy__num{display:none}
+  .sw-copy__eyebrow{margin-top:0!important}
+  .sw-copy__title{margin-top:8px!important;font-size:clamp(1.8rem,8vw,2.6rem)!important;text-shadow:none!important}
+  .sw-copy__body{margin-top:10px!important;text-shadow:none!important;color:#3B3630}
+  body.night .sw-copy__body{color:rgba(242,235,223,.86)!important}
+  .sw-copy__tags{margin-top:14px!important}
+  .sw-copy__cta{margin-top:16px!important}
+  .sw-copy__cta .sw-btn{padding:12px 20px}
+}
+@media (max-width:480px){.sw-brand::after{display:none}}
+@media (max-width:360px){
+  .sw-topbar{gap:8px!important}
+  .sw-brand__name{font-size:14px!important;letter-spacing:.06em}
+  .sw-topcta{padding:10px 11px!important;font-size:11px!important;letter-spacing:.03em}
+}
+/* Pantallas bajitas: texto más compacto para que la foto conserve su espacio */
+@media (max-width:860px) and (orientation:portrait) and (max-height:640px){
+  .sw-copy{padding-top:6px;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+  .sw-copy__title{font-size:1.7rem!important}
+  .sw-copy__body{font-size:.94rem!important;line-height:1.4!important;margin-top:6px!important}
+  .sw-copy__tags{margin-top:10px!important}
+  .sw-copy__tags li{padding:5px 11px!important}
+  .sw-copy__cta{margin-top:10px!important;flex-wrap:nowrap}
+  .sw-copy__cta .sw-btn{padding:10px 14px;font-size:12px}
+}
+/* menú propio para lo que sigue después del vuelo */
+.after-nav{display:none;gap:4px;padding:5px;background:color-mix(in srgb,var(--arena) 70%,transparent);border:1px solid rgba(30,26,22,.1);border-radius:999px}
+.after-nav a{font:400 .82rem var(--sw-font-body);color:var(--sw-ink-soft);text-decoration:none;padding:7px 14px;border-radius:999px}
+.after-nav a:hover{color:var(--tinta)}
+body.past .sw-nav{display:none!important}
+body.past .after-nav{display:flex}
+body.past .sw-route{opacity:0;pointer-events:none}
+
+/* lo que sigue después del vuelo: tapa la escena fija */
+.after{position:relative;z-index:70;background:var(--arena)}
+.wrap{padding:0 var(--g)}
+.eyebrow{font:500 12px var(--sw-font-body);letter-spacing:.24em;text-transform:uppercase;color:var(--laguna);margin:0 0 14px}
+h2.t{font:500 clamp(40px,4.6vw,64px)/1.02 var(--sw-font-display);margin:0;letter-spacing:-.005em}
+.note{font:400 13px var(--sw-font-body);color:#6E655C}
+/* foco visible con teclado en todo lo interactivo, también en el motor */
+a:focus-visible,button:focus-visible,summary:focus-visible,.sw-nav__item:focus-visible,.sw-route__dot:focus-visible,.sw-topcta:focus-visible,.sw-btn:focus-visible{outline:2px solid var(--laguna);outline-offset:3px}
+
+#reservar{padding-top:120px;padding-bottom:110px}
+.book{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:64px;align-items:start}
+.book-intro p.lead{font-size:19px;color:#4A433C;max-width:40ch;margin:22px 0 0}
+.book-intro ul{list-style:none;margin:32px 0 0;padding:0;display:grid;gap:12px}
+.book-intro li{display:flex;gap:12px;align-items:baseline;font-size:16px;color:#3C3631}
+.book-intro li b{font:500 12px var(--sw-font-body);letter-spacing:.2em;text-transform:uppercase;color:var(--mar);min-width:96px}
+.panel{background:#FBF8F2;border:1px solid rgba(30,26,22,.08);box-shadow:0 1px 2px rgba(30,26,22,.04),0 12px 32px -12px rgba(30,26,22,.14),0 40px 80px -40px rgba(14,52,64,.18);padding:36px}
+.fields{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.fields label{display:flex;flex-direction:column;gap:8px;font:500 11px var(--sw-font-body);letter-spacing:.18em;text-transform:uppercase;color:#6B6158;min-width:0}
+.fields input,.fields select{font:400 16px var(--sw-font-body);color:var(--tinta);background:#fff;border:1px solid rgba(30,26,22,.16);border-radius:2px;padding:12px 12px;min-height:48px;width:100%}
+/* selector con flecha propia, con aire a la derecha (la nativa queda pegada a la orilla) */
+.fields select{-webkit-appearance:none;appearance:none;padding-right:40px;cursor:pointer;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%231E1A16' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 14px center}
+.fields input:focus-visible,.fields select:focus-visible,.room:focus-visible,.cta:focus-visible{outline:2px solid var(--laguna);outline-offset:2px}
+.rooms{display:grid;gap:12px;margin:28px 0 0}
+/* la foto vive en la columna izquierda, a la altura de la lista de habitaciones */
+.zoom-btn{all:unset;display:block;width:100%;height:100%;cursor:zoom-in;position:relative}
+.zoom-btn:focus-visible{outline:2px solid var(--laguna);outline-offset:3px}
+.zoom-hint{position:absolute;right:12px;top:10px;display:inline-flex;align-items:center;gap:6px;font:500 11px var(--sw-font-body);letter-spacing:.16em;text-transform:uppercase;color:#fff;background:rgba(14,52,64,.82);padding:7px 11px;border-radius:2px;pointer-events:none}
+/* visor ampliado: rueda o botones para acercar, arrastre para mover, Esc para cerrar */
+.lb{position:fixed;inset:0;z-index:100;background:rgba(11,26,34,.94);display:none}
+.lb.on{display:block}
+.lb-stage{position:absolute;inset:0;z-index:0;overflow:hidden;cursor:grab;touch-action:none}
+.lb-cap,.lb-close,.lb-bar{z-index:2}
+.lb-cap{background:rgba(11,26,34,.75);padding:8px 12px;border-radius:2px}
+.lb-close{background:rgba(11,26,34,.75)!important;border-radius:2px}
+.lb-stage.drag{cursor:grabbing}
+.lb-stage img{position:absolute;left:50%;top:50%;max-width:none;width:min(88vw,calc((100vh - 220px)*1.5));transform-origin:center;user-select:none;-webkit-user-drag:none}
+.lb-bar{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);display:flex;gap:8px;align-items:center;background:rgba(242,235,223,.96);padding:6px;border-radius:2px}
+.lb-bar button{all:unset;cursor:pointer;min-width:44px;height:44px;display:grid;place-items:center;font:500 18px var(--sw-font-body);color:var(--tinta)}
+.lb-bar button:focus-visible{outline:2px solid var(--laguna)}
+.lb-bar span{font:500 12px var(--sw-font-body);letter-spacing:.14em;text-transform:uppercase;color:#4A433C;padding:0 8px}
+.lb-close{all:unset;position:absolute;z-index:3;top:56px;right:24px;cursor:pointer;width:44px;height:44px;display:grid;place-items:center;color:#F2EBDF;font-size:26px}
+.lb-cap{position:absolute;top:60px;left:24px;color:#F2EBDF;font:500 13px var(--sw-font-body);letter-spacing:.14em;text-transform:uppercase}
+.room-ph{position:relative;margin:28px 0 0;aspect-ratio:16/9;overflow:hidden;border-radius:2px;background:#E9E1D3}
+.room-ph img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .35s}
+.room-ph figcaption{position:absolute;left:12px;bottom:10px;font:500 11px var(--sw-font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--tinta);background:color-mix(in srgb,var(--arena) 88%,transparent);padding:6px 10px;border-radius:2px}
+.room{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:center;text-align:left;width:100%;font:inherit;color:inherit;background:#fff;border:1px solid rgba(30,26,22,.12);border-radius:2px;padding:16px 18px;cursor:pointer;transition:border-color .2s,box-shadow .2s}
+.room i{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(30,26,22,.35);display:block}
+.room[aria-checked="true"]{border-color:var(--laguna);box-shadow:inset 0 0 0 1px var(--laguna)}
+.room[aria-checked="true"] i{border:5px solid var(--laguna)}
+.room b{display:block;font:500 22px/1.1 var(--sw-font-display)}
+.room span{display:block;font-size:14px;color:#6B6158;margin-top:4px}
+.room em{font-style:normal;text-align:right;font:500 16px var(--sw-font-body);white-space:nowrap}
+.room em small{display:block;font-size:12px;color:#6E655C;font-weight:400}
+/* total y botón fijos al fondo del panel: siempre a la vista mientras eliges */
+.sum{position:sticky;bottom:0;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:20px;margin:20px -36px -36px;padding:20px 36px 24px;background:#FBF8F2;border-top:1px solid rgba(30,26,22,.1);box-shadow:0 -16px 24px -18px rgba(30,26,22,.25);flex-wrap:wrap}
+.sum .tot{font:500 36px/1 var(--sw-font-display);margin:0}
+.rates{margin:14px 0 0}
+.sum .tot small{display:block;font:400 14px var(--sw-font-body);color:#6B6158;margin-top:8px}
+.cta{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:14px 28px;border:0;border-radius:2px;background:var(--laguna);color:#fff;font:500 13px var(--sw-font-body);letter-spacing:.16em;text-transform:uppercase;cursor:pointer;text-decoration:none}
+.cta:hover{background:#1B5C59}
+.cta[disabled]{background:#9DB9B7;cursor:not-allowed}
+.err{color:#A3412B;font-size:14px;margin:16px 0 0}
+.err:empty{display:none}
+
+#incluye{background:var(--mar);color:var(--arena);padding:110px 0}
+#incluye h2.t{color:var(--arena)}
+#incluye .eyebrow{color:var(--coral)}
+.inc{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:rgba(242,235,223,.12);margin-top:56px;border:1px solid rgba(242,235,223,.12)}
+.inc div{background:var(--mar);padding:32px 28px}
+.inc b{display:block;font:500 30px/1.05 var(--sw-font-display);margin-bottom:10px}
+.inc span{font-size:15px;color:rgba(242,235,223,.75)}
+#incluye .note{color:rgba(242,235,223,.55);margin-top:20px}
+
+#preguntas{padding-top:110px;padding-bottom:0}
+.faq-grid{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:64px}
+details{border-top:1px solid rgba(30,26,22,.12);padding:20px 0}
+details:last-child{border-bottom:1px solid rgba(30,26,22,.12)}
+summary{cursor:pointer;font:500 24px/1.2 var(--sw-font-display);list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-family:var(--sw-font-body);color:var(--laguna)}
+details[open] summary::after{content:"–"}
+details p{margin:12px 0 0;color:#4A433C;max-width:62ch}
+
+.pie{padding:40px 0;border-top:1px solid rgba(30,26,22,.1);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:#6E655C}
+.exit{position:relative;z-index:70;background:#0E0F11;color:#F4F0E8;padding:72px var(--g)}
+.exit-in{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:32px 64px;align-items:end}
+.exit p.k{font:500 11px system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#B9B4AB;margin:0 0 12px}
+.exit h2{font:500 clamp(28px,3vw,42px)/1.1 system-ui,sans-serif;letter-spacing:-.02em;margin:0}
+.exit .acts{display:flex;gap:12px;flex-wrap:wrap}
+.exit .b1,.exit .b2{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 22px;border-radius:999px;font:600 15px system-ui,sans-serif;text-decoration:none;color:#F4F0E8}
+.exit .b1{background:#F4F0E8;color:#151513}.exit .b2{border:1px solid rgba(244,240,232,.25)}
+
+.toast{position:fixed;left:50%;bottom:28px;z-index:95;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--mar);color:var(--arena);padding:16px 22px;border-radius:2px;box-shadow:0 20px 40px -12px rgba(0,0,0,.35);transition:opacity .3s,transform .3s;max-width:min(560px,calc(100vw - 32px));font-size:15px}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.toast small{display:block;color:rgba(242,235,223,.7);margin-top:4px;font-size:13px}
+
+@media (max-width:1240px){
+  .fields{grid-template-columns:1fr 1fr}
+  .fields label:last-child{grid-column:1/-1}
+}
+@media (max-width:980px){
+  .book,.faq-grid{grid-template-columns:1fr;gap:40px}
+  .book-intro{position:static}
+  .inc{grid-template-columns:1fr 1fr}
+  .exit-in{grid-template-columns:1fr}
+}
+@media (max-width:600px){
+  .fields{grid-template-columns:1fr}
+  .inc{grid-template-columns:1fr}
+  .panel{padding:24px}
+  .sum{margin:20px -24px -24px;padding:16px 24px 20px}
+  .demo span{display:none}
+}
+</style>
+<!-- favicono -->
+<link rel="icon" href="../../favicon.ico" sizes="48x48">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../icono-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+</head>
+<body>
+<div class="demo" role="note"><a href="../../servicios/pagina-web#ejemplos">‹ Volver a los ejemplos</a><span>Proyecto de ejemplo · Héctor Aguilar</span></div>
+<h1 class="sr-only">Punta Arenisca, Resort & Golf en Riviera Nayarit: un día frente al mar</h1>
+
+<div id="world"></div>
+
+<main class="after">
+  <section id="reservar" class="wrap" aria-labelledby="h-res">
+    <div class="book">
+      <div class="book-intro">
+        <p class="eyebrow">Reservar</p>
+        <h2 class="t" id="h-res">Elige tus fechas y tu habitación.</h2>
+        <p class="lead">Todas las habitaciones miran al mar. Cambia las fechas o la habitación y el total se actualiza al momento.</p>
+        <figure class="room-ph"><button type="button" class="zoom-btn" id="zoomOpen" aria-label="Ampliar la maqueta de la habitación"><img id="rimg" src="hotel/hab-king.webp" alt="Maqueta de la habitación King vista al mar: cama king, escritorio, baño y balcón frente al mar" width="1536" height="1024" loading="lazy"><span class="zoom-hint" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg>Ampliar</span></button><figcaption id="rcap">King vista al mar · Maqueta de referencia</figcaption></figure>
+        <ul>
+          <li><b>Llegada</b>A partir de las 15:00</li>
+          <li><b>Salida</b>Hasta las 12:00</li>
+          <li><b>Traslado</b>Unos 45 minutos desde el aeropuerto de Puerto Vallarta</li>
+        </ul>
+      </div>
+      <form class="panel" id="book" novalidate>
+        <div class="fields">
+          <label>Llegada<input type="date" id="in" required></label>
+          <label>Salida<input type="date" id="out" required></label>
+          <label>Huéspedes<select id="pax"><option value="1">1 adulto</option><option value="2" selected>2 adultos</option><option value="3">3 adultos</option><option value="4">2 adultos y 2 menores</option></select></label>
+        </div>
+        <div class="rooms" role="radiogroup" aria-label="Tipo de habitación">
+          <button type="button" class="room" data-rate="6900" data-max="2" role="radio" aria-checked="true" tabindex="0"><i aria-hidden="true"></i><span><b>King vista al mar</b><span>42 m², balcón, cama king</span></span><em>$6,900<small>por noche</small></em></button>
+          <button type="button" class="room" data-rate="7600" data-max="4" role="radio" aria-checked="false" tabindex="-1"><i aria-hidden="true"></i><span><b>Doble vista al mar</b><span>46 m², balcón, dos camas queen</span></span><em>$7,600<small>por noche</small></em></button>
+          <button type="button" class="room" data-rate="11800" data-max="4" role="radio" aria-checked="false" tabindex="-1"><i aria-hidden="true"></i><span><b>Suite de esquina</b><span>78 m², terraza en esquina, sala y cama king</span></span><em>$11,800<small>por noche</small></em></button>
+        </div>
+        <p class="note rates">Tarifas de ejemplo en pesos mexicanos.</p>
+        <p class="err" id="err" role="alert"></p>
+        <div class="sum">
+          <p class="tot" id="tot" aria-live="polite">$20,700<small>3 noches · King vista al mar · más impuestos</small></p>
+          <button class="cta" type="submit" id="go">Confirmar reserva</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section id="incluye" aria-labelledby="h-inc">
+    <div class="wrap">
+      <p class="eyebrow">Tu tarifa incluye</p>
+      <h2 class="t" id="h-inc">Esto ya viene en tu tarifa.</h2>
+      <div class="inc">
+        <div><b>Desayuno</b><span>Buffet en la terraza de 7:00 a 11:30.</span></div>
+        <div><b>Playa</b><span>Camastros, toallas y kayaks en el club de playa.</span></div>
+        <div><b>Tenis</b><span>Canchas de arcilla con reserva de una hora al día.</span></div>
+        <div><b>Golf con descuento</b><span>Tarifa preferente para huéspedes. La salida al campo se paga aparte.</span></div>
+      </div>
+      <p class="note">Datos de ejemplo.</p>
+    </div>
+  </section>
+
+  <section id="preguntas" class="wrap" aria-labelledby="h-faq">
+    <div class="faq-grid">
+      <div><p class="eyebrow">Preguntas</p><h2 class="t" id="h-faq">Antes de llegar.</h2></div>
+      <div>
+        <details><summary>¿Puedo cancelar?</summary><p>Sí. Cancelas sin costo hasta 7 días antes de tu llegada. Después se cobra la primera noche.</p></details>
+        <details><summary>¿Cuánto cuesta jugar golf?</summary><p>El campo de 18 hoyos tiene tarifa preferente para huéspedes, con carrito incluido. Reserva tu salida en recepción o por WhatsApp.</p></details>
+        <details><summary>¿Hay traslado desde el aeropuerto?</summary><p>Sí, con costo aparte. El trayecto desde el aeropuerto de Puerto Vallarta toma unos 45 minutos.</p></details>
+        <details><summary>¿Aceptan menores?</summary><p>Sí. Los menores de 12 años se hospedan sin costo compartiendo habitación con dos adultos.</p></details>
+        <details><summary>¿Aceptan mascotas?</summary><p>No, por ahora no recibimos mascotas.</p></details>
+      </div>
+    </div>
+    <div class="pie"><span>© 2026 Punta Arenisca · Resort & Golf</span><span>Marca, datos e imágenes de ejemplo</span></div>
+  </section>
+</main>
+
+<footer class="exit" aria-labelledby="exit-t">
+  <div class="exit-in">
+    <div><p class="k">Proyecto de ejemplo · Héctor Aguilar</p><h2 id="exit-t">¿Tu hotel también tiene una historia que contar?</h2></div>
+    <div class="acts"><a class="b1" href="https://wa.me/525545249906?text=Hola%20H%C3%A9ctor%2C%20vi%20el%20ejemplo%20de%20Punta%20Arenisca%20y%20quiero%20algo%20as%C3%AD%20para%20mi%20hotel.">Quiero algo así</a><a class="b2" href="../../servicios/pagina-web#ejemplos">Ver más ejemplos</a></div>
+  </div>
+</footer>
+
+<p class="toast" id="toast" role="status"></p>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-labelledby="lbcap">
+  <p class="lb-cap" id="lbcap"></p>
+  <button type="button" class="lb-close" id="lbClose" aria-label="Cerrar">×</button>
+  <div class="lb-stage" id="lbStage"><img id="lbImg" alt=""></div>
+  <div class="lb-bar"><button type="button" id="lbOut" aria-label="Alejar">−</button><span id="lbPct">100 %</span><button type="button" id="lbIn" aria-label="Acercar">+</button><button type="button" id="lbFit" aria-label="Ajustar a la pantalla" style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;padding:0 10px">Ajustar</button></div>
+</div>
+
+<script src="hotel/scrub-engine.js"></script>
+<script>
+mountScrollWorld(document.getElementById('world'), {
+  brand: { name: 'Punta Arenisca', href: '#world' },
+  cta: { label: 'Reservar fechas', href: '#reservar' },
+  hint: 'Desliza para entrar',
+  diveScroll: 1.4, connScroll: 0.9, crossfade: 0.1,
+  sections: [
+    { id:'llegada', label:'Llegada', still:'hotel/llegada.webp', stillMobile:'hotel/m/llegada.webp', clip:'hotel/vid/llegada.mp4', clipMobile:'hotel/vid/m/llegada.mp4', accent:'#23716E', scroll:1.6, linger:.35,
+      eyebrow:'Riviera Nayarit', title:'Un día frente al mar.',
+      body:'Llegas por una calzada de palmeras y el lobby se abre al jardín.',
+      tags:['Llegada 15:00','45 min del aeropuerto'] },
+    { id:'playa', label:'Playa', still:'hotel/playa.webp', stillMobile:'hotel/m/playa.webp', clip:'hotel/vid/playa.mp4', clipMobile:'hotel/vid/m/playa.mp4', accent:'#23716E', linger:.3,
+      eyebrow:'Club de playa', title:'300 metros de arena.',
+      body:'Camastros, palapa con bar y kayaks incluidos, a unos pasos de tu habitación.',
+      tags:['Camastros incluidos','Kayaks'] },
+    { id:'tenis', label:'Tenis', still:'hotel/tenis.webp', stillMobile:'hotel/m/tenis.webp', clip:'hotel/vid/tenis.mp4', clipMobile:'hotel/vid/m/tenis.mp4', accent:'#23716E', linger:.3,
+      eyebrow:'Club de tenis', title:'Tres canchas de arcilla.',
+      body:'Reserva tu horario en recepción o por WhatsApp. Hay clases y renta de raquetas en la casa club.',
+      tags:['Clases','Renta de raquetas'] },
+    { id:'golf', label:'Golf', still:'hotel/golf.webp', stillMobile:'hotel/m/golf.webp', clip:'hotel/vid/golf.mp4', clipMobile:'hotel/vid/m/golf.mp4', accent:'#23716E', linger:.3,
+      eyebrow:'Campo de golf', title:'El hoyo 18, sobre el Pacífico.',
+      body:'Un campo de 18 hoyos junto al acantilado, con tarifa preferente para huéspedes.',
+      tags:['18 hoyos','Carrito incluido'] },
+    { id:'torres', label:'Habitaciones', still:'hotel/torres.webp', stillMobile:'hotel/m/torres.webp', clip:'hotel/vid/torres.mp4', clipMobile:'hotel/vid/m/torres.mp4', accent:'#23716E', linger:.3,
+      eyebrow:'Habitaciones', title:'Todas miran al mar.',
+      body:'Dos torres frente a la playa, balcón en cada habitación y una alberca infinita entre los jardines.',
+      tags:['Balcón','Alberca infinita'] },
+    { id:'noche', label:'Noche', still:'hotel/noche.webp', stillMobile:'hotel/m/noche.webp', clip:'hotel/vid/noche.mp4', clipMobile:'hotel/vid/m/noche.mp4', accent:'#23716E', scroll:1.6, linger:.4,
+      eyebrow:'Al caer la noche', title:'Y el día termina aquí.',
+      body:'Cena en la terraza con luces en el jardín y el mar de fondo. Elige tus fechas.',
+      tags:[],
+      cta:{ primary:{ label:'Reservar fechas', href:'#reservar' }, secondary:{ label:'Ver qué incluye', href:'#incluye' } } }
+  ],
+  connectors: ['hotel/vid/conn1.mp4','hotel/vid/conn2.mp4','hotel/vid/conn3.mp4','hotel/vid/conn4.mp4','hotel/vid/conn5.mp4?v=2'],
+  connectorsMobile: ['hotel/vid/m/conn1.mp4','hotel/vid/m/conn2.mp4','hotel/vid/m/conn3.mp4','hotel/vid/m/conn4.mp4','hotel/vid/m/conn5.mp4']
+});
+
+/* la barra superior toma fondo y cambia de menú cuando la página pasa del vuelo al contenido;
+   en la escena de noche el velo del texto se vuelve oscuro */
+(function(){
+  var after=document.querySelector('.after'),top=document.querySelector('.sw-topbar');
+  var nav=document.createElement('nav');nav.className='after-nav';nav.setAttribute('aria-label','Secciones');
+  nav.innerHTML='<a href="#world">Recorrido</a><a href="#incluye">Qué incluye</a><a href="#preguntas">Preguntas</a>';
+  top.insertBefore(nav,top.querySelector('.sw-topcta'));
+  nav.firstChild.addEventListener('click',function(e){e.preventDefault();scrollTo({top:0,behavior:'smooth'});});
+  function chk(){
+    var past=after.getBoundingClientRect().top<120,act=document.querySelector('.sw-nav__item.is-active');
+    document.body.classList.toggle('past',past);
+    document.body.classList.toggle('fin',after.getBoundingClientRect().top<innerHeight*1.05);
+    document.body.classList.toggle('night',!past&&!!act&&act.textContent==='Noche');
+  }
+  addEventListener('scroll',function(){requestAnimationFrame(chk);},{passive:true});chk();
+})();
+
+/* reserva de ejemplo */
+(function(){
+  var $=function(s){return document.querySelector(s);},rooms=[].slice.call(document.querySelectorAll('.room'));
+  var fin=$('#in'),fout=$('#out'),pax=$('#pax'),tot=$('#tot'),err=$('#err'),go=$('#go'),toast=$('#toast'),tt;
+  function iso(d){return d.toISOString().slice(0,10);}
+  var t=new Date();t.setHours(12,0,0,0);
+  var a=new Date(t);a.setDate(a.getDate()+21);var b=new Date(a);b.setDate(b.getDate()+3);
+  fin.value=iso(a);fout.value=iso(b);fin.min=iso(t);fout.min=iso(new Date(t.getTime()+864e5));
+  var money=function(n){return '$'+n.toLocaleString('es-MX');};
+  function sel(){return rooms.filter(function(r){return r.getAttribute('aria-checked')==='true';})[0];}
+  var rimg=$('#rimg'),IMGS=[['hotel/hab-king.webp','cama king, escritorio, baño y balcón frente al mar'],['hotel/hab-doble.webp','dos camas queen, sala pequeña, baño y balcón frente al mar'],['hotel/hab-suite.webp','sala, comedor, recámara king, baño con tina y terraza en esquina frente al mar']];
+  function pick(r,focus){
+    rooms.forEach(function(x){x.setAttribute('aria-checked',x===r);x.tabIndex=x===r?0:-1;});if(focus)r.focus();
+    var im=IMGS[rooms.indexOf(r)],name=r.querySelector('b').textContent;
+    if(rimg.getAttribute('src')!==im[0]){rimg.style.opacity=0;setTimeout(function(){rimg.src=im[0];rimg.alt='Maqueta de la habitación '+name+': '+im[1];rimg.style.opacity=1;},200);}
+    $('#rcap').textContent=name+' · Maqueta de referencia';
+    calc();
+  }
+  function calc(){
+    var r=sel(),d1=new Date(fin.value+'T12:00'),d2=new Date(fout.value+'T12:00'),n=Math.round((d2-d1)/864e5);
+    var name=r.querySelector('b').textContent,p=+pax.value;
+    if(!fin.value||!fout.value||isNaN(n)){err.textContent='Elige tu fecha de llegada y de salida.';go.disabled=true;return;}
+    if(n<1){err.textContent='La salida debe ser al menos un día después de la llegada.';go.disabled=true;return;}
+    if(p>+r.dataset.max){err.textContent='La '+name+' es para 2 adultos. Elige otra habitación para '+pax.options[pax.selectedIndex].text+'.';go.disabled=true;return;}
+    err.textContent='';go.disabled=false;
+    tot.innerHTML=money(n*+r.dataset.rate)+'<small>'+n+(n===1?' noche':' noches')+' · '+name+' · más impuestos</small>';
+  }
+  rooms.forEach(function(r,i){
+    r.addEventListener('click',function(){pick(r);});
+    /* flechas entre opciones, como en un grupo de radios */
+    r.addEventListener('keydown',function(e){var d={ArrowDown:1,ArrowRight:1,ArrowUp:-1,ArrowLeft:-1}[e.key];if(!d)return;e.preventDefault();pick(rooms[(i+d+rooms.length)%rooms.length],true);});
+  });
+  [fin,fout,pax].forEach(function(x){x.addEventListener('change',calc);});
+  fin.addEventListener('change',function(){var d=new Date(fin.value+'T12:00');d.setDate(d.getDate()+1);fout.min=iso(d);});
+  $('#book').addEventListener('submit',function(e){e.preventDefault();calc();if(go.disabled)return;
+    var r=sel(),n=Math.round((new Date(fout.value+'T12:00')-new Date(fin.value+'T12:00'))/864e5);
+    toast.innerHTML='Reserva lista: '+n+(n===1?' noche':' noches')+' en '+r.querySelector('b').textContent+', '+tot.childNodes[0].textContent+'.<small>Es un hotel de ejemplo: no se cobra ni se envía nada.</small>';
+    toast.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){toast.classList.remove('on');},4200);});
+  calc();
+})();
+
+/* visor de la maqueta de la habitación: zoom (rueda, botones, pellizco) y arrastre */
+(function(){
+  var $=function(s){return document.querySelector(s);},lb=$('#lb'),st=$('#lbStage'),im=$('#lbImg'),pct=$('#lbPct'),opener=$('#zoomOpen');
+  var s=1,x=0,y=0,drag=null,pts={},pinch=null;
+  function apply(){im.style.transform='translate(calc(-50% + '+x+'px),calc(-50% + '+y+'px)) scale('+s+')';pct.textContent=Math.round(s*100)+' %';}
+  function clampPan(){var w=im.offsetWidth*s,h=im.offsetHeight*s,mx=Math.max(0,(w-innerWidth)/2+80),my=Math.max(0,(h-innerHeight)/2+80);x=Math.max(-mx,Math.min(mx,x));y=Math.max(-my,Math.min(my,y));}
+  function zoom(f){s=Math.max(1,Math.min(4,s*f));if(s===1){x=0;y=0;}clampPan();apply();}
+  function open(){var r=$('#rimg');im.src=r.src;im.alt=r.alt;$('#lbcap').textContent=$('#rcap').textContent;s=1;x=0;y=0;apply();lb.classList.add('on');document.body.style.overflow='hidden';$('#lbClose').focus();}
+  function close(){lb.classList.remove('on');document.body.style.overflow='';opener.focus();}
+  opener.addEventListener('click',open);
+  $('#lbClose').addEventListener('click',close);
+  $('#lbIn').addEventListener('click',function(){zoom(1.4);});
+  $('#lbOut').addEventListener('click',function(){zoom(1/1.4);});
+  $('#lbFit').addEventListener('click',function(){s=1;x=0;y=0;apply();});
+  st.addEventListener('wheel',function(e){e.preventDefault();zoom(e.deltaY<0?1.15:1/1.15);},{passive:false});
+  st.addEventListener('dblclick',function(){if(s>1){s=1;x=0;y=0;apply();}else zoom(2);});
+  st.addEventListener('pointerdown',function(e){pts[e.pointerId]=[e.clientX,e.clientY];st.setPointerCapture(e.pointerId);
+    var k=Object.keys(pts);if(k.length===2){var a=pts[k[0]],b=pts[k[1]];pinch={d:Math.hypot(a[0]-b[0],a[1]-b[1]),s:s};drag=null;}else{drag={sx:e.clientX,sy:e.clientY,x:x,y:y};st.classList.add('drag');}});
+  st.addEventListener('pointermove',function(e){if(!pts[e.pointerId])return;pts[e.pointerId]=[e.clientX,e.clientY];var k=Object.keys(pts);
+    if(pinch&&k.length===2){var a=pts[k[0]],b=pts[k[1]];s=Math.max(1,Math.min(4,pinch.s*Math.hypot(a[0]-b[0],a[1]-b[1])/pinch.d));clampPan();apply();}
+    else if(drag){x=drag.x+e.clientX-drag.sx;y=drag.y+e.clientY-drag.sy;clampPan();apply();}});
+  function up(e){delete pts[e.pointerId];if(Object.keys(pts).length<2)pinch=null;drag=null;st.classList.remove('drag');}
+  st.addEventListener('pointerup',up);st.addEventListener('pointercancel',up);
+  addEventListener('keydown',function(e){if(!lb.classList.contains('on'))return;
+    if(e.key==='Escape')close();else if(e.key==='+'||e.key==='=')zoom(1.4);else if(e.key==='-')zoom(1/1.4);
+    else if(e.key==='Tab'){var f=[].slice.call(lb.querySelectorAll('button'));var i=f.indexOf(document.activeElement);e.preventDefault();f[(i+(e.shiftKey?-1:1)+f.length)%f.length].focus();}});
+})();
+</script>
+<script>
+/* Hotel en celular: reparte la pantalla entre la foto y el texto según lo que ocupa el texto más largo */
+(function(){
+  var m=matchMedia('(max-width:860px) and (orientation:portrait)'),r=document.documentElement,ancho=0;
+  function mide(){
+    if(!m.matches){r.style.removeProperty('--panel');r.style.removeProperty('--sw-top');return;}
+    var t=document.querySelector('.sw-topbar');if(!t)return;
+    r.style.setProperty('--sw-top',Math.round(t.getBoundingClientRect().bottom)+'px');
+    r.style.removeProperty('--panel');
+    var h=0;document.querySelectorAll('.sw-copy').forEach(function(c){c.style.height='auto';h=Math.max(h,c.offsetHeight);c.style.height='';});
+    if(h)r.style.setProperty('--panel',Math.ceil(h)+'px');
+    ancho=innerWidth;
+  }
+  mide();
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(mide);
+  addEventListener('load',mide);
+  addEventListener('resize',function(){if(innerWidth!==ancho)mide();});
+  m.addEventListener('change',mide);
+})();
+</script>
+</body>
+</html>

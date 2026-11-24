@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Albarrada · Casa con patio en preventa, Mérida (proyecto de ejemplo)</title>
+<meta name="description" content="Proyecto de ejemplo de Héctor Aguilar: camina una casa de 140 m² antes de que se construya y prueba sus acabados.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700&family=Young+Serif&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="albarrada/fotos/hero.webp" fetchpriority="high">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+<style>
+:root{
+  --cal:#FFFDF7;--izamal:#E5AC2E;--izamal2:#F3CE7A;--tinta:#2A1C12;--cafe:#6A5645;--linea:rgba(42,28,18,.16);
+  --achiote:#A8361B;--achiote2:#8A2A13;--noche:#1B130C;--vidrio:rgba(27,19,12,.76);
+  --g:max(24px,calc((100vw - 1280px)/2));--tope:104px;
+  --tit:'Young Serif',Georgia,serif;--tex:'Albert Sans',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{overflow-x:clip;-webkit-text-size-adjust:100%}
+html:has(dialog[open]){overflow:hidden}
+body{margin:0;padding-top:36px;background:var(--cal);color:var(--tinta);font:400 17px/1.55 var(--tex);overflow-x:clip}
+img{display:block;max-width:100%}
+h1,h2,h3,p,ul,dl,dd,figure{margin:0;padding:0}
+ul{list-style:none}
+a{color:inherit}
+button,input,select{font:inherit;color:inherit}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--achiote);outline-offset:2px}
+[id]{scroll-margin-top:calc(var(--tope) + 20px)}
+.k{font:700 13px/1.3 var(--tex);letter-spacing:.09em;text-transform:uppercase;color:var(--achiote)}
+
+.demo{position:fixed;top:0;left:0;right:0;z-index:60;height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 var(--g);background:#0E0F11;color:#E9E5DC;font:500 12px system-ui,sans-serif}
+.demo a{color:inherit;text-decoration:none;min-height:36px;display:inline-flex;align-items:center;white-space:nowrap}
+.demo span{font:500 11px system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#B9B4AB}
+.top{position:sticky;top:36px;z-index:50;height:68px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 var(--g);background:var(--izamal)}
+.logo{display:inline-flex;align-items:center;gap:9px;font:400 22px/1 var(--tit);text-decoration:none;white-space:nowrap}
+.logo svg{flex:none}
+.nav{display:flex;gap:30px}
+.nav a{font-weight:500;font-size:16px;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.nav a:hover{text-decoration:underline;text-underline-offset:4px}
+.b{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:48px;padding:11px 24px;border:1px solid transparent;border-radius:6px;font:600 16px/1.2 var(--tex);text-decoration:none;cursor:pointer;transition:background .18s,color .18s,border-color .18s}
+.b-a{background:var(--achiote);color:#fff}.b-a:hover{background:var(--achiote2)}
+.b-l{background:transparent;border-color:rgba(42,28,18,.5)}.b-l:hover{background:var(--tinta);border-color:var(--tinta);color:#fff}
+.b-n{background:var(--tinta);color:#fff}.b-n:hover{background:#000}
+.top .b{min-height:44px;padding:9px 18px;font-size:15px}
+
+.hero{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);background:var(--izamal);min-height:min(720px,calc(100dvh - 104px))}
+.hero .tx{align-self:center;padding:clamp(36px,5vw,64px) clamp(28px,4vw,64px) clamp(36px,5vw,64px) var(--g)}
+.hero h1{font:400 clamp(40px,4.6vw,66px)/1.04 var(--tit);letter-spacing:-.015em;margin:14px 0 18px;text-wrap:balance}
+.hero .k{color:var(--tinta)}
+.lead{font-size:20px;line-height:1.45;max-width:36ch}
+.pre{font:400 25px/1.2 var(--tit);margin-top:20px}
+.pre small{display:block;font:500 14px/1.4 var(--tex);margin-top:4px}
+.acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.fotoh{position:relative;display:block;width:100%;height:100%;min-height:380px;padding:0;border:0;background:#333;overflow:hidden;cursor:pointer}
+.fotoh img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.fotoh:hover img{transform:scale(1.03)}
+.sello{position:absolute;left:20px;bottom:20px;display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:10px 18px;border-radius:6px;background:var(--cal);font:600 16px/1 var(--tex);color:var(--tinta);box-shadow:0 6px 18px rgba(0,0,0,.28)}
+.sello svg{color:var(--achiote)}
+.dat{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0 24px;padding:0 var(--g);border-bottom:1px solid var(--linea)}
+.dat div{padding:24px 0}
+.dat b{display:block;font:400 30px/1.15 var(--tit)}
+.dat span{color:var(--cafe);font-size:16px}
+.ej{padding:10px var(--g) 0;font-size:14px;color:var(--cafe)}
+
+.sec{padding:clamp(60px,7vw,96px) var(--g)}
+.h2{font:400 clamp(32px,3.4vw,48px)/1.08 var(--tit);letter-spacing:-.01em;margin:10px 0 12px;text-wrap:balance}
+.sub{color:var(--cafe);max-width:54ch;margin-bottom:32px}
+.nota{margin-top:18px;font-size:14px;color:var(--cafe)}
+
+.pl-g{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:clamp(32px,5vw,72px);align-items:start}
+.plan{display:block;width:100%;height:auto;font-family:var(--tex)}
+.plan .cuarto{fill:transparent;cursor:pointer;transition:fill .15s}
+.plan .cuarto:hover,.plan .cuarto:focus-visible{fill:rgba(229,172,46,.42);outline:none}
+.plan .cuarto.patio{fill:rgba(106,140,90,.2)}
+.plan .cuarto.patio:hover{fill:rgba(106,140,90,.42)}
+.plan .m{stroke:var(--tinta);stroke-linecap:butt;fill:none}
+.plan .v{stroke:var(--tinta);stroke-width:.5;fill:none}
+.plan text{fill:var(--tinta);font-weight:600;font-size:3.5px;text-anchor:middle;pointer-events:none}
+.plan text.me{font-weight:400;font-size:3px;fill:var(--cafe)}
+.tb{border-top:1px solid var(--linea)}
+.tb div{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid var(--linea)}
+.tb dt{color:var(--cafe)}
+.tb dd{font-weight:600;white-space:nowrap}
+.tb .t dt,.tb .t dd{color:var(--tinta);font-weight:700}
+
+.fotos{background:var(--noche);color:#F7EFE2}
+.fotos .k{color:var(--izamal)}.fotos .sub,.fotos .nota{color:#C9BBA9}
+.esp{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:20px}
+.c{grid-column:span 2;position:relative;min-width:0}
+.c.g{grid-column:span 3}
+.c .ent{display:block;width:100%;padding:0;border:0;background:none;color:inherit;text-align:left;cursor:pointer}
+.c .im{display:block;overflow:hidden;border-radius:4px;aspect-ratio:3/2;background:#333}
+.c img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.c .ent:hover img{transform:scale(1.04)}
+.c .tt{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:12px}
+.c b{font:400 21px/1.25 var(--tit)}
+.c em{font-style:normal;color:#C9BBA9;font-size:16px;white-space:nowrap}
+.c .ver{display:inline-flex;align-items:center;gap:7px;margin-top:2px;color:var(--izamal);font-weight:600;font-size:16px;min-height:28px}
+.amp{position:absolute;top:10px;right:10px;width:44px;height:44px;display:grid;place-items:center;border:0;border-radius:4px;background:var(--vidrio);color:#fff;cursor:pointer}
+
+.ac-g{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.7fr);gap:clamp(28px,5vw,64px);align-items:start}
+.grupo{margin-top:22px}
+.grupo h3{font:700 15px/1.3 var(--tex);margin-bottom:9px}
+.ops{display:grid;gap:8px}
+.op{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;min-height:52px;padding:8px 16px;border:1px solid var(--linea);border-radius:6px;background:transparent;text-align:left;cursor:pointer;font-weight:600;transition:background .15s,border-color .15s}
+.op small{font-weight:400;font-size:14px;color:var(--cafe);text-align:right}
+.op:hover{border-color:var(--tinta)}
+.op[aria-pressed=true]{background:var(--izamal);border-color:var(--izamal)}
+.op[aria-pressed=true] small{color:var(--tinta)}
+.vista{position:sticky;top:calc(var(--tope) + 16px)}
+.vista .mar{position:relative;display:block;overflow:hidden;border-radius:4px;aspect-ratio:3/2;background:#333}
+.vista img{width:100%;height:100%;object-fit:cover}
+.vista .eti{position:absolute;left:12px;bottom:12px;padding:7px 12px;border-radius:4px;background:var(--vidrio);color:#fff;font-size:15px;font-weight:500}
+.ac-g .b{margin-top:22px}
+
+.det{background:var(--izamal);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(40px,6vw,88px)}
+.det .k{color:var(--tinta)}.det .nota{color:var(--tinta)}
+.lst{display:grid;gap:12px;margin-top:6px}
+.lst li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px}
+.lst svg{margin-top:4px}
+.pag{border-top:1px solid rgba(42,28,18,.35)}
+.pag div{display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px solid rgba(42,28,18,.35)}
+.pag dd{font-weight:700;text-align:right}
+
+.faqg{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(32px,5vw,72px)}
+details{border-bottom:1px solid var(--linea)}
+summary{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:60px;padding:14px 0;cursor:pointer;list-style:none;font-weight:600}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"";flex:none;width:10px;height:10px;border-right:1.7px solid var(--tinta);border-bottom:1.7px solid var(--tinta);transform:rotate(45deg) translate(-2px,-2px);transition:transform .2s}
+details[open] summary::after{transform:rotate(-135deg) translate(-2px,-2px)}
+details p{padding:0 30px 18px 0;color:var(--cafe)}
+
+.ag{background:var(--noche);color:#F7EFE2;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px);gap:clamp(32px,6vw,88px);align-items:start}
+.ag .k{color:var(--izamal)}.ag .sub{color:#C9BBA9;margin-bottom:0}
+.form{display:grid;gap:14px;background:var(--cal);color:var(--tinta);padding:24px;border-radius:6px}
+.fl{display:grid;gap:5px;font-weight:600;font-size:15px}
+.fl input,.fl select{width:100%;height:48px;padding:0 14px;border:1px solid rgba(42,28,18,.34);border-radius:4px;background:#fff;font-weight:400;font-size:16px}
+.fl select{appearance:none;-webkit-appearance:none;padding-right:40px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%232A1C12' stroke-width='1.6'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 14px center}
+.err{color:#A32020;font-weight:500;font-size:14px}.err:empty{display:none}
+.form .b{width:100%}
+.ok{font-size:15px;color:#1F6B44;font-weight:700}.ok:empty{display:none}
+
+.pie{background:var(--izamal);padding:26px var(--g);display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;font-size:16px}
+.exit{background:#0E0F11;color:#F4F0E8;padding:72px var(--g)}
+.exit-in{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:32px 64px;align-items:end}
+.exit p.ej2{font:500 11px system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#B9B4AB;margin:0 0 12px}
+.exit h2{font:500 clamp(28px,3vw,42px)/1.1 system-ui,sans-serif;letter-spacing:-.02em}
+.exit .dis{font:400 13px/1.5 system-ui,sans-serif;color:#9D9890;margin-top:14px}
+.sal{display:flex;gap:12px;flex-wrap:wrap}
+.sal a{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 22px;border-radius:999px;font:600 15px system-ui,sans-serif;text-decoration:none;color:#F4F0E8}
+.sal .b1{background:#F4F0E8;color:#151513}.sal .b2{border:1px solid rgba(244,240,232,.25)}
+
+/* Recorrido */
+#tour{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:var(--noche);color:#fff;overflow:hidden}
+#lienzo{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:none;outline:none}
+#lienzo:active{cursor:grabbing}
+.t-a{position:absolute;z-index:6;left:0;right:0;top:0;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:calc(14px + env(safe-area-inset-top)) 14px 14px;pointer-events:none}
+.ch{padding:9px 14px;background:var(--vidrio);border-radius:6px;backdrop-filter:blur(8px)}
+.ch small{display:block;font:500 13px/1.3 var(--tex);color:#DCCFBD}
+.ch b{display:block;font:400 20px/1.2 var(--tit)}
+.icb{pointer-events:auto;width:48px;height:48px;display:grid;place-items:center;border:0;border-radius:6px;background:var(--vidrio);color:#fff;cursor:pointer;backdrop-filter:blur(8px)}
+.pl-t{position:absolute;z-index:6;right:14px;top:calc(76px + env(safe-area-inset-top));width:232px;padding:8px 8px 6px;background:rgba(255,253,247,.94);color:var(--tinta);border-radius:6px}
+.pl-t p{font-size:12.5px;color:var(--cafe);text-align:center;margin-top:3px}
+.barra{position:absolute;z-index:6;left:0;right:0;bottom:0;display:flex;justify-content:center;gap:10px;padding:0 14px calc(14px + env(safe-area-inset-bottom));pointer-events:none}
+.seg{pointer-events:auto;display:flex;align-items:center;gap:4px;padding:5px;background:var(--vidrio);border-radius:8px;backdrop-filter:blur(8px)}
+.seg>span{padding:0 8px 0 9px;font-size:13.5px;color:#DCCFBD}
+.seg button{min-height:44px;padding:6px 12px;border:0;border-radius:5px;background:transparent;color:#fff;font-weight:600;font-size:15px;cursor:pointer;white-space:nowrap}
+.seg button:hover{background:rgba(255,255,255,.14)}
+.seg button[aria-pressed=true]{background:var(--izamal);color:var(--tinta)}
+.seg button[disabled]{opacity:.6;cursor:wait}
+.pista{position:absolute;z-index:5;left:50%;bottom:calc(86px + env(safe-area-inset-bottom));transform:translateX(-50%);width:max-content;max-width:calc(100% - 28px);padding:10px 16px;border-radius:6px;background:var(--vidrio);font-size:16px;text-align:center;pointer-events:none}
+.pista kbd{font:600 13px/1 var(--tex);padding:3px 6px;border:1px solid rgba(255,255,255,.5);border-radius:3px;margin:0 1px}
+.joy{display:none;position:absolute;z-index:6;left:calc(18px + env(safe-area-inset-left));bottom:calc(22px + env(safe-area-inset-bottom));width:124px;height:124px;border-radius:50%;background:rgba(27,19,12,.5);border:1.5px solid rgba(255,255,255,.55);touch-action:none}
+.joy i{position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;background:rgba(255,253,247,.94);box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.abrir{display:none;position:absolute;z-index:6;right:14px;bottom:calc(28px + env(safe-area-inset-bottom));min-height:52px;padding:0 18px;border:0;border-radius:6px;background:var(--izamal);color:var(--tinta);font-weight:700;font-size:16px;cursor:pointer}
+.hoja{display:none;position:absolute;z-index:8;left:0;right:0;bottom:0;max-height:min(74dvh,560px);overflow-y:auto;background:var(--cal);color:var(--tinta);border-radius:12px 12px 0 0;padding:14px 16px calc(18px + env(safe-area-inset-bottom));box-shadow:0 -14px 40px rgba(0,0,0,.4)}
+.hoja.on{display:block}
+.hoja-c{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.hoja-c b{font:400 22px/1.2 var(--tit)}
+.hoja-c button{width:44px;height:44px;display:grid;place-items:center;border:0;background:none;cursor:pointer}
+.hoja h3{font:700 15px/1.3 var(--tex);margin:14px 0 8px}
+.tres{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tres button{min-height:48px;padding:6px 4px;border:1px solid var(--linea);border-radius:5px;background:transparent;font-weight:600;font-size:15px;cursor:pointer}
+.tres button[aria-pressed=true]{background:var(--izamal);border-color:var(--izamal)}
+.carga{position:absolute;inset:0;z-index:10;display:grid;place-items:center;background:var(--noche);padding:24px;text-align:center}
+.carga b{display:block;font:400 26px/1.2 var(--tit);margin-bottom:6px}
+.carga p{color:#DCCFBD;max-width:36ch;margin:0 auto}
+.carga .pct{font:400 clamp(44px,12vw,64px)/1.1 var(--tit);color:#F7EFE2;margin:14px auto 0;font-variant-numeric:tabular-nums}
+.carga .bar{width:min(280px,76vw);height:4px;margin:14px auto 14px;background:rgba(255,255,255,.2);overflow:hidden}
+.carga .bar i{display:block;height:100%;width:100%;background:var(--izamal);transform:scaleX(0);transform-origin:left;transition:transform .2s}
+.carga .b{margin-top:18px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+/* Visor de fotos */
+#visor{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:rgba(14,10,6,.96);overflow:hidden;color:#fff}
+#visor img{position:absolute;left:50%;top:50%;max-width:none;max-height:none;touch-action:none;cursor:grab;user-select:none;-webkit-user-drag:none}
+.v-b{position:absolute;right:14px;top:calc(14px + env(safe-area-inset-top));display:flex;gap:8px;z-index:2}
+
+@media (max-width:1040px){.nav{gap:18px}.pl-t{width:190px}.seg>span{display:none}}
+@media (max-width:860px),(pointer:coarse){
+  .barra,.pl-t{display:none}
+  .abrir{display:block}
+  .pista{bottom:auto;top:calc(84px + env(safe-area-inset-top))}
+}
+@media (pointer:coarse){.joy{display:block}.t-kb{display:none}}
+@media (pointer:fine){.t-to{display:none}}
+@media (max-width:860px){
+  :root{--tope:92px}
+  .demo span{display:none}
+  .top{height:56px}.nav{display:none}
+  .logo{font-size:20px}
+  .hero{grid-template-columns:minmax(0,1fr);min-height:0}
+  .hero .tx{order:2;padding:26px 24px 34px}
+  .hero .fi{order:1}
+  .fotoh{min-height:0;height:min(92vw,46dvh)}
+  .acts .b{flex:1 1 170px}
+  .dat{grid-template-columns:repeat(2,minmax(0,1fr));padding:0 24px}
+  .ej{padding:10px 24px 0}
+  .sec{padding:56px 24px}
+  .pl-g,.det,.faqg,.ag{grid-template-columns:minmax(0,1fr);gap:28px}
+  .ac-g{grid-template-columns:minmax(0,1fr);gap:18px}
+  .ac-g .vista{order:-1;top:calc(var(--tope) + 8px);z-index:4}
+  .esp{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 14px}
+  .c,.c.g{grid-column:span 1}
+  .c:first-child{grid-column:1/-1}
+  .pie{padding:24px}
+  .exit{padding:56px 24px}.exit-in{grid-template-columns:minmax(0,1fr)}
+  .ac-g .b{width:100%}
+}
+@media (max-width:420px){
+  .c .tt{display:block}
+  .top .b{padding:9px 13px;font-size:14px}
+  .logo{font-size:18px;gap:6px}
+}
+@media (max-width:360px){
+  .joy{width:108px;height:108px}
+  .joy i{width:46px;height:46px;margin:-23px 0 0 -23px}
+  .abrir{padding:0 14px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<!-- favicono -->
+<link rel="icon" href="../../favicon.ico" sizes="48x48">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../icono-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+</head>
+<body>
+<div class="demo" role="note"><a href="../../servicios/recorrido-virtual#ejemplos">‹ Volver a los ejemplos</a><span>Proyecto de ejemplo · Héctor Aguilar</span></div>
+<header class="top">
+  <a class="logo" href="#inicio" aria-label="Albarrada, inicio"><svg width="30" height="24" viewBox="0 0 30 24" fill="#2A1C12" aria-hidden="true"><path d="M1 22l1-7 7-1 2 8zM12 22l-1-8 8-1 1 9zM21 22l-.5-9 8-.5.5 9.500zM3 13l1-6 8-1 1 6zM14 11.500l-.5-6 8-.5 1 6zM8 4.800l1-4 7 .2.500 3.800z"/></svg>Albarrada</a>
+  <nav class="nav" aria-label="Principal"><a href="#plano">Plano</a><a href="#espacios">Espacios</a><a href="#acabados">Acabados</a><a href="#preguntas">Preguntas</a></nav>
+  <a class="b b-n" href="#cita">Agendar cita</a>
+</header>
+<main>
+  <section class="hero" id="inicio">
+    <div class="tx">
+      <p class="k">Preventa · Zona norte de Mérida</p>
+      <h1>Camina tu casa antes de que exista.</h1>
+      <p class="lead">140 m² en una sola planta, alrededor de un patio con árbol. Recórrela a tu paso y cambia pisos y muros en vivo.</p>
+      <p class="pre">$6,850,000<small>Precio de ejemplo</small></p>
+      <div class="acts"><button type="button" class="b b-a" data-t="vestibulo">Caminar la casa</button><a class="b b-l" href="#cita">Agendar cita</a></div>
+    </div>
+    <div class="fi"><button type="button" class="fotoh" data-t="vestibulo" aria-label="Caminar la casa desde la entrada"><img src="albarrada/fotos/hero.webp" width="1900" height="1267" alt="Patio central con un árbol en jardinera de piedra y la sala al fondo" fetchpriority="high"><span class="sello"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="13" cy="4.500" r="1.800"/><path d="M10 21l2-6-2.500-2.500L11 7.500l4 2 3 3M7 12l2.500-3.500M13 15l2 6"/></svg>Entrar a caminar</span></button></div>
+  </section>
+  <div class="dat"><div><b>140 m²</b><span>De construcción</span></div><div><b>347 m²</b><span>De terreno</span></div><div><b>2 + estudio</b><span>Recámaras y estudio</span></div><div><b>2 baños</b><span>Completos</span></div></div>
+  <p class="ej">Datos de ejemplo.</p>
+
+  <section class="sec" id="plano">
+    <p class="k">El plano</p>
+    <h2 class="h2">Toca un cuarto y entra.</h2>
+    <p class="sub">El recorrido se levantó con las medidas de este plano. Lo que caminas es lo que se va a construir.</p>
+    <div class="pl-g">
+      <div><svg class="plan" id="planP" viewBox="-6 -6 156 120" role="group" aria-label="Plano de la casa. Elige un cuarto para entrar."></svg></div>
+      <div><dl class="tb" id="tb"></dl><p class="nota">Plano y medidas de ejemplo.</p></div>
+    </div>
+  </section>
+
+  <section class="sec fotos" id="espacios">
+    <p class="k">Espacios</p>
+    <h2 class="h2">La luz, tal como va a entrar.</h2>
+    <p class="sub">El sol y sus sombras se calcularon sobre la casa, con su orientación.</p>
+    <div class="esp" id="esp"></div>
+    <p class="nota">Imágenes del modelo 3D. Muebles ilustrativos, no se incluyen.</p>
+  </section>
+
+  <section class="sec" id="acabados">
+    <p class="k">Acabados</p>
+    <h2 class="h2">Decide cómo se va a ver.</h2>
+    <p class="sub">Elige piso y muros. Después entra y míralos en toda la casa.</p>
+    <div class="ac-g">
+      <div>
+        <div class="grupo"><h3>Piso</h3><div class="ops" data-g="piso">
+          <button type="button" class="op" data-v="pasta" aria-pressed="true">Pasta<small>Mosaico de 20 × 20 cm</small></button>
+          <button type="button" class="op" data-v="madera" aria-pressed="false">Madera<small>Parquet en espiga</small></button>
+          <button type="button" class="op" data-v="piedra" aria-pressed="false">Piedra<small>Laja natural</small></button>
+        </div></div>
+        <div class="grupo"><h3>Muros</h3><div class="ops" data-g="muro">
+          <button type="button" class="op" data-v="cal" aria-pressed="true">Cal<small>Blanco cálido</small></button>
+          <button type="button" class="op" data-v="chukum" aria-pressed="false">Chukum<small>Estuco maya</small></button>
+          <button type="button" class="op" data-v="arcilla" aria-pressed="false">Arcilla<small>Terracota</small></button>
+        </div></div>
+        <button type="button" class="b b-a" id="probar">Caminar con estos acabados</button>
+      </div>
+      <div class="vista"><button type="button" class="mar" id="acAmp" style="padding:0;border:0;width:100%;cursor:zoom-in" aria-label="Ampliar la imagen del acabado"><img id="acImg" src="albarrada/fotos/ac_pasta_cal.webp" width="1200" height="800" alt="Comedor y sala con piso de pasta y muros de cal" loading="lazy"><span class="eti" id="acEti">Pasta y cal</span></button><p class="nota">Tonos de referencia. Datos de ejemplo.</p></div>
+    </div>
+  </section>
+
+  <section class="sec det" id="detalles">
+    <div><p class="k">Qué incluye</p><h2 class="h2">Hecha para el clima de Mérida.</h2><ul class="lst" id="lst"></ul><p class="nota">Datos de ejemplo.</p></div>
+    <div><p class="k">Preventa</p><h2 class="h2">Cómo se paga.</h2>
+      <dl class="pag">
+        <div><dt>Apartado</dt><dd>$50,000</dd></div>
+        <div><dt>Enganche</dt><dd>30 %, durante la obra</dd></div>
+        <div><dt>Contra entrega</dt><dd>70 %, contado o crédito</dd></div>
+        <div><dt>Entrega</dt><dd>Diciembre de 2028</dd></div>
+      </dl><p class="nota">Datos de ejemplo.</p></div>
+  </section>
+
+  <section class="sec faqg" id="preguntas">
+    <h2 class="h2">Preguntas</h2>
+    <div>
+      <details open><summary>¿La casa ya existe?</summary><p>Todavía no. Lo que recorres es un modelo 3D hecho con el plano del proyecto.</p></details>
+      <details><summary>¿Qué tan fiel es el recorrido?</summary><p>Las medidas salen del plano. Los muebles son ilustrativos y los tonos pueden variar un poco en obra.</p></details>
+      <details><summary>¿Necesito instalar algo?</summary><p>No. Se abre en tu navegador. En computadora caminas con el teclado y en celular con el círculo de la pantalla.</p></details>
+      <details><summary>¿Puedo conocer el terreno?</summary><p>Sí. Elige un día abajo y te confirmamos la hora.</p></details>
+      <details><summary>¿Aceptan crédito hipotecario?</summary><p>Sí, para el pago contra entrega. Datos de ejemplo.</p></details>
+    </div>
+  </section>
+
+  <section class="sec ag" id="cita">
+    <div><p class="k">Cita</p><h2 class="h2">¿Ya la caminaste? Ven al terreno.</h2><p class="sub">Déjanos tus datos y te confirmamos el horario por WhatsApp.</p></div>
+    <form class="form" id="form" novalidate>
+      <label class="fl">Nombre<input id="fn" autocomplete="name" required></label>
+      <label class="fl">Teléfono<input id="ft" type="tel" inputmode="tel" autocomplete="tel" required></label>
+      <label class="fl">Cómo prefieres<select id="fd"><option>Visita al terreno</option><option>Videollamada</option></select></label>
+      <p class="err" id="fe" role="alert"></p>
+      <button class="b b-a" type="submit">Agendar cita</button>
+      <p class="ok" id="fo" role="status"></p>
+    </form>
+  </section>
+</main>
+<footer>
+  <div class="pie"><a class="logo" href="#inicio">Albarrada</a><span>Zona norte de Mérida, Yucatán</span></div>
+  <div class="exit"><div class="exit-in">
+    <div><p class="ej2">Proyecto de ejemplo · Héctor Aguilar</p><h2>¿Tu próximo desarrollo ya se puede caminar?</h2><p class="dis">Marca, precio y datos de ejemplo. La casa se modeló en 3D a partir de un plano de ejemplo y aquí no se guarda ningún dato.</p></div>
+    <div class="sal"><a class="b1" href="https://wa.me/525545249906?text=Hola%20H%C3%A9ctor%2C%20camin%C3%A9%20la%20casa%20de%20Albarrada%20y%20quiero%20algo%20as%C3%AD%20para%20mi%20proyecto.">Quiero algo así</a><a class="b2" href="../../servicios/recorrido-virtual#ejemplos">Ver más ejemplos</a></div>
+  </div></div>
+</footer>
+
+<dialog id="tour" aria-labelledby="tN">
+  <canvas id="lienzo" tabindex="0" aria-label="Vista de la casa. Usa W A S D o las flechas para caminar y arrastra para mirar."></canvas>
+  <div class="t-a">
+    <div class="ch"><small id="tM"></small><b id="tN">Albarrada</b></div>
+    <button type="button" class="icb" id="tX" aria-label="Salir del recorrido"><svg width="18" height="18" viewBox="0 0 18 18" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 2l14 14M16 2 2 16"/></svg></button>
+  </div>
+  <div class="pl-t"><svg class="plan" id="planT" viewBox="-6 -6 156 120" role="group" aria-label="Plano. Elige un cuarto para ir ahí."></svg><p>Toca un cuarto para ir ahí</p></div>
+  <div class="barra">
+    <div class="seg" data-g="piso"><span>Piso</span><button type="button" data-v="pasta" aria-pressed="true">Pasta</button><button type="button" data-v="madera" aria-pressed="false">Madera</button><button type="button" data-v="piedra" aria-pressed="false">Piedra</button></div>
+    <div class="seg" data-g="muro"><span>Muros</span><button type="button" data-v="cal" aria-pressed="true">Cal</button><button type="button" data-v="chukum" aria-pressed="false">Chukum</button><button type="button" data-v="arcilla" aria-pressed="false">Arcilla</button></div>
+    <div class="seg" data-g="luz"><span>Luz</span><button type="button" data-v="dia" aria-pressed="true">Día</button><button type="button" data-v="tarde" aria-pressed="false">Atardecer</button></div>
+  </div>
+  <p class="pista" id="tP"><span class="t-kb"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> o flechas para caminar · Arrastra para mirar</span><span class="t-to">Mueve el círculo para caminar · Arrastra para mirar</span></p>
+  <div class="joy" id="joy" role="img" aria-label="Control para caminar"><i id="joyI"></i></div>
+  <button type="button" class="abrir" id="abrirH">Plano y acabados</button>
+  <div class="hoja" id="hoja" role="group" aria-label="Plano y acabados">
+    <div class="hoja-c"><b>Plano y acabados</b><button type="button" id="cerrarH" aria-label="Cerrar plano y acabados"><svg width="16" height="16" viewBox="0 0 18 18" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 2l14 14M16 2 2 16"/></svg></button></div>
+    <svg class="plan" id="planH" viewBox="-6 -6 156 120" role="group" aria-label="Plano. Elige un cuarto para ir ahí."></svg>
+    <h3>Piso</h3><div class="tres" data-g="piso"><button type="button" data-v="pasta" aria-pressed="true">Pasta</button><button type="button" data-v="madera" aria-pressed="false">Madera</button><button type="button" data-v="piedra" aria-pressed="false">Piedra</button></div>
+    <h3>Muros</h3><div class="tres" data-g="muro"><button type="button" data-v="cal" aria-pressed="true">Cal</button><button type="button" data-v="chukum" aria-pressed="false">Chukum</button><button type="button" data-v="arcilla" aria-pressed="false">Arcilla</button></div>
+    <h3>Luz</h3><div class="tres" data-g="luz" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button type="button" data-v="dia" aria-pressed="true">Día</button><button type="button" data-v="tarde" aria-pressed="false">Atardecer</button></div>
+  </div>
+  <div class="carga" id="carga"><div><b>Preparando la casa</b><p class="pct" id="cP">0 %</p><div class="bar" id="cBar" role="progressbar" aria-label="Avance de la carga" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="cI"></i></div><p id="cTx" aria-live="polite">Calculando cuánto falta…</p><button type="button" class="b b-a" id="cR" hidden>Intentar de nuevo</button></div></div>
+</dialog>
+
+<dialog id="visor" aria-label="Imagen ampliada">
+  <img id="vImg" alt="">
+  <div class="v-b">
+    <button type="button" class="icb" id="vM" aria-label="Acercar"><svg width="18" height="18" viewBox="0 0 18 18" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M9 2v14M2 9h14"/></svg></button>
+    <button type="button" class="icb" id="vN" aria-label="Alejar"><svg width="18" height="18" viewBox="0 0 18 18" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 9h14"/></svg></button>
+    <button type="button" class="icb" id="vX" aria-label="Cerrar imagen"><svg width="18" height="18" viewBox="0 0 18 18" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 2l14 14M16 2 2 16"/></svg></button>
+  </div>
+</dialog>
+
+<script>
+(function(){
+var $=function(s,r){return (r||document).querySelector(s);},$$=function(s,r){return [].slice.call((r||document).querySelectorAll(s));};
+/* Mismas medidas que el modelo 3D. x = oriente, y = norte */
+var R=[
+ {id:'vestibulo',n:'Vestíbulo',x0:5.2,y0:0,x1:9.2,y1:3.4,m:13.6},
+ {id:'patio',n:'Patio',x0:5.2,y0:3.4,x1:9.2,y1:7.2,m:15.2,ab:1},
+ {id:'sala',n:'Sala y comedor',x0:3.8,y0:7.2,x1:14.4,y1:10.8,m:38.2},
+ {id:'cocina',n:'Cocina',x0:9.2,y0:3.4,x1:14.4,y1:7.2,m:19.8},
+ {id:'estudio',n:'Estudio',x0:9.2,y0:0,x1:14.4,y1:3.4,m:17.7},
+ {id:'hall',n:'Pasillo',x0:3.8,y0:0,x1:5.2,y1:7.2,m:10.1,c:1},
+ {id:'principal',n:'Recámara principal',x0:0,y0:4.9,x1:3.8,y1:8.6,m:14.1,cn:'Principal'},
+ {id:'banop',n:'Baño principal',x0:0,y0:8.6,x1:3.8,y1:10.8,m:8.3,cn:'Baño'},
+ {id:'rec2',n:'Recámara 2',x0:0,y0:0,x1:3.8,y1:3.4,m:12.9},
+ {id:'bano2',n:'Baño 2',x0:0,y0:3.4,x1:3.8,y1:4.9,m:5.7}
+];
+var W=[[0,0,14.4,0,.26,[[1,2.8,1],[6.6,7.8,2],[8.2,8.8,1],[10.5,13.1,1]]],[0,10.8,14.4,10.8,.26,[[1.2,2.6,1],[5,8.4,1],[9.6,13.4,1]]],[0,0,0,10.8,.26,[[1,2.4,1],[3.85,4.45,1],[5.75,7.75,1]]],[14.4,0,14.4,10.8,.26,[[1,2.4,1],[4.5,6.2,1]]],[5.2,3.4,9.2,3.4,.2,[[5.55,6.3,1],[6.4,8,0],[8.1,8.85,1]]],[5.2,7.2,9.2,7.2,.2,[[5.7,8.7,0]]],[5.2,0,5.2,3.4,.2,[[.4,3,0]]],[5.2,3.4,5.2,7.2,.2,[[3.7,6.9,1]]],[9.2,0,9.2,3.4,.2,[[1.25,2.15,0]]],[9.2,3.4,9.2,7.2,.2,[[4,6.6,1]]],[9.2,7.2,14.4,7.2,.2,[[9.9,13.8,0]]],[9.2,3.4,14.4,3.4,.12,[]],[3.8,0,3.8,10.8,.12,[[1.25,2.15,0],[3.75,4.5,0],[5.95,6.85,0]]],[0,3.4,3.8,3.4,.12,[]],[0,4.9,3.8,4.9,.12,[]],[0,8.6,3.8,8.6,.12,[[1.5,2.3,0]]]];
+var por=function(i){return R.filter(function(x){return x.id===i;})[0];};
+var X=function(v){return v*10;},Y=function(v){return (10.8-v)*10;};
+function dibuja(svg,conMedida,marca){
+  var h='';
+  R.forEach(function(r){
+    h+='<rect class="cuarto'+(r.ab?' patio':'')+'" data-r="'+r.id+'" tabindex="0" role="button" aria-label="Ir a '+r.n+'" x="'+X(r.x0)+'" y="'+Y(r.y1)+'" width="'+X(r.x1-r.x0)+'" height="'+X(r.y1-r.y0)+'"></rect>';
+  });
+  W.forEach(function(w){
+    var hor=w[1]===w[3],a=hor?w[0]:w[1],b=hor?w[2]:w[3],c=hor?w[1]:w[0],p=a,g=X(w[4]);
+    var ln=function(u,v,cls,sw){if(v<=u)return '';return hor?'<line class="'+cls+'" x1="'+X(u)+'" y1="'+Y(c)+'" x2="'+X(v)+'" y2="'+Y(c)+'" stroke-width="'+sw+'"></line>':'<line class="'+cls+'" x1="'+X(c)+'" y1="'+Y(u)+'" x2="'+X(c)+'" y2="'+Y(v)+'" stroke-width="'+sw+'"></line>';};
+    w[5].forEach(function(o){h+=ln(p,o[0],'m',g);if(o[2]===1)h+=ln(o[0],o[1],'v',.5);if(o[2]===2)h+=ln(o[0],o[1],'m',g*.4);p=o[1];});
+    h+=ln(p,b,'m',g);
+  });
+  R.forEach(function(r){
+    if(r.c)return;
+    var cx=X((r.x0+r.x1)/2),cy=Y((r.y0+r.y1)/2);
+    h+='<text x="'+cx+'" y="'+(cy+(conMedida?-.5:1))+'">'+(r.cn||r.n)+'</text>';
+    if(conMedida)h+='<text class="me" x="'+cx+'" y="'+(cy+3.6)+'">'+r.m+' m²</text>';
+  });
+  if(marca)h+='<g class="yo"><circle r="5.200" fill="#A8361B" opacity=".22"></circle><path d="M0-5L3.400 3.200 0 1.400-3.400 3.200z" fill="#A8361B"></path></g>';
+  svg.innerHTML=h;
+}
+dibuja($('#planP'),true,false);dibuja($('#planT'),false,true);dibuja($('#planH'),false,true);
+$('#tb').innerHTML=R.filter(function(r){return !r.ab;}).map(function(r){return '<div><dt>'+r.n+'</dt><dd>'+r.m.toFixed(1)+' m²</dd></div>';}).join('')+'<div class="t"><dt>Construcción</dt><dd>140 m²</dd></div><div><dt>Patio descubierto</dt><dd>15.2 m²</dd></div>';
+
+var F=[['patio','Patio','Un árbol al centro y luz en toda la casa'],['sala','Sala y comedor',''],['cocina','Cocina',''],['principal','Recámara principal',''],['estudio','Estudio',''],['banop','Baño principal',''],['rec2','Recámara 2','']];
+var ALT={patio:'Patio con árbol visto desde la sala',sala:'Comedor y sala con vigas de madera y ventanales',cocina:'Cocina verde con isla de granito',principal:'Recámara con cama y ventana grande',estudio:'Estudio con librero y escritorio junto a la ventana',banop:'Baño con doble lavabo y azulejo',rec2:'Recámara con cama y ventana al jardín'};
+$('#esp').innerHTML=F.map(function(f,i){var r=por(f[0]);return '<div class="c'+(i<2||i>4?' g':'')+'"><button type="button" class="ent" data-t="'+f[0]+'" aria-label="Caminar por '+f[1]+'"><span class="im"><img src="albarrada/fotos/'+f[0]+'.webp" width="1500" height="1000" alt="'+ALT[f[0]]+'" loading="lazy"></span><span class="tt"><b>'+f[1]+'</b><em>'+r.m+' m²</em></span><span class="ver">Entrar <span aria-hidden="true">→</span></span></button><button type="button" class="amp" data-z="albarrada/fotos/'+f[0]+'.webp" aria-label="Ampliar imagen de '+f[1]+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"/></svg></button></div>';}).join('');
+var OK='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12.500l4.500 4.500L19 7.500"/></svg>';
+$('#lst').innerHTML=['Plafones de 3 m con vigas de madera','Barda perimetral de piedra','Ventanas de aluminio con doble vidrio','Cisterna de 10,000 litros','Preparación para aire acondicionado y paneles solares'].map(function(t){return '<li>'+OK+'<span>'+t+'</span></li>';}).join('');
+
+/* Acabados en la pagina */
+var sel={piso:'pasta',muro:'cal',luz:'dia'},NOM={pasta:'Pasta',madera:'Madera',piedra:'Piedra',cal:'cal',chukum:'chukum',arcilla:'arcilla'};
+function pinta(){
+  $('#acImg').src='albarrada/fotos/ac_'+sel.piso+'_'+sel.muro+'.webp';
+  $('#acImg').alt='Comedor y sala con piso de '+NOM[sel.piso].toLowerCase()+' y muros de '+NOM[sel.muro];
+  $('#acEti').textContent=NOM[sel.piso]+' y '+NOM[sel.muro];
+}
+function marcaBotones(g,v){$$('[data-g="'+g+'"] [data-v]').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.v===v);});}
+function elige(g,v){
+  sel[g]=v;marcaBotones(g,v);pinta();
+  if(!motor)return;
+  var f=g==='piso'?motor.setPiso:g==='muro'?motor.setMuro:motor.setLuz;
+  var bs=$$('[data-g="'+g+'"] [data-v]');bs.forEach(function(b){b.disabled=true;});
+  f(v).catch(function(){}).then(function(){bs.forEach(function(b){b.disabled=false;});});
+}
+document.addEventListener('click',function(e){var b=e.target.closest('[data-g] [data-v]');if(b)elige(b.parentNode.dataset.g||b.closest('[data-g]').dataset.g,b.dataset.v);});
+var preIO=new IntersectionObserver(function(es){if(es[0].isIntersecting){preIO.disconnect();['pasta','madera','piedra'].forEach(function(a){['cal','chukum','arcilla'].forEach(function(b){var i=new Image();i.src='albarrada/fotos/ac_'+a+'_'+b+'.webp';});});}},{rootMargin:'400px'});
+preIO.observe($('#acabados'));
+
+/* Recorrido */
+var tour=$('#tour'),motor=null,cargando=false,pendiente='vestibulo',movil=matchMedia('(pointer:coarse)').matches,ultimo=null;
+function pose(p){
+  $$('.yo').forEach(function(g){g.setAttribute('transform','translate('+X(p.x)+' '+Y(p.y)+') rotate('+(-p.yaw*180/Math.PI)+')');});
+  if(p.cuarto&&p.cuarto!==ultimo){ultimo=p.cuarto;var r=por(p.cuarto);$('#tN').textContent=r.n;$('#tM').textContent='Albarrada · '+r.m+' m²';}
+}
+function aplica(){
+  var t=[];
+  if(sel.piso!=='pasta')t.push(motor.setPiso(sel.piso));
+  if(sel.muro!=='cal')t.push(motor.setMuro(sel.muro));
+  if(sel.luz!=='dia')t.push(motor.setLuz(sel.luz));
+  return Promise.all(t);
+}
+function falla(){
+  cargando=false;$('#cTx').textContent='No se pudo cargar la casa. Revisa tu conexión e inténtalo de nuevo.';$('#cBar').hidden=true;$('#cP').hidden=true;$('#cR').hidden=false;
+}
+function sinWebGL(){
+  var c=document.createElement('canvas');return !(c.getContext('webgl2')||c.getContext('webgl'));
+}
+var inicioCarga=0;
+function avanceCarga(a){
+  var p=Math.round(a.frac*100),f=a.total-a.bajado,tx;
+  $('#cI').style.transform='scaleX('+a.frac+')';$('#cP').textContent=p+' %';$('#cBar').setAttribute('aria-valuenow',p);
+  if(!a.total)tx='Cargando la casa…';
+  else if(f<52429)tx='Ya casi. Estamos armando la casa.';
+  else{
+    tx='Faltan '+(f/1048576).toFixed(1)+' MB';
+    var t=(performance.now()-inicioCarga)/1000;
+    if(t>1&&a.bajado>0){var s=f/(a.bajado/t);tx+=' · '+(s<5?'menos de 5 s':s<60?'unos '+Math.ceil(s/5)*5+' s':'unos '+Math.ceil(s/60)+' min');}
+  }
+  $('#cTx').textContent=tx;
+}
+function carga(){
+  if(cargando||motor)return;
+  if(sinWebGL()){$('#cTx').textContent='Tu navegador no puede mostrar el recorrido en 3D. Prueba con Chrome, Edge o Safari actualizados.';$('#cBar').hidden=true;$('#cP').hidden=true;return;}
+  cargando=true;$('#cR').hidden=true;$('#cBar').hidden=false;$('#cP').hidden=false;$('#cP').textContent='0 %';$('#cI').style.transform='scaleX(0)';$('#cTx').textContent='Calculando cuánto falta…';
+  inicioCarga=performance.now();
+  import('./albarrada/casa.js').then(function(m){
+    return m.crearCasa({lienzo:$('#lienzo'),base:'albarrada/',movil:movil||innerWidth<=860,alPose:pose,alAvance:avanceCarga});
+  }).then(function(mo){
+    motor=mo;window.__casa=mo;cargando=false;
+    mo.primerPaso(function(){$('#tP').hidden=true;});
+    return aplica();
+  }).then(function(){
+    motor.irA(pendiente);
+    $('#carga').hidden=true;
+    if(tour.open)motor.arrancar();
+  }).catch(function(e){console.error(e);falla();});
+}
+function abre(id){
+  pendiente=id;
+  if(!tour.open)tour.showModal();
+  if(motor){motor.irA(id);motor.arrancar();}else carga();
+  $('#lienzo').focus({preventScroll:true});
+}
+$('#cR').addEventListener('click',carga);
+document.addEventListener('click',function(e){var b=e.target.closest('[data-t]');if(b)abre(b.dataset.t);});
+$('#probar').addEventListener('click',function(){abre('sala');});
+function irPlano(e){var q=e.target.closest('[data-r]');if(!q)return;if(tour.open&&motor){motor.irA(q.dataset.r);$('#hoja').classList.remove('on');}else abre(q.dataset.r);}
+$$('.plan').forEach(function(s){s.addEventListener('click',irPlano);s.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();irPlano(e);}});});
+$('#tX').addEventListener('click',function(){tour.close();});
+tour.addEventListener('close',function(){if(motor)motor.parar();$('#hoja').classList.remove('on');});
+$('#abrirH').addEventListener('click',function(){$('#hoja').classList.add('on');});
+$('#cerrarH').addEventListener('click',function(){$('#hoja').classList.remove('on');});
+/* Palanca tactil */
+var joy=$('#joy'),joyI=$('#joyI'),joyId=null;
+function joyMueve(e){
+  var r=joy.getBoundingClientRect(),M=r.width/2-14,dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2),n=Math.hypot(dx,dy);
+  if(n>M){dx*=M/n;dy*=M/n;}
+  joyI.style.transform='translate('+dx+'px,'+dy+'px)';
+  if(motor)motor.setStick(dx/M,-dy/M);
+}
+function joyFin(){joyId=null;joyI.style.transform='';if(motor)motor.setStick(0,0);}
+joy.addEventListener('pointerdown',function(e){joyId=e.pointerId;try{joy.setPointerCapture(e.pointerId);}catch(_){}joyMueve(e);e.preventDefault();});
+joy.addEventListener('pointermove',function(e){if(e.pointerId===joyId)joyMueve(e);});
+joy.addEventListener('pointerup',joyFin);joy.addEventListener('pointercancel',joyFin);
+
+/* Visor de fotos */
+var vis=$('#visor'),vi=$('#vImg'),z=1,zb=1,tx=0,ty=0,pts=new Map(),dPin=0;
+function vPinta(){vi.style.transform='translate(-50%,-50%) translate('+tx+'px,'+ty+'px) scale('+z+')';}
+function vLim(){var w=vi.naturalWidth*z,h=vi.naturalHeight*z,mx=Math.max(0,(w-innerWidth)/2),my=Math.max(0,(h-innerHeight)/2);tx=Math.max(-mx,Math.min(mx,tx));ty=Math.max(-my,Math.min(my,ty));}
+function vZoom(f){z=Math.max(zb,Math.min(zb*5,z*f));vLim();vPinta();}
+function vAbre(src,alt){vi.onload=function(){zb=Math.min(innerWidth/vi.naturalWidth,innerHeight/vi.naturalHeight);z=zb;tx=ty=0;vPinta();};vi.src=src;vi.alt=alt||'';vis.showModal();}
+$('#vM').addEventListener('click',function(){vZoom(1.4);});$('#vN').addEventListener('click',function(){vZoom(1/1.4);});$('#vX').addEventListener('click',function(){vis.close();});
+vis.addEventListener('wheel',function(e){e.preventDefault();vZoom(e.deltaY<0?1.15:1/1.15);},{passive:false});
+vi.addEventListener('pointerdown',function(e){pts.set(e.pointerId,{x:e.clientX,y:e.clientY});try{vi.setPointerCapture(e.pointerId);}catch(_){}dPin=0;e.preventDefault();});
+vi.addEventListener('pointermove',function(e){var p=pts.get(e.pointerId);if(!p)return;
+  if(pts.size===2){p.x=e.clientX;p.y=e.clientY;var a=[].concat(Array.from(pts.values())),d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);if(dPin)vZoom(d/dPin);dPin=d;return;}
+  tx+=e.clientX-p.x;ty+=e.clientY-p.y;p.x=e.clientX;p.y=e.clientY;vLim();vPinta();});
+var vFin=function(e){pts.delete(e.pointerId);dPin=0;};vi.addEventListener('pointerup',vFin);vi.addEventListener('pointercancel',vFin);
+document.addEventListener('click',function(e){var b=e.target.closest('[data-z]');if(b){var im=b.parentNode.querySelector('img');vAbre(b.dataset.z,im&&im.alt);}});
+$('#acAmp').addEventListener('click',function(){vAbre($('#acImg').src,$('#acImg').alt);});
+
+/* Agendar: es un ejemplo, no se envía nada */
+$('#form').addEventListener('submit',function(e){
+  e.preventDefault();var n=$('#fn').value.trim(),t=$('#ft').value.replace(/\D/g,''),er=$('#fe'),ok=$('#fo');ok.textContent='';
+  if(!n){er.textContent='Escribe tu nombre.';$('#fn').focus();return;}
+  if(t.length<10){er.textContent='El teléfono debe tener 10 dígitos.';$('#ft').focus();return;}
+  er.textContent='';ok.textContent='Listo, '+n.split(' ')[0]+'. Tu cita de ejemplo quedó anotada. No se envió ningún dato.';e.target.reset();
+});
+})();
+</script>
+</body>
+</html>

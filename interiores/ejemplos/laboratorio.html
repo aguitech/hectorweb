@@ -1,0 +1,851 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lumé · Crema Calma (proyecto de ejemplo)</title>
+<meta name="description" content="Proyecto de ejemplo de Héctor Aguilar: la página de una crema para piel sensible que cuenta cómo se hace, de la hoja al frasco.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Identidad propia de la marca de ejemplo (Lumé): clínica y natural. No usa el sistema del sitio de Héctor. */
+:root{
+  --bone:#F4F0E8;--paper:#FBF9F5;--ink:#1A1A17;--ink2:#5D5A52;--ink3:#67635A;
+  --sage:#6F8466;--sage-d:#4E6247;--sage-l:#DDE4D5;--line:rgba(26,26,23,.12);
+  --serif:"Instrument Serif",Georgia,serif;--sans:"Manrope",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace;
+  --g0:max(clamp(20px,5vw,72px),env(safe-area-inset-left,0px));
+  /* el contenido nunca pasa de 1280px de ancho, también en pantallas grandes */
+  --g:max(var(--g0),calc((100vw - 1280px)/2));
+  --top:100px; /* franja del ejemplo + menú de la marca */
+}
+*{box-sizing:border-box}
+html{background:var(--bone);scroll-padding-top:var(--top)}
+body{margin:0;background:var(--bone);color:var(--ink);font:400 17px/1.55 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:clip}
+h1,h2,h3,p,ul,ol,figure{margin:0;padding:0}ul,ol{list-style:none}
+img{display:block;max-width:100%}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.mult{mix-blend-mode:multiply;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 72%,transparent 100%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 72%,transparent 100%)}
+.eyebrow{font:500 12px/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--sage-d);display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:26px;height:1px;background:currentColor}
+.h-xl{font:400 clamp(56px,7.4vw,124px)/.94 var(--serif);letter-spacing:-.02em;text-wrap:balance}
+.h-l{font:400 clamp(42px,5vw,78px)/.98 var(--serif);letter-spacing:-.015em;text-wrap:balance}
+.h-xl em,.h-l em{font-style:italic;color:var(--sage-d)}
+.body{font-size:18px;line-height:1.6;color:var(--ink2);max-width:480px}
+.note{font:400 12px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
+.wrap{padding:0 var(--g)}
+.sec{position:relative;padding:clamp(96px,14vh,160px) var(--g)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:12px 24px;border-radius:999px;border:0;font:600 15px var(--sans);text-decoration:none;transition:background .2s,color .2s,border-color .2s}
+.btn.buy{background:var(--ink);color:var(--paper)}.btn.buy:hover{background:var(--sage-d)}
+.btn.line{border:1px solid rgba(26,26,23,.25);background:none;color:var(--ink)}.btn.line:hover{border-color:var(--ink)}
+.btn:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--sage-d);outline-offset:3px}
+
+/* Franja del ejemplo (fuera de la marca) */
+.demo{position:fixed;top:0;left:0;right:0;z-index:70;height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 var(--g);background:#151513;color:#E9E5DC;font:500 12px var(--sans)}
+.demo a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;min-height:36px}
+.demo a:hover{color:#fff}
+.demo span{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:#A7BB97}
+/* Menú de la marca */
+.nav{position:fixed;top:36px;left:0;right:0;z-index:60;height:64px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:32px;padding:0 var(--g);background:rgba(244,240,232,.8);-webkit-backdrop-filter:blur(14px) saturate(140%);backdrop-filter:blur(14px) saturate(140%);border-bottom:1px solid transparent;transition:border-color .3s}
+.nav.on{border-color:var(--line)}
+.logo{font:400 32px/1 var(--serif);letter-spacing:.005em;text-decoration:none}
+.nav ul{display:flex;justify-content:center;gap:28px}
+.nav ul a{text-decoration:none;font:500 14px var(--sans);color:var(--ink2);padding:10px 0}
+.nav ul a:hover{color:var(--ink)}
+.bag{display:inline-flex;align-items:center;gap:8px;background:none;border:1px solid var(--line);border-radius:999px;padding:0 16px;min-height:40px;font:500 14px var(--sans)}
+.bag b{display:inline-grid;place-items:center;min-width:22px;height:22px;border-radius:999px;background:var(--ink);color:var(--paper);font:600 12px var(--sans);transition:transform .25s}
+.bag.pop b{transform:scale(1.25)}
+.nav i.prog{position:absolute;left:0;bottom:-1px;height:2px;width:100%;background:var(--sage);transform-origin:left;transform:scaleX(0)}
+.toast{position:fixed;left:50%;bottom:28px;z-index:80;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--ink);color:var(--paper);padding:14px 20px;border-radius:12px;font:500 14px/1.45 var(--sans);max-width:min(440px,calc(100vw - 32px));box-shadow:0 20px 50px -20px rgba(0,0,0,.5);transition:opacity .25s,transform .25s}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.toast small{display:block;color:#C9C4B8;font-size:13px}
+
+/* 00 · Producto */
+.s-hero{position:relative;min-height:100vh;min-height:100svh;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);align-items:center;gap:4vw;padding:calc(var(--top) + 32px) var(--g) 40px;overflow:hidden;isolation:isolate;background:var(--bone)}
+.qty{display:inline-flex;align-items:center;border:1px solid rgba(26,26,23,.25);border-radius:999px;min-height:48px}
+.qty button{width:44px;height:46px;border:0;background:none;font-size:18px}
+.qty output{min-width:22px;text-align:center;font:600 15px var(--sans)}
+.ship{font-size:14px;color:var(--ink2)}
+.gallery{display:flex;flex-direction:column;align-items:center;gap:14px}
+.gallery .hero-jar{height:min(64vh,640px)}
+.hero-jar img.cov{object-fit:cover;border-radius:6px;-webkit-mask-image:none;mask-image:none;mix-blend-mode:normal}
+.thumbs{display:flex;gap:10px}
+.thumbs button{width:64px;height:64px;padding:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#fff;transition:border-color .2s}
+.thumbs button img{width:100%;height:100%;object-fit:cover}
+.thumbs button.on{border:2px solid var(--ink)}
+.de{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.de span{display:flex;flex-direction:column;gap:6px}
+.de b{font:400 clamp(56px,5vw,84px)/.9 var(--serif)}
+.de small{font:500 12px var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--ink3)}
+.sticky-buy{position:fixed;left:50%;bottom:20px;z-index:65;display:flex;align-items:center;gap:16px;padding:8px 8px 8px 12px;border-radius:999px;background:rgba(251,249,245,.94);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);box-shadow:0 2px 6px rgba(26,26,23,.06),0 20px 50px -20px rgba(26,26,23,.45);transform:translate(-50%,140%);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.sticky-buy.on{transform:translate(-50%,0)}
+/* en escritorio el texto vive en la columna izquierda: la barra va a la derecha, sobre la foto, para no tapar nunca el texto */
+@media (min-width:861px){
+  .sticky-buy{left:auto;right:var(--g);transform:translateY(140%)}
+  .sticky-buy.on{transform:none}
+}
+/* en escritorio angosto la barra se compacta (frasco + botón con precio) para no invadir la columna de texto */
+@media (min-width:861px) and (max-width:1279px){
+  .sticky-buy p{display:none!important}
+  .sticky-buy .btn::after{content:" · $489"}
+}
+.sticky-buy img{width:40px;height:40px;object-fit:cover;border-radius:50%;background:#fff}
+.sticky-buy p{display:flex;flex-direction:column;line-height:1.2;margin-right:8px}
+.sticky-buy p b{font:400 20px var(--serif)}
+.hero-in{display:flex;flex-direction:column;gap:clamp(16px,2.6vh,26px)}
+.s-hero .h-xl{font-size:clamp(48px,min(6vw,10vh),112px)}
+.s-hero .buy-row{gap:14px 12px}
+.s-hero .price{flex-basis:100%;flex-direction:row;align-items:baseline;gap:12px}
+.ln{display:block;overflow:hidden;padding-bottom:.06em}.ln>span{display:block}
+.hero-sub{font-size:19px;line-height:1.55;color:var(--ink2);max-width:470px}
+.buy-row{display:flex;align-items:center;flex-wrap:wrap;gap:14px 18px}
+.price{display:flex;flex-direction:column;gap:2px;margin-right:6px}
+.price b{font:400 34px/1 var(--serif)}
+.trust{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.trust li{font:500 12px var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--ink2);border:1px solid var(--line);border-radius:999px;padding:7px 12px;background:rgba(251,249,245,.6)}
+.hero-jar{position:relative;height:min(76vh,760px);justify-self:center;aspect-ratio:4/5}
+.hero-jar img{width:100%;height:100%}
+.halo{position:absolute;left:50%;top:50%;width:120%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(111,132,102,.2),rgba(111,132,102,0) 64%);z-index:-1}
+
+/* 01 · El problema */
+.s-prob{position:relative;height:100vh;height:100svh;min-height:620px;overflow:hidden;isolation:isolate}
+.s-prob .frame{position:absolute;inset:0;overflow:hidden}
+.s-prob .frame img{width:100%;height:100%;object-fit:cover}
+.s-prob .fr-in{position:absolute;inset:0}
+/* video que avanza con el scroll, encima de su foto; aparece cuando ya pintó su primer cuadro */
+video.scrub{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s;pointer-events:none}
+video.scrub.ready{opacity:1}
+/* la tarjeta deja libre el alto de la barra de compra (84 px) más el menú fijo, para que la barra nunca la tape */
+.s-prob .card{position:absolute;left:var(--g);bottom:calc(var(--top) + 96px);width:min(520px,calc(100% - var(--g)*2));background:rgba(251,249,245,.95);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);padding:clamp(24px,3vw,40px);border-radius:4px;display:flex;flex-direction:column;gap:18px;box-shadow:0 30px 80px -30px rgba(26,26,23,.35)}
+
+/* 02 · El ingrediente */
+.s-orig{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:5vw;align-items:center}
+.s-orig .txt{display:flex;flex-direction:column;gap:22px}
+.actives{display:flex;flex-direction:column;border-top:1px solid var(--line);margin-top:6px}
+.actives li{display:grid;grid-template-columns:34px 1fr;gap:4px 12px;padding:16px 0;border-bottom:1px solid var(--line)}
+.actives li i{grid-row:span 2;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--sage-d);color:var(--paper);font:500 12px var(--mono);font-style:normal;margin-top:2px}
+.actives li b{font:400 24px/1.1 var(--serif)}
+.actives li span{font-size:15px;color:var(--ink2)}
+.orig-pic{position:relative;border-radius:4px;overflow:hidden;aspect-ratio:3/2.2;box-shadow:0 2px 6px rgba(26,26,23,.05),0 40px 90px -40px rgba(26,26,23,.45)}
+.orig-pic img{width:100%;height:100%;object-fit:cover}
+.pin-n{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;display:grid;place-items:center;background:var(--paper);color:var(--sage-d);font:500 12px var(--mono);box-shadow:0 0 0 6px rgba(251,249,245,.4),0 8px 20px -6px rgba(26,26,23,.4)}
+.orig-pic figcaption{position:absolute;left:16px;bottom:14px;background:var(--paper);padding:7px 11px;border-radius:3px}
+
+/* 03 · Cómo se hace (escena fija) */
+.s-ext{position:relative;height:100vh;height:100svh;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:4vw;padding:calc(var(--top) + 16px) var(--g) 32px;overflow:hidden;background:var(--bone);isolation:isolate}
+.s-ext .txt{display:flex;flex-direction:column;gap:20px}
+.hrs{font:400 clamp(84px,10vw,170px)/.85 var(--serif);letter-spacing:-.03em;display:flex;align-items:baseline;gap:10px}
+.hrs small{font:500 13px var(--mono);letter-spacing:.1em;color:var(--ink3);text-transform:uppercase}
+.steps{display:flex;flex-direction:column;border-top:1px solid var(--line);max-width:500px}
+.steps li{display:grid;grid-template-columns:40px 1fr auto;gap:2px 12px;padding:13px 0;border-bottom:1px solid var(--line);color:var(--ink3);transition:color .3s}
+.steps li b{font:500 12px var(--mono);letter-spacing:.06em;padding-top:3px}
+.steps li span{font-size:16px;font-weight:600}
+.steps li em{font:400 12px var(--mono);font-style:normal;padding-top:3px}
+.steps li small{grid-column:2/4;font-size:14px;line-height:1.45}
+.steps li.on{color:var(--ink)}.steps li.on b{color:var(--sage-d)}.steps li.on small{color:var(--ink2)}
+.ext-vis{position:relative;height:min(74vh,720px);display:flex;justify-content:center}
+.ext-vis img{height:100%;width:auto}
+.gauge{position:absolute;right:4%;top:12%;bottom:12%;width:14px;border-radius:10px;border:1px solid var(--line);background:var(--paper);overflow:hidden}
+.gauge i{position:absolute;left:0;right:0;bottom:0;height:100%;background:linear-gradient(0deg,var(--sage-d),#A7BB97);transform-origin:bottom;transform:scaleY(0)}
+.read{position:absolute;right:calc(4% + 28px);display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.read b{font:400 26px/1 var(--serif)}
+.read span{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
+
+/* 04 · La fórmula */
+.s-form{background:var(--paper)}
+.form-grid{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr);gap:5vw;align-items:start}
+.form-grid .txt{display:flex;flex-direction:column;gap:22px;position:sticky;top:calc(var(--top) + 48px)}
+.formula{border-top:1px solid var(--ink)}
+.row{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) 110px 60px;align-items:center;gap:18px;padding:16px 0;border-bottom:1px solid var(--line)}
+.row .nm{display:flex;flex-direction:column;gap:2px}
+.row .nm b{font-size:16px;font-weight:600}
+.row .nm small{font:400 12px var(--mono);color:var(--ink3)}
+.row .fn{font-size:15px;color:var(--ink2)}
+.row.key .nm b{color:var(--sage-d)}
+.row .br{height:6px;border-radius:6px;background:var(--sage-l);overflow:hidden}
+.row .br i{display:block;height:100%;width:100%;background:var(--sage);transform-origin:left;transform:scaleX(0)}
+.row .pc{font:500 13px var(--mono);text-align:right}
+.total{display:flex;justify-content:space-between;align-items:baseline;padding-top:16px}
+.total b{font:400 44px/1 var(--serif)}
+.inci{margin-top:28px;padding:20px 22px;border:1px solid var(--line);border-radius:4px;font:400 13px/1.7 var(--mono);color:var(--ink2)}
+.inci strong{display:block;font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink);margin-bottom:6px}
+
+/* 05 · Las pruebas */
+.s-test .head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:48px}
+.s-test .head>div{display:flex;flex-direction:column;gap:20px;max-width:720px}
+.tests{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto;gap:20px}
+.panel{border-radius:4px;background:var(--paper);padding:28px;display:flex;flex-direction:column;justify-content:space-between;gap:28px;min-height:300px;box-shadow:0 2px 6px rgba(26,26,23,.05),0 30px 70px -40px rgba(26,26,23,.35);position:relative;overflow:hidden}
+.panel.ph{grid-row:span 2;padding:0}
+.panel.ph img{width:100%;height:100%;object-fit:cover}
+.panel.ph p{position:absolute;left:18px;bottom:16px;background:var(--paper);padding:8px 12px;border-radius:3px}
+.panel h3{font:400 clamp(26px,2.3vw,36px)/1.05 var(--serif)}
+.panel .k{font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--sage-d);margin-bottom:10px}
+.panel .how{font-size:14px;color:var(--ink3);line-height:1.45}
+.panel .big{font:400 clamp(64px,6vw,96px)/.9 var(--serif)}
+.panel .pair{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.panel svg.chart{width:100%;height:110px;overflow:visible}
+.cyc{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;max-width:260px}
+.cyc i{aspect-ratio:1;border-radius:50%;background:var(--sage-l)}
+.sw{display:flex;gap:12px}
+.sw div{flex:1;display:flex;flex-direction:column;gap:8px}
+.sw u{display:block;height:96px;border-radius:4px;overflow:hidden;background:#F2EFE6}
+.sw u img{width:100%;height:100%;object-fit:cover}
+.sw div:last-child u img{transform:scale(1.25);transform-origin:70% 40%}
+
+/* 06 · El envase (escena fija) */
+.s-pack{position:relative;height:100vh;height:100svh;overflow:hidden;background:var(--bone);isolation:isolate}
+.s-pack .txt{position:absolute;left:var(--g);top:calc(50% + var(--top)/2);transform:translateY(-50%);z-index:3;display:flex;flex-direction:column;gap:22px;max-width:min(440px,32vw)}
+.stage{position:absolute;left:60%;top:calc(50% + var(--top)/2);width:0;height:0}
+.piece{position:absolute;left:0;top:0;max-width:none;height:auto;transform:translate(-50%,-50%)}
+.piece.lid{width:min(34vh,330px)}
+.piece.jar{width:min(46vh,440px)}
+.piece.full{width:min(58vh,540px)}
+.plabel{position:absolute;display:flex;align-items:center;gap:12px;white-space:nowrap}
+.plabel i{width:80px;height:1px;background:var(--ink3);transform-origin:left}
+.plabel div{display:flex;flex-direction:column}
+.plabel b{font:400 22px/1.1 var(--serif)}
+.plabel span{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
+#l1{transform:translate(20vh,calc(-24vh - 20px))}#l2{transform:translate(24vh,calc(-4vh - 20px))}#l3{transform:translate(24vh,calc(20vh - 20px))}
+.ring{position:absolute;left:0;top:0;width:56vh;height:56vh;margin:-28vh 0 0 -28vh;border-radius:50%;border:1px solid rgba(78,98,71,.35);opacity:0}
+
+/* 07 · Modo de uso */
+.s-use{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:5vw;align-items:center}
+.use-pic{border-radius:4px;overflow:hidden;aspect-ratio:3/2}
+.use-pic img{width:100%;height:100%;object-fit:cover}
+.s-use .txt{display:flex;flex-direction:column;gap:22px}
+.how-to{display:flex;flex-direction:column;counter-reset:n;border-top:1px solid var(--line)}
+.how-to li{counter-increment:n;display:grid;grid-template-columns:40px 1fr;padding:16px 0;border-bottom:1px solid var(--line);font-size:16px;color:var(--ink2)}
+.how-to li::before{content:"0" counter(n);font:500 12px var(--mono);color:var(--sage-d);padding-top:3px}
+.how-to li b{color:var(--ink);font-weight:600}
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.fit div{padding:18px;border-radius:4px;background:var(--paper)}
+.fit p{font-size:15px;color:var(--ink2);margin-top:6px}
+
+/* 08 · Preguntas */
+.s-faq{background:var(--paper)}
+.faq-grid{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr);gap:5vw;align-items:start}
+.faq-grid .txt{display:flex;flex-direction:column;gap:22px}
+.faq details{border-bottom:1px solid var(--line)}
+.faq details:first-child{border-top:1px solid var(--ink)}
+.faq summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 0;cursor:pointer;font:400 26px/1.15 var(--serif)}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";flex:none;width:14px;height:14px;background:linear-gradient(var(--ink),var(--ink)) center/14px 1.5px no-repeat,linear-gradient(var(--ink),var(--ink)) center/1.5px 14px no-repeat;transition:transform .25s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{padding:0 40px 24px 0;color:var(--ink2);max-width:620px}
+
+/* 09 · Final */
+.s-end{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;padding:140px var(--g) 120px;overflow:hidden;isolation:isolate}
+.s-end .cover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+.s-end::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(244,240,232,.94) 24%,rgba(244,240,232,0) 58%)}
+.s-end .txt{display:flex;flex-direction:column;gap:24px;max-width:max(540px,min(660px,40vw))}
+.recap{display:flex;flex-wrap:wrap;gap:8px}
+.recap span{font:500 12px var(--mono);letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--line);background:rgba(251,249,245,.75);padding:6px 11px;border-radius:999px;color:var(--ink2)}
+.legal{padding:22px var(--g);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid var(--line)}
+
+/* Cierre del ejemplo (fuera de la marca) */
+.exit{background:#151513;color:#F4F0E8;padding:72px var(--g)}
+.exit-in{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:32px 64px;align-items:end}
+.exit p.k{font:500 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#A7BB97;margin-bottom:12px}
+.exit h2{font:400 clamp(34px,4vw,56px)/1.02 var(--serif)}
+.exit .acts{display:flex;gap:12px;flex-wrap:wrap}
+.btn.p{background:#F4F0E8;color:#151513}.btn.p:hover{background:#fff}
+.btn.s{border:1px solid rgba(244,240,232,.25);color:#F4F0E8}.btn.s:hover{border-color:#F4F0E8}
+
+/* ===== v3 · Fondos: foto a sangre con parallax, como el cierre que sí funcionaba ===== */
+.s-hero,.shot,.s-faq,.s-pack{position:relative;isolation:isolate;overflow:hidden}
+.bg{position:absolute;inset:0;z-index:-2;overflow:hidden;pointer-events:none}
+.bg img{position:absolute;left:0;top:-7%;width:100%;height:114%;object-fit:cover;max-width:none}
+.bg.soft img{opacity:.6}
+.plx{position:absolute;left:0;top:-7%;width:100%;height:114%}
+.plx img{top:0;height:100%}/* velo para leer el texto sobre la foto: denso a la izquierda, se abre hacia la foto */
+.s-hero::after,.shot::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(90deg,rgba(244,240,232,.95) 0%,rgba(244,240,232,.86) 30%,rgba(244,240,232,.25) 55%,rgba(244,240,232,0) 70%)}
+/* Producto */
+.s-hero{grid-template-columns:minmax(0,600px) 1fr;min-height:100vh;min-height:100svh}
+.halo,.gallery{display:none}
+.thumbs{position:absolute;right:var(--g);bottom:40px;z-index:2;padding:6px;border-radius:12px;background:rgba(251,249,245,.7);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.thumbs button{width:58px;height:58px}
+#main-img{transition:opacity .35s}
+/* Ingrediente */
+.s-orig.shot{grid-template-columns:minmax(0,520px);min-height:100vh;min-height:100svh;align-content:center}
+.s-orig .actives{border-color:rgba(26,26,23,.18)}
+.s-orig .actives li{border-color:rgba(26,26,23,.14)}
+.cap{position:absolute;right:var(--g);top:calc(var(--top) + 24px);background:rgba(251,249,245,.85);padding:7px 11px;border-radius:3px}
+/* Cómo se hace */
+.s-ext.shot{background:none}
+.s-ext.shot::after{background:linear-gradient(90deg,rgba(244,240,232,.96) 0%,rgba(244,240,232,.9) 34%,rgba(244,240,232,.2) 58%,rgba(244,240,232,0) 72%)}
+.ext-vis{height:auto;align-self:end;justify-self:end;display:flex;flex-direction:column-reverse;gap:10px;padding:14px;border-radius:14px;background:rgba(251,249,245,.74);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 30px 60px -30px rgba(26,26,23,.45);margin-bottom:24px}
+.reads{display:flex;gap:28px;padding:4px 6px}
+.read{position:static;align-items:flex-start}
+.gauge{position:relative;right:auto;top:auto;bottom:auto;width:auto;height:6px;border:0;background:rgba(26,26,23,.08)}
+.gauge i{transform-origin:left;transform:scaleX(0);background:linear-gradient(90deg,var(--sage-d),#A7BB97)}
+/* Fórmula */
+.s-form.shot{background:var(--bone)}
+.s-form.shot::after{background:linear-gradient(90deg,rgba(244,240,232,.94) 0%,rgba(244,240,232,.8) 40%,rgba(244,240,232,.55) 100%)}
+.formula-card{background:rgba(251,249,245,.84);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-radius:8px;padding:28px 32px;box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 2px 6px rgba(26,26,23,.05),0 40px 90px -40px rgba(26,26,23,.45)}
+/* Pruebas: el laboratorio de fondo, desenfocado y claro; tarjetas de vidrio esmerilado como la de la fórmula */
+.s-test.shot .bg img{filter:blur(16px) saturate(.9)}
+.s-test.shot::after{background:linear-gradient(180deg,rgba(244,240,232,.86),rgba(244,240,232,.7) 50%,rgba(244,240,232,.86))}
+.s-test.shot .panel:not(.ph){background:rgba(251,249,245,.78);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 2px 6px rgba(26,26,23,.05),0 30px 70px -40px rgba(26,26,23,.4)}
+.s-test.shot .panel.ph{box-shadow:0 2px 6px rgba(26,26,23,.06),0 40px 90px -40px rgba(26,26,23,.5)}
+/* (versión oscura anterior, ya sin uso) */
+.dark{position:relative;isolation:isolate;overflow:hidden;background:#151A14;color:#EDE9E0}
+.grid-bg{position:absolute;inset:0;z-index:-1;background-image:linear-gradient(rgba(237,233,224,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(237,233,224,.06) 1px,transparent 1px),linear-gradient(rgba(237,233,224,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(237,233,224,.03) 1px,transparent 1px);background-size:96px 96px,96px 96px,24px 24px,24px 24px;-webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 40%,#000 30%,transparent 100%);mask-image:radial-gradient(ellipse 80% 70% at 50% 40%,#000 30%,transparent 100%)}
+.dark::before{content:"";position:absolute;left:50%;top:-20%;width:70vw;height:70vw;transform:translateX(-50%);z-index:-1;background:radial-gradient(circle,rgba(111,132,102,.22),transparent 60%)}
+.dark .eyebrow,.dark .panel .k{color:#A7BB97}
+.dark .h-l em{color:#A7BB97}
+.dark .note,.dark .de small{color:#A29E94}
+.dark .panel{background:linear-gradient(180deg,rgba(237,233,224,.06),rgba(237,233,224,.02));border:1px solid rgba(237,233,224,.1);box-shadow:0 1px 0 rgba(237,233,224,.08) inset,0 30px 60px -30px rgba(0,0,0,.6);color:#EDE9E0}
+.dark .panel .how{color:#B9B5AB}
+.dark .panel.ph{border:0}
+.dark .panel.ph p{background:rgba(21,26,20,.8);color:#EDE9E0}
+.dark #ph{stroke:#A7BB97}
+.dark .chart path:first-child{stroke:rgba(237,233,224,.1)}
+.dark .chart text{fill:#A29E94}
+.dark .chart text:last-child{fill:#A7BB97}
+.dark .cyc i{background:rgba(237,233,224,.12)}
+/* Modo de uso */
+.s-use.shot{grid-template-columns:minmax(0,560px);min-height:100vh;min-height:100svh;align-content:center}
+.s-use .how-to li{color:var(--ink2)}
+.s-use .fit div{background:rgba(251,249,245,.8);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+/* Preguntas */
+.s-faq{background:var(--paper)}
+/* Grano fotográfico sobre toda la página: quita lo plano */
+body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.07;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* Móvil (pendiente de revisión con Héctor) */
+@media (max-width:860px){
+  :root{--top:92px}
+  .demo{font-size:11px}.demo span{display:none}
+  .nav{height:56px;grid-template-columns:auto auto;justify-content:space-between}
+  .nav ul{display:none}.logo{font-size:28px}
+  .s-hero{grid-template-columns:1fr;padding-bottom:40px}
+  .gallery{order:-1}.gallery .hero-jar{height:auto;width:76%;margin-top:-8px}
+  .sticky-buy{left:16px;right:16px;transform:translateY(140%)}.sticky-buy.on{transform:none}.sticky-buy .btn{margin-left:auto}
+  .s-orig,.s-use,.form-grid,.faq-grid{grid-template-columns:1fr}
+  .form-grid .txt{position:static}
+  .row{grid-template-columns:minmax(0,1fr) 54px;gap:6px 12px}
+  .row .fn{grid-column:1;font-size:14px}.row .br{display:none}.row .pc{grid-row:1;grid-column:2}
+  .s-ext{height:auto;grid-template-columns:1fr;padding:72px var(--g)}
+  .ext-vis{height:64vh;max-height:520px}
+  .tests{grid-template-columns:1fr}.panel.ph{grid-row:auto;aspect-ratio:4/3}
+  .s-pack{height:auto;padding:72px var(--g) 40px;display:flex;flex-direction:column}
+  .s-pack .txt{position:relative;left:auto;top:auto;transform:none;max-width:none}
+  .stage{position:relative;left:auto;top:auto;width:100%;height:64vh;max-height:520px;margin-top:20px}
+  .stage>*{left:50%!important}
+  .piece.full{width:min(76vw,380px)}.piece.jar{width:min(62vw,320px)}.piece.lid{width:min(46vw,240px)}
+  .plabel{display:none}
+  .fit{grid-template-columns:1fr}
+  .s-end{align-items:flex-end;min-height:92svh}
+  .s-end::after{background:linear-gradient(0deg,rgba(244,240,232,.96) 42%,rgba(244,240,232,0) 78%)}
+  .exit-in{grid-template-columns:1fr}.exit .btn{width:100%}
+
+  /* ===== Móvil v3: la foto va arriba completa y el texto abajo; nada encima del producto ===== */
+  /* Menú: logotipo y bolsa en una sola fila */
+  .nav{grid-template-columns:1fr auto;gap:12px}
+  .nav nav{display:none}
+  .bag{min-height:38px;padding:0 12px}
+  /* Fotos con sujeto: bloque de foto a lo ancho, texto debajo sobre hueso */
+  .s-hero,.s-orig.shot,.s-ext.shot,.s-use.shot,.s-end{display:flex;flex-direction:column;align-items:stretch;min-height:0;height:auto;padding:0 0 56px;gap:0}
+  .s-hero{padding-top:var(--top)}
+  .s-hero::after,.s-orig.shot::after,.s-ext.shot::after,.s-use.shot::after,.s-end::after{display:none}
+  .s-hero .bg,.s-orig .bg,.s-ext .bg,.s-use .bg{position:relative;inset:auto;order:-1;width:100%;aspect-ratio:4/5;flex:none;z-index:0}
+  .s-hero .bg{aspect-ratio:auto;height:min(100vw,52vh)}
+  .s-orig .bg,.s-ext .bg,.s-use .bg{aspect-ratio:auto;height:min(125vw,64vh)}
+  .bg img,.bg video.scrub{object-position:72% 50%}
+  .s-hero .hero-in,.s-orig .txt,.s-ext .txt,.s-use .txt{padding:28px var(--g) 0}
+  .s-hero .h-xl{font-size:clamp(44px,12vw,60px)}
+  .s-hero .buy-row{gap:10px}
+  .s-hero .btn.line{display:none}
+  .thumbs{position:relative;right:auto;bottom:auto;order:-1;align-self:center;margin-top:-38px;z-index:2}
+  .thumbs button{width:52px;height:52px}
+  .cap{right:var(--g);bottom:auto;top:calc(min(125vw,64vh) - 44px)}
+  .s-prob .card{bottom:auto}
+  /* Cómo se hace: lecturas en tira, sin recuadro vacío */
+  .ext-vis{height:auto;max-height:none;align-self:stretch;margin:24px var(--g) 0;justify-self:stretch}
+  .reads{justify-content:space-between;gap:12px}
+  .read b{font-size:22px}
+  .hrs{font-size:88px}
+  /* Problema: foto arriba y tarjeta debajo, sin salirse */
+  .s-prob{height:auto;min-height:0;padding-bottom:40px}
+  .s-prob .frame{position:relative;inset:auto;height:min(125vw,64vh)}
+  .s-prob .card{position:relative;left:auto;bottom:auto;margin:-56px var(--g) 0;width:auto}
+  /* Envase: las piezas se centran en su escenario, debajo del texto */
+  .stage .piece,.stage .ring{top:50%!important}
+  .ring{width:70vw;height:70vw;margin:-35vw 0 0 -35vw}
+  /* Pruebas: título y nota apilados */
+  .s-test .head{flex-direction:column;align-items:flex-start;margin-bottom:28px}
+  .tests>*{min-width:0}
+  .panel.ph{aspect-ratio:4/5}
+  /* Cierre: la foto del frasco arriba, compra debajo */
+  .s-end .cover{position:relative;inset:auto;order:-1;width:100%;height:min(125vw,64vh);object-position:75% 50%;z-index:0}
+  .s-end .txt{padding:28px var(--g) 0;max-width:none}
+  .s-end .h-xl{font-size:clamp(42px,11vw,56px)!important}
+  /* Barra de compra compacta, en una línea */
+  .sticky-buy{gap:10px;padding:6px 6px 6px 8px}
+  .sticky-buy p{white-space:nowrap;margin-right:0}
+  .sticky-buy p b{font-size:17px}
+  .sticky-buy .btn{min-height:42px;padding:10px 16px;font-size:14px;white-space:nowrap}
+  .s-hero .price{flex-direction:column;align-items:flex-start;gap:2px}
+  .price b{white-space:nowrap}
+}
+/* Celulares angostos (320–380): la barra deja solo foto, precio y botón */
+@media (max-width:380px){
+  .sticky-buy p{display:none}
+  .sticky-buy .btn::after{content:" · $489"}
+}
+</style>
+<!-- favicono -->
+<link rel="icon" href="../../favicon.ico" sizes="48x48">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../icono-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+</head>
+<body>
+
+<div class="demo" role="note">
+  <a href="../../servicios/pagina-web#ejemplos"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Volver a los ejemplos</a>
+  <span>Proyecto de ejemplo · Héctor Aguilar</span>
+</div>
+
+<header class="nav" id="nav">
+  <a class="logo" href="#top" aria-label="Lumé, inicio">Lumé</a>
+  <nav aria-label="Lumé"><ul>
+    <li><a href="#s2">Ingredientes</a></li>
+    <li><a href="#s3">Cómo se hace</a></li>
+    <li><a href="#s5">Pruebas</a></li>
+    <li><a href="#s7">Modo de uso</a></li>
+    <li><a href="#s8">Preguntas</a></li>
+  </ul></nav>
+  <button class="bag" id="bag" type="button" aria-label="Bolsa de compra, 0 productos"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 8V6a3 3 0 0 1 6 0v2" stroke="currentColor" stroke-width="1.6"/></svg>Bolsa <b id="bag-n">0</b></button>
+  <i class="prog" id="prog"></i>
+</header>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<main id="top">
+  <!-- 00 · Producto -->
+  <section class="s-hero" id="s0" aria-labelledby="h-hero">
+    <div class="hero-in">
+      <p class="eyebrow">Crema Calma · Para piel sensible</p>
+      <h1 class="h-xl" id="h-hero"><span class="ln"><span>Hidrata sin arder.</span></span><span class="ln"><span><em>Calma sin perfume.</em></span></span></h1>
+      <p class="hero-sub">Crema hidratante con 5 % de extracto de centella y niacinamida. Probada bajo supervisión dermatológica: sin signos de irritación.</p>
+      <div class="buy-row">
+        <p class="price"><b>$489 MXN</b><span class="note">50 ml · Precio de ejemplo</span></p>
+        <div class="qty" role="group" aria-label="Cantidad"><button type="button" data-q="-1" aria-label="Quitar uno">−</button><output id="qty" aria-live="polite">1</output><button type="button" data-q="1" aria-label="Agregar uno">+</button></div>
+        <button class="btn buy" type="button" data-buy>Agregar a la bolsa</button>
+        <a class="btn line" href="#s4">Ver la fórmula</a>
+      </div>
+      <p class="ship">Envío gratis desde $799 · Hasta 3 meses sin intereses · Devoluciones en 30 días</p>
+      <ul class="trust" aria-label="Características">
+        <li>Sin fragancia</li><li>pH 5.5</li><li>11 ingredientes</li><li>Hecha en México</li>
+      </ul>
+      <p class="note">Datos de ejemplo</p>
+    </div>
+    <div class="bg" aria-hidden="false"><img id="main-img" src="../imagenes/57-lume-hero.webp" alt="Frasco de Crema Calma de Lumé sobre un bloque de travertino, con sombras de hojas en la pared" width="1536" height="1024" fetchpriority="high"></div>
+    <div class="thumbs" role="group" aria-label="Fotos del producto">
+      <button type="button" class="on" aria-pressed="true" data-src="../imagenes/57-lume-hero.webp" data-alt="Frasco de Crema Calma de Lumé sobre un bloque de travertino, con sombras de hojas en la pared"><img src="../imagenes/57-lume-hero.webp" alt="" width="1536" height="1024"><span class="sr-only">El frasco</span></button>
+      <button type="button" aria-pressed="false" data-src="../imagenes/53-lume-final.webp" data-alt="Frasco de Crema Calma sobre una piedra a la orilla del agua"><img src="../imagenes/53-lume-final.webp" alt="" width="1536" height="1024" loading="lazy"><span class="sr-only">En el río</span></button>
+      <button type="button" aria-pressed="false" data-src="../imagenes/44-lab-textura.webp" data-alt="Textura de la crema, ligera y blanca"><img src="../imagenes/44-lab-textura.webp" alt="" width="1536" height="1024" loading="lazy"><span class="sr-only">Textura</span></button>
+      <button type="button" aria-pressed="false" data-src="../imagenes/54-lume-uso.webp" data-alt="Mujer aplicando la crema en la mejilla"><img src="../imagenes/54-lume-uso.webp" alt="" width="1536" height="1024" loading="lazy"><span class="sr-only">Cómo se aplica</span></button>
+    </div>
+  </section>
+
+  <!-- 01 · El problema -->
+  <section class="s-prob" id="s1" aria-labelledby="h-prob">
+    <div class="frame"><div class="fr-in"><img src="../imagenes/41-lab-piel.webp" alt="Mejilla con piel sensible y un poco enrojecida" width="1536" height="1024" loading="lazy"><video class="scrub" data-src="lume/vid/piel.mp4" data-src-m="lume/vid/m/piel.mp4" muted playsinline preload="none" aria-hidden="true"></video></div></div>
+    <div class="card">
+      <p class="eyebrow">Por qué la hicimos</p>
+      <h2 class="h-l" id="h-prob">Tu piel reacciona <em>a todo.</em></h2>
+      <p class="body">Ardor, rojez, tirantez. Probaste diez cremas y cada una prometía calma. Queríamos una que de verdad calmara.</p>
+    </div>
+  </section>
+
+  <!-- 02 · El ingrediente -->
+  <section class="sec s-orig shot" id="s2" aria-labelledby="h-orig">
+    <div class="bg"><img src="../imagenes/42-lab-centella.webp" alt="Hojas de centella asiática con gotas de rocío junto a un río" width="1536" height="1024" loading="lazy"></div>
+    <div class="txt">
+      <p class="eyebrow">El ingrediente</p>
+      <h2 class="h-l" id="h-orig">Centella asiática, <em>la hoja que calma.</em></h2>
+      <p class="body">En Asia la llaman hierba del tigre. Nosotros nos quedamos con lo que sí se puede medir: los activos que su extracto lleva a tu piel.</p>
+      <ol class="actives">
+        <li><i>1</i><b>Madecasósido</b><span>Ayuda a reducir la apariencia de rojez</span></li>
+        <li><i>2</i><b>Asiaticósido</b><span>Ayuda a calmar la sensación de ardor</span></li>
+        <li><i>3</i><b>Polifenoles</b><span>Antioxidantes naturales de la hoja</span></li>
+      </ol>
+    </div>
+    <p class="cap note">Centella asiática · Hoja fresca</p>
+  </section>
+
+  <!-- 03 · Cómo se hace -->
+  <section class="s-ext shot" id="s3" aria-labelledby="h-ext">
+    <div class="bg"><div class="plx">
+      <img src="../imagenes/58-lume-lab.webp" alt="Mesa de laboratorio con un frasco de hojas de centella en reposo y un embudo que filtra el extracto" width="1536" height="1024" loading="lazy">
+    </div></div>
+    <div class="txt">
+      <p class="eyebrow">Cómo se hace</p>
+      <h2 class="h-l" id="h-ext">48 horas para sacar <em>lo mejor de una hoja.</em></h2>
+      <p class="hrs" aria-hidden="true"><span id="hrs">0</span><small>horas</small></p>
+      <p class="sr-only">El extracto tarda 48 horas en estar listo.</p>
+      <ol class="steps" id="steps">
+        <li><b>01</b><span>Reposo</span><em>0–36 h</em><small>La hoja fresca reposa en agua y glicerina vegetal a 25 °C.</small></li>
+        <li><b>02</b><span>Filtrado</span><em>36–42 h</em><small>Se retiran las fibras y queda solo el líquido.</small></li>
+        <li><b>03</b><span>Concentración</span><em>42–48 h</em><small>Se concentra al vacío, a menos de 40 °C, para no dañar los activos.</small></li>
+      </ol>
+    </div>
+    <div class="ext-vis">
+      <div class="gauge" aria-hidden="true"><i id="gauge"></i></div>
+      <div class="reads">
+        <div class="read"><b>25 °C</b><span>Temperatura</span></div>
+        <div class="read"><b>1 kg</b><span>Hoja fresca</span></div>
+        <div class="read"><b id="ml" aria-hidden="true">0 ml</b><span class="sr-only">120 ml de extracto</span><span aria-hidden="true">Extracto</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 · La fórmula -->
+  <section class="sec s-form shot" id="s4" aria-labelledby="h-form">
+    <div class="bg"><img src="../imagenes/44-lab-textura.webp" alt="" width="1536" height="1024" loading="lazy"></div>
+    <div class="form-grid">
+      <div class="txt">
+        <p class="eyebrow">La fórmula</p>
+        <h2 class="h-l" id="h-form">Once ingredientes. <em>Ni uno de más.</em></h2>
+        <p class="body">Cada uno tiene una tarea. Esto hace cada uno.</p>
+        <p class="note">Datos de ejemplo</p>
+      </div>
+      <div class="formula-card">
+        <div class="formula" id="formula">
+          <div class="row"><span class="nm"><b>Agua purificada</b><small>Aqua</small></span><span class="fn">Es la base de la crema</span><span class="br"><i data-v="71.5"></i></span><span class="pc">71.5 %</span></div>
+          <div class="row"><span class="nm"><b>Glicerina vegetal</b><small>Glycerin</small></span><span class="fn">Retiene la humedad</span><span class="br"><i data-v="6"></i></span><span class="pc">6 %</span></div>
+          <div class="row key"><span class="nm"><b>Extracto de centella</b><small>Centella Asiatica Leaf Extract</small></span><span class="fn">Ayuda a calmar el ardor</span><span class="br"><i data-v="5"></i></span><span class="pc">5 %</span></div>
+          <div class="row"><span class="nm"><b>Escualano</b><small>Squalane</small></span><span class="fn">Suaviza sin dejar grasa</span><span class="br"><i data-v="5"></i></span><span class="pc">5 %</span></div>
+          <div class="row"><span class="nm"><b>Niacinamida</b><small>Niacinamide</small></span><span class="fn">Ayuda a reducir la apariencia de rojez</span><span class="br"><i data-v="4"></i></span><span class="pc">4 %</span></div>
+          <div class="row"><span class="nm"><b>Emulsionante vegetal</b><small>Glyceryl Stearate Citrate</small></span><span class="fn">Une el agua y los aceites</span><span class="br"><i data-v="3"></i></span><span class="pc">3 %</span></div>
+          <div class="row"><span class="nm"><b>Alcohol cetearílico</b><small>Cetearyl Alcohol</small></span><span class="fn">Da cuerpo a la crema (no reseca)</span><span class="br"><i data-v="2"></i></span><span class="pc">2 %</span></div>
+          <div class="row"><span class="nm"><b>Pantenol</b><small>Panthenol</small></span><span class="fn">Ayuda a proteger la barrera</span><span class="br"><i data-v="2"></i></span><span class="pc">2 %</span></div>
+          <div class="row"><span class="nm"><b>Fenoxietanol</b><small>Phenoxyethanol</small></span><span class="fn">Conservador: evita bacterias</span><span class="br"><i data-v="0.8"></i></span><span class="pc">0.8 %</span></div>
+          <div class="row"><span class="nm"><b>Etilhexilglicerina</b><small>Ethylhexylglycerin</small></span><span class="fn">Refuerza al conservador</span><span class="br"><i data-v="0.4"></i></span><span class="pc">0.4 %</span></div>
+          <div class="row"><span class="nm"><b>Ceramida NP</b><small>Ceramide NP</small></span><span class="fn">Ayuda a reforzar la barrera</span><span class="br"><i data-v="0.3"></i></span><span class="pc">0.3 %</span></div>
+          <div class="total"><span class="note">Total</span><b><span id="tot" aria-hidden="true">0</span><span class="sr-only">100</span> %</b></div>
+        </div>
+        <p class="inci"><strong>Lista INCI, como viene en la etiqueta</strong>Aqua, Glycerin, Centella Asiatica Leaf Extract, Squalane, Niacinamide, Glyceryl Stearate Citrate, Cetearyl Alcohol, Panthenol, Phenoxyethanol, Ethylhexylglycerin, Ceramide NP.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 · Las pruebas -->
+  <section class="sec s-test shot" id="s5" aria-labelledby="h-test">
+    <div class="bg"><img src="../imagenes/58-lume-lab.webp" alt="" width="1536" height="1024" loading="lazy"></div>
+    <div class="head">
+      <div>
+        <p class="eyebrow">Las pruebas</p>
+        <h2 class="h-l" id="h-test">Antes de venderla, <em>la pusimos a prueba.</em></h2>
+      </div>
+      <p class="note">Datos de ejemplo</p>
+    </div>
+    <div class="tests">
+      <div class="panel ph"><img src="../imagenes/60-lume-estabilidad.webp" alt="Frascos de Crema Calma en una cámara de estabilidad" width="1024" height="1280" loading="lazy"><p class="note">Cámara de estabilidad · Envase final</p></div>
+      <div class="panel">
+        <div><p class="k">¿Aguanta el calor?</p><h3>12 semanas a 40 °C, sin cambios.</h3></div>
+        <svg class="chart" viewBox="0 0 400 110" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 20H400M0 55H400M0 90H400" stroke="rgba(26,26,23,.08)"/>
+          <path id="ph" d="M0 56C30 54 60 58 90 55S150 53 180 56S240 58 270 54S330 55 400 55" stroke="#4E6247" stroke-width="2.5" fill="none" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+          <text x="0" y="108" font-family="IBM Plex Mono" font-size="11" fill="#7A766C">Semana 0</text><text x="400" y="108" text-anchor="end" font-family="IBM Plex Mono" font-size="11" fill="#7A766C">Semana 12</text>
+          <text x="400" y="46" text-anchor="end" font-family="IBM Plex Mono" font-size="11" fill="#4E6247">pH 5.5 estable</text>
+        </svg>
+      </div>
+      <div class="panel">
+        <div><p class="k">¿Y si se congela?</p><h3>5 ciclos de congelación y calor. No se separó.</h3></div>
+        <div><div class="cyc" id="cyc" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><p class="how" style="margin-top:12px">Cada ciclo: 24 h a −10 °C y 24 h a 40 °C.</p></div>
+      </div>
+      <div class="panel">
+        <div><p class="k">¿Irrita?</p><h3>50 voluntarios. Sin signos de irritación.</h3></div>
+        <div>
+          <div class="pair" aria-hidden="true"><div><p class="big" id="vol">0</p><p class="note">Voluntarios</p></div><div><p class="big">0</p><p class="note">Con irritación</p></div></div>
+          <p class="how" style="margin-top:14px">Prueba de parche repetido (HRIPT) durante 6 semanas, bajo supervisión dermatológica.</p>
+        </div>
+      </div>
+      <div class="panel">
+        <div><p class="k">¿La luz la cambia?</p><h3>8 semanas bajo luz. Mismo color y olor.</h3></div>
+        <div>
+          <div class="de" aria-hidden="true"><span><b>&lt; 1</b><small>Cambio de color medido (ΔE)</small></span><span><b>0</b><small>Cambios de olor</small></span></div>
+          <p class="how" style="margin-top:14px">Un cambio de color menor a 1 no lo distingue el ojo humano.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 · El envase -->
+  <section class="s-pack" id="s6" aria-labelledby="h-pack">
+    <div class="bg soft"><img src="../imagenes/59-lume-sombras.webp" alt="" width="1536" height="1024" loading="lazy"></div>
+    <div class="txt">
+      <p class="eyebrow">El envase</p>
+      <h2 class="h-l" id="h-pack">Un frasco que <em>puedes reciclar.</em></h2>
+      <p class="body">Vidrio esmerilado y tapa de polipropileno. Cuando se termine, retira el disco interior de la tapa, lava el frasco y separa vidrio y plástico. Ambos se reciclan donde haya acopio.</p>
+    </div>
+    <div class="stage" id="stage">
+      <span class="ring" id="ring"></span>
+      <img class="piece lid mult" id="lid" src="../imagenes/52-lume-tapa.webp" alt="" width="1024" height="1024">
+      <img class="piece jar mult" id="jarb" src="../imagenes/51-lume-abierto.webp" alt="" width="1024" height="1024">
+      <img class="piece full mult" id="full" src="../imagenes/50-lume-frasco.webp" alt="Frasco de Crema Calma cerrado" width="1024" height="1280">
+      <div class="plabel" id="l1"><i></i><div><b>Tapa de rosca</b><span>Polipropileno reciclable</span></div></div>
+      <div class="plabel" id="l2"><i></i><div><b>Crema Calma</b><span>50 ml · 11 ingredientes</span></div></div>
+      <div class="plabel" id="l3"><i></i><div><b>Frasco</b><span>Vidrio esmerilado reciclable</span></div></div>
+    </div>
+  </section>
+
+  <!-- 07 · Modo de uso -->
+  <section class="sec s-use shot" id="s7" aria-labelledby="h-use">
+    <div class="bg"><div class="plx"><img src="../imagenes/54-lume-uso.webp" alt="Mujer aplicando crema en la mejilla con la punta de los dedos" width="1536" height="1024" loading="lazy"><video class="scrub" data-src="lume/vid/uso.mp4" data-src-m="lume/vid/m/uso.mp4" muted playsinline preload="none" aria-hidden="true"></video></div></div>
+    <div class="txt">
+      <p class="eyebrow">Modo de uso</p>
+      <h2 class="h-l" id="h-use">Mañana y noche, <em>en tres pasos.</em></h2>
+      <ol class="how-to">
+        <li><span><b>Limpia tu cara</b> y sécala con toques suaves.</span></li>
+        <li><span><b>Toma la cantidad de un chícharo</b> con la punta de los dedos.</span></li>
+        <li><span><b>Aplica con toques</b> en cara y cuello, sin frotar. De día, termina con protector solar.</span></li>
+      </ol>
+      <div class="fit">
+        <div><p class="note">Es para ti si</p><p>Tu piel se enrojece, arde o se siente tirante.</p></div>
+        <div><p class="note">Evítala si</p><p>Tienes la piel abierta o lastimada, o usas un tratamiento recetado sin consultar a tu dermatólogo.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 · Preguntas -->
+  <section class="sec s-faq" id="s8" aria-labelledby="h-faq">
+    <div class="bg soft"><img src="../imagenes/59-lume-sombras.webp" alt="" width="1536" height="1024" loading="lazy"></div>
+    <div class="faq-grid">
+      <div class="txt">
+        <p class="eyebrow">Preguntas</p>
+        <h2 class="h-l" id="h-faq">Lo que nos <em>preguntan antes de comprarla.</em></h2>
+      </div>
+      <div class="faq">
+        <details><summary>¿Sirve si tengo rosácea?</summary><p>Está hecha para piel con rojez, pero no trata la rosácea. Si tienes diagnóstico, pregúntale a tu dermatólogo antes de usarla.</p></details>
+        <details><summary>¿Tiene fragancia?</summary><p>No. Ni fragancia ni aceites esenciales, que son de lo que más irrita a la piel sensible.</p></details>
+        <details><summary>¿Cuánto me dura un frasco?</summary><p>Usándola mañana y noche en cara y cuello, unas 5 a 6 semanas.</p></details>
+        <details><summary>¿Cuándo caduca?</summary><p>Cerrada dura 24 meses. Ya abierta, úsala en los siguientes 12 meses (símbolo 12M en la etiqueta). El lote y la fecha vienen en la base del frasco.</p></details>
+        <details><summary>¿Hacen envíos?</summary><p>A todo México. Llega en 2 a 5 días hábiles.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 · Final -->
+  <section class="s-end" id="s9" aria-labelledby="h-end">
+    <img class="cover" data-par src="../imagenes/53-lume-final.webp" alt="Frasco de Crema Calma de Lumé sobre una piedra a la orilla del agua, junto a hojas de centella" width="1536" height="1024" loading="lazy">
+    <div class="txt">
+      <p class="eyebrow">Crema Calma</p>
+      <h2 class="h-xl" id="h-end" style="font-size:clamp(52px,6.4vw,108px)">Para la piel que <em>se cansó de reaccionar.</em></h2>
+      <div class="buy-row">
+        <p class="price"><b>$489 MXN</b><span class="note">50 ml · Precio de ejemplo</span></p>
+        <button class="btn buy" type="button" data-buy>Agregar a la bolsa</button>
+      </div>
+      <div class="recap" aria-label="En resumen"><span>5 % extracto de centella</span><span>Sin fragancia</span><span>pH 5.5</span><span>11 ingredientes</span><span>50 ml</span></div>
+    </div>
+  </section>
+  <p class="legal note"><span>© 2026 Lumé</span><span>Marca, datos e imágenes de ejemplo</span></p>
+</main>
+
+<div class="sticky-buy" id="sticky" aria-hidden="true">
+  <img src="../imagenes/50-lume-frasco.webp" alt="" width="1024" height="1280">
+  <p><b>Crema Calma</b><span class="note">50 ml · $489 MXN</span></p>
+  <button class="btn buy" type="button" data-buy tabindex="-1">Agregar a la bolsa</button>
+</div>
+
+<footer class="exit" aria-labelledby="exit-t">
+  <div class="exit-in">
+    <div>
+      <p class="k">Proyecto de ejemplo · Héctor Aguilar</p>
+      <h2 id="exit-t">¿Tu producto también tiene una historia que contar?</h2>
+    </div>
+    <div class="acts">
+      <a class="btn p" href="https://wa.me/525545249906?text=Hola%20H%C3%A9ctor%2C%20vi%20el%20ejemplo%20de%20Lum%C3%A9%20y%20quiero%20algo%20as%C3%AD%20para%20mi%20negocio.">Quiero algo así</a>
+      <a class="btn s" href="../../servicios/pagina-web#ejemplos">Ver más ejemplos</a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s);},$$=function(s){return [].slice.call(document.querySelectorAll(s));};
+
+  /* Bolsa: la demo responde como una tienda real, sin cobrar nada */
+  var n=0,q=1,bag=$('#bag'),toast=$('#toast'),tt;
+  $$('[data-q]').forEach(function(b){b.addEventListener('click',function(){q=Math.max(1,Math.min(9,q+ +b.dataset.q));$('#qty').textContent=q;});});
+  /* Galería del producto */
+  var main=$('#main-img');
+  $$('.thumbs button').forEach(function(b){b.addEventListener('click',function(){
+    $$('.thumbs button').forEach(function(x){x.classList.remove('on');x.setAttribute('aria-pressed','false');});
+    b.classList.add('on');b.setAttribute('aria-pressed','true');
+    main.style.opacity=0;setTimeout(function(){main.src=b.dataset.src;main.alt=b.dataset.alt;main.style.opacity=1;},300);
+  });});
+  $$('[data-buy]').forEach(function(b){b.addEventListener('click',function(){
+    var add=b.closest('.s-hero')?q:1;n+=add;$('#bag-n').textContent=n;bag.setAttribute('aria-label','Bolsa de compra, '+n+(n===1?' producto':' productos'));
+    bag.classList.add('pop');setTimeout(function(){bag.classList.remove('pop');},250);
+    toast.innerHTML=(add>1?add+' Cremas Calma agregadas':'Crema Calma agregada')+' a tu bolsa.<small>Es una tienda de ejemplo: no se hará ningún cobro.</small>';
+    toast.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){toast.classList.remove('on');},3200);
+  });});
+  bag.addEventListener('click',function(){
+    toast.innerHTML=(n?'Tienes '+n+(n===1?' producto':' productos')+' en tu bolsa.':'Tu bolsa está vacía.')+'<small>Es una tienda de ejemplo: no se hará ningún cobro.</small>';
+    toast.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){toast.classList.remove('on');},3200);
+  });
+
+  function finalState(){
+    $('#hrs').textContent='48';$('#ml').textContent='120 ml';$('#tot').textContent='100';$('#vol').textContent='50';
+    $$('.row .br i').forEach(function(b){b.style.transform='scaleX('+b.dataset.v/71.5+')';});
+    $('#ph').setAttribute('stroke-dashoffset',0);$('#gauge').style.transform='scaleX(1)';
+    $$('#cyc i').forEach(function(c){c.style.background='#6F8466';});$$('#steps li').forEach(function(l){l.classList.add('on');});
+    ['#lid','#jarb','#l1','#l2','#l3'].forEach(function(s){$(s).style.visibility='hidden';});
+  }
+  if(!window.gsap||!window.ScrollTrigger){finalState();return;}
+  gsap.registerPlugin(ScrollTrigger);
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){finalState();return;}
+  var S=1; /* inercia del scroll */
+
+  /* Menú y progreso */
+  ScrollTrigger.create({start:0,end:'max',onUpdate:function(st){$('#prog').style.transform='scaleX('+st.progress+')';$('#nav').classList.toggle('on',st.scroll()>10);}});
+  $$('.nav ul a, a[href="#s4"].btn, .logo').forEach(function(a){a.addEventListener('click',function(e){
+    var id=a.getAttribute('href');if(!id||id.charAt(0)!=='#')return;e.preventDefault();
+    var t=id==='#top'?document.body:$(id),pin=ScrollTrigger.getAll().filter(function(s){return s.pin===t;})[0];
+    var y=id==='#top'?0:(pin?pin.start+2:t.getBoundingClientRect().top+scrollY-parseInt(getComputedStyle(document.documentElement).getPropertyValue('--top')));
+    window.scrollTo({top:y,behavior:'smooth'});
+    /* el foco y la dirección siguen al salto, como un enlace normal */
+    history.pushState(null,'',id==='#top'?location.pathname:id);
+    if(id!=='#top'){t.setAttribute('tabindex','-1');t.focus({preventScroll:true});}
+  });});
+
+  /* Entrada del producto al cargar (no depende del scroll) */
+  gsap.from('.s-hero .ln>span',{yPercent:110,duration:1.1,ease:'power4.out',stagger:.12,delay:.1});
+  gsap.from(['.s-hero .eyebrow','.hero-sub','.s-hero .buy-row','.ship','.trust','.thumbs'],{opacity:0,y:16,duration:.9,ease:'power3.out',stagger:.08,delay:.45});
+  gsap.from('.s-hero .bg',{scale:1.08,opacity:0,filter:'blur(8px)',duration:1.8,ease:'power3.out',clearProps:'filter'});
+  /* Aparición corta al entrar: llega rápido y se revierte al regresar */
+  function rev(sel,trg,o,st){
+    gsap.from(sel,Object.assign({y:36,opacity:0,stagger:.08,ease:'power2.out',scrollTrigger:Object.assign({trigger:trg||sel,start:'top 92%',end:'top 66%',scrub:S},st||{})},o||{}));
+  }
+  var mm=gsap.matchMedia();
+
+  mm.add('(min-width:861px)',function(){
+    /* 01 · entrada sutil (fundido y acercamiento leve): el video de la piel se ve completo desde que entra */
+    gsap.fromTo('.s-prob .frame',{opacity:0},{opacity:1,ease:'power1.out',scrollTrigger:{trigger:'#s1',start:'top 95%',end:'top 55%',scrub:S}});
+    gsap.fromTo('.s-prob .fr-in',{scale:1.05},{scale:1,ease:'none',scrollTrigger:{trigger:'#s1',start:'top 95%',end:'top 30%',scrub:S}});
+    /* 02 · la foto de la centella se abre desde un marco al entrar (antes era la entrada de la piel) */
+    gsap.fromTo('#s2 .bg',{clipPath:'inset(12% 22% 12% 22% round 16px)'},{clipPath:'inset(0% 0% 0% 0% round 0px)',ease:'none',scrollTrigger:{trigger:'#s2',start:'top 90%',end:'top 15%',scrub:S}});
+    gsap.fromTo('#s2 .bg img',{scale:1.2},{scale:1,ease:'none',scrollTrigger:{trigger:'#s2',start:'top 90%',end:'top 15%',scrub:S}});
+    rev('.s-prob .card','#s1',null,{start:'top 45%',end:'top 15%'});
+
+    /* 03 · escena fija: el contador corre 48 horas y el extracto sube a 120 ml */
+    var hr={v:0},st=$$('#steps li');
+    gsap.timeline({scrollTrigger:{trigger:'#s3',start:'top top',end:'+=160%',scrub:S,pin:true}})
+      .to(hr,{v:48,duration:2,ease:'none',onUpdate:function(){var v=Math.round(hr.v);$('#hrs').textContent=v;$('#ml').textContent=Math.round(hr.v/48*120)+' ml';st.forEach(function(l,i){l.classList.toggle('on',v>=[0,36,42][i]&&hr.v>0);});}},0)
+      .to('#gauge',{scaleX:1,duration:2,ease:'none'},0)
+      .to({},{duration:.4});
+    gsap.from(['.s-ext .txt>*','.ext-vis'],{y:40,opacity:0,stagger:.06,ease:'power2.out',scrollTrigger:{trigger:'#s3',start:'top 85%',end:'top 25%',scrub:S}});
+
+    /* 06 · escena fija: tapa y frasco llegan separados, se nombran y se cierran */
+    /* Medidas en función del alto actual: se recalculan si cambia la ventana */
+    var vh=function(k){return function(){return innerHeight*k;};};
+    gsap.set('#full',{autoAlpha:0,scale:.92});
+    /* Todo lo de la tapa y el frasco vive en una sola línea de tiempo: nada se pisa */
+    gsap.timeline({scrollTrigger:{trigger:'#s6',start:'top top',end:'+=130%',scrub:S,pin:true,invalidateOnRefresh:true}})
+      .fromTo('#lid',{y:vh(-.75),rotation:-20,opacity:0},{y:vh(-.24),rotation:0,opacity:1,duration:.5,ease:'power2.out'},0)
+      .fromTo('#jarb',{y:vh(.6),opacity:0},{y:vh(.1),opacity:1,duration:.5,ease:'power2.out'},.05)
+      /* fromTo (no from): con invalidateOnRefresh, un from() guardaría su estado oculto como final */
+      .fromTo('.plabel i',{scaleX:0},{scaleX:1,stagger:.1,duration:.3,ease:'power2.out'},.45)
+      .fromTo('.plabel div',{opacity:0,x:-10},{opacity:1,x:0,stagger:.1,duration:.3},.55)
+      .fromTo('.plabel',{opacity:1},{opacity:0,duration:.25,immediateRender:false},1.35)
+      .fromTo('#lid',{y:vh(-.24)},{y:vh(-.06),duration:.6,ease:'power2.inOut',immediateRender:false},1.45)
+      .fromTo(['#lid','#jarb'],{opacity:1},{opacity:0,duration:.25,immediateRender:false},2)
+      .fromTo('#full',{autoAlpha:0,scale:.92},{autoAlpha:1,scale:1,duration:.45,ease:'power3.out',immediateRender:false},2)
+      .fromTo('#ring',{scale:.6,opacity:.8},{scale:1.4,opacity:0,duration:.6,ease:'power2.out'},2.05)
+      .to({},{duration:.3});
+    gsap.from(['.s-pack .txt>*'],{y:40,opacity:0,stagger:.08,ease:'power2.out',scrollTrigger:{trigger:'#s6',start:'top 80%',end:'top 20%',scrub:S}});
+
+    /* 09 · final */
+    gsap.from('.s-end .cover',{scale:1.12,ease:'none',scrollTrigger:{trigger:'#s9',start:'top bottom',end:'top top',scrub:S}});
+  });
+
+  mm.add('(max-width:860px)',function(){
+    rev('.s-prob .card','.s-prob .card');
+    var hr={v:0},st=$$('#steps li');
+    gsap.timeline({scrollTrigger:{trigger:'.ext-vis',start:'top 80%',end:'bottom 70%',scrub:S}})
+      .to(hr,{v:48,ease:'none',onUpdate:function(){var v=Math.round(hr.v);$('#hrs').textContent=v;$('#ml').textContent=Math.round(hr.v/48*120)+' ml';st.forEach(function(l,i){l.classList.toggle('on',v>=[0,36,42][i]&&hr.v>0);});}},0)
+      .to('#gauge',{scaleX:1,ease:'none'},0);
+    rev('.s-ext .txt>*','.s-ext .txt');rev('.s-pack .txt>*','.s-pack .txt');
+    var H=$('#stage').offsetHeight;
+    gsap.set('#lid',{y:-H*.28});gsap.set('#jarb',{y:H*.12});gsap.set('#full',{autoAlpha:0,scale:.92});
+    gsap.timeline({scrollTrigger:{trigger:'#stage',start:'top 75%',end:'bottom 60%',scrub:S}})
+      .from('#lid',{y:-H*.6,opacity:0,duration:.5},0).from('#jarb',{y:H*.5,opacity:0,duration:.5},.05)
+      .to('#lid',{y:-H*.06,duration:.5},.7).to(['#lid','#jarb'],{opacity:0,duration:.2},1.2).to('#full',{autoAlpha:1,scale:1,duration:.4},1.2);
+  });
+
+  /* Comunes: apariciones cortas, no escenas fijas */
+  rev('.s-orig .txt>*','.s-orig .txt');
+  rev('.form-grid .txt>*','.form-grid .txt');
+  /* La fórmula: cada fila llega y el total suma exactamente lo que ya está en pantalla */
+  var rows=$$('.row'),tot={v:0},cum=0,tl4=gsap.timeline({scrollTrigger:{trigger:'#formula',start:'top 85%',end:'bottom 70%',scrub:S}});
+  rows.forEach(function(r,i){
+    var b=r.querySelector('.br i');cum+=+b.dataset.v;var c=cum;
+    tl4.from(r,{opacity:0,y:20,duration:.3,ease:'power2.out'},i*.18)
+       .to(b,{scaleX:b.dataset.v/71.5,duration:.3,ease:'power2.out'},i*.18+.1)
+       .to(tot,{v:c,duration:.18,ease:'none',onUpdate:function(){$('#tot').textContent=(Math.round(tot.v*10)/10).toString().replace(/\.0$/,'');}},i*.18+.1);
+  });
+  rev('.inci','.inci');
+  rev('.s-test .head>*','.s-test .head');
+  rev('.tests .panel','.tests',{stagger:.1});
+  gsap.to('#ph',{attr:{'stroke-dashoffset':0},ease:'none',scrollTrigger:{trigger:'#ph',start:'top 85%',end:'top 50%',scrub:S}});
+  gsap.to('#cyc i',{backgroundColor:'#6F8466',stagger:.08,ease:'none',scrollTrigger:{trigger:'#cyc',start:'top 90%',end:'top 60%',scrub:S}});
+  var vol={v:0};gsap.to(vol,{v:50,ease:'none',onUpdate:function(){$('#vol').textContent=Math.round(vol.v);},scrollTrigger:{trigger:'#vol',start:'top 98%',end:'top 82%',scrub:S}});
+  rev('.s-use .txt>*','.s-use .txt');
+  rev('.faq-grid .txt>*','.faq-grid .txt');rev('.faq details','.faq',{stagger:.06});
+  rev('.s-end .txt>*','.s-end .txt');
+
+  /* Parallax suave en las fotos de fondo (después de las escenas fijas, para medir bien) */
+  $$('.bg').forEach(function(bg){
+    var sec=bg.closest('section'),mov=bg.querySelector('.plx')||bg.querySelector('img');
+    gsap.fromTo(mov,{yPercent:-5},{yPercent:5,ease:'none',scrollTrigger:{trigger:sec,start:'top bottom',end:'bottom top',scrub:true}});
+    /* Entrada del fondo: aparece con fundido, se aclara el desenfoque y se acerca. Ocurre ya con la sección en pantalla. Va y regresa con el scroll. */
+    /* la centella en escritorio usa la apertura en marco (arriba), no esta entrada */
+    if(sec.id!=='s0'&&!(sec.id==='s2'&&matchMedia('(min-width:861px)').matches))gsap.fromTo(bg,{opacity:0,scale:1.16,filter:'blur(18px)'},{opacity:1,scale:1,filter:'blur(0px)',ease:'power2.out',scrollTrigger:{trigger:sec,start:'top 80%',end:'top 5%',scrub:S}});
+    /* Salida: el fondo que se va se desvanece y se desenfoca (va en la foto, no en el contenedor, para no pisar la entrada) */
+    var o0=parseFloat(getComputedStyle(mov).opacity)||1,b0=sec.id==='s5'?16:0; /* respeta la opacidad y el desenfoque base de cada foto */
+    gsap.fromTo(mov,{opacity:o0,filter:'blur('+b0+'px)'},{opacity:o0*.12,filter:'blur('+(b0+14)+'px)',ease:'power1.in',immediateRender:false,scrollTrigger:{trigger:sec,start:'bottom 75%',end:'bottom 5%',scrub:S}});
+  });
+  gsap.fromTo('.s-prob .fr-in',{opacity:1,filter:'blur(0px)'},{opacity:.12,filter:'blur(14px)',ease:'power1.in',immediateRender:false,scrollTrigger:{trigger:'#s1',start:'bottom 75%',end:'bottom 5%',scrub:S}});
+  gsap.fromTo('.s-end .cover',{opacity:0,filter:'blur(18px)'},{opacity:1,filter:'blur(0px)',ease:'power2.out',scrollTrigger:{trigger:'#s9',start:'top 80%',end:'top 5%',scrub:S}});
+  /* Videos que avanzan con el scroll (piel y modo de uso). Se cargan como blob para poder
+     adelantar y regresar cuadro por cuadro; mientras tanto se ve la foto. Con movimiento reducido no se cargan. */
+  if(!matchMedia('(prefers-reduced-motion: reduce)').matches)$$('video.scrub').forEach(function(v){
+    var sec=v.closest('section'),loaded=false,cur=0,target=0,dur=0;
+    function load(){
+      if(loaded)return;loaded=true;
+      fetch(matchMedia('(max-width:600px)').matches?v.dataset.srcM:v.dataset.src).then(function(r){return r.ok?r.blob():Promise.reject();}).then(function(b){
+        v.addEventListener('loadedmetadata',function(){dur=v.duration;v.currentTime=Math.min(dur-.05,cur*dur)||.001;});
+        v.addEventListener('seeked',function(){v.classList.add('ready');},{once:true});
+        v.src=URL.createObjectURL(b);
+      }).catch(function(){});
+    }
+    /* Se descargan apenas termina de abrir la página: si esperan a que llegues, puedes pasar de largo sin ver el efecto */
+    if(document.readyState==='complete')setTimeout(load,300);else addEventListener('load',function(){setTimeout(load,300);},{once:true});
+    ScrollTrigger.create({trigger:sec,start:'top bottom+=60%',end:'bottom top-=60%',onEnter:load,onEnterBack:load});
+    ScrollTrigger.create({trigger:sec,start:'top 75%',end:'bottom 25%',onUpdate:function(s){target=s.progress;},onRefresh:function(s){target=s.progress;}});
+    (function tick(){
+      if(dur&&!v.seeking){cur+=(target-cur)*.15;var t=Math.min(dur-.05,cur*dur);if(Math.abs(v.currentTime-t)>.012)v.currentTime=t;}
+      requestAnimationFrame(tick);
+    })();
+  });
+  /* Barra de compra fija: se crea después de las escenas fijas para medir con su espacio (error 15).
+     Aparece al dejar el producto y se va al llegar al cierre, que ya tiene su propio botón. */
+  /* Se oculta también mientras un bloque a todo lo ancho (lista INCI, tarjetas de pruebas) está a la altura de la barra: ahí taparía texto */
+  var buyOn=false,wide={};
+  function buy(){var block=Object.keys(wide).some(function(k){return wide[k];}),on=buyOn&&!block,s=$('#sticky');s.classList.toggle('on',on);s.setAttribute('aria-hidden',!on);s.querySelector('button').tabIndex=on?0:-1;}
+  ScrollTrigger.create({trigger:'#s0',start:'bottom 20%',endTrigger:'#s9',end:'top 60%',onToggle:function(st){buyOn=st.isActive;buy();}});
+  ['.inci','.tests'].forEach(function(sel){ScrollTrigger.create({trigger:sel,start:'top bottom-=90',end:'bottom top+=120',onToggle:function(st){wide[sel]=st.isActive&&innerWidth>860;buy();}});});
+  window.__lab={st:ScrollTrigger};
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){ScrollTrigger.refresh();});
+  addEventListener('load',function(){ScrollTrigger.refresh();});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,986 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OCRE · Residencias Narvarte (proyecto de ejemplo)</title>
+<meta name="description" content="Proyecto de ejemplo de Héctor Aguilar: la página de un desarrollo en preventa que se construye en 3D con el scroll.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,300..700&family=Hanken+Grotesk:wght@400;500;600&display=swap">
+<style>
+/* Identidad propia de OCRE (inmobiliaria de ejemplo): sala de exhibición oscura, maqueta iluminada, acento terracota.
+   No comparte nada con Lumé ni con el sitio de Héctor. */
+:root{--bg:#15171A;--bg2:#1B1E22;--paper:#ECE8E1;--ink:#F1EEE9;--ink2:#B9B4AB;--ink3:#8E897F;--dk:#1A1C1F;--dk2:#55514A;
+  --sage:#D07A4B;--accent:#D07A4B;--line:rgba(241,238,233,.14);--line-d:rgba(26,28,31,.16);
+  --serif:"Archivo",system-ui,sans-serif;--sans:"Hanken Grotesk",system-ui,sans-serif;--mono:"Archivo",system-ui,sans-serif;
+  --g:max(clamp(20px,5vw,72px),calc((100vw - 1280px)/2));--top:100px}
+*{box-sizing:border-box}
+html{scroll-padding-top:var(--top)}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+body{overflow-x:clip}
+h1,h2,h3,p,ul,ol,figure,dl,dd{margin:0;padding:0}ul,ol{list-style:none}
+img{display:block;max-width:100%}
+a{color:inherit}button{font:inherit;color:inherit;cursor:pointer}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.demo{position:fixed;top:0;left:0;right:0;z-index:40;height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 var(--g);background:#0E0F11;color:#E9E5DC;font:500 12px var(--sans)}
+.demo a{text-decoration:none;min-height:36px;display:inline-flex;align-items:center}
+.demo span{font:500 11px system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#B9B4AB}
+/* en móvil arriba solo va "Volver"; el aviso de proyecto de ejemplo queda en el pie */
+@media (max-width:860px){.demo span{display:none}.demo a{white-space:nowrap}}
+/* Marca OCRE */
+.brand{position:fixed;top:36px;left:0;right:0;z-index:35;height:64px;display:grid;grid-template-columns:auto 1fr auto;gap:28px;align-items:center;padding:0 var(--g);background:linear-gradient(180deg,rgba(21,23,26,.92),rgba(21,23,26,.75));-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid transparent;transition:border-color .3s}
+.brand.on{border-color:var(--line)}
+.logo{font:600 22px/1 var(--serif);font-stretch:125%;letter-spacing:.32em;text-transform:uppercase;text-decoration:none}
+.logo small{display:block;margin-top:5px;font:500 9px var(--sans);letter-spacing:.32em;color:var(--ink3)}
+.brand nav ul{display:flex;justify-content:center;gap:26px}
+.brand nav a{font:600 11px var(--serif);font-stretch:110%;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;color:var(--ink2);padding:10px 0}
+.brand nav a:hover{color:var(--ink)}
+.brand nav a{position:relative}
+.brand nav a::after{content:"";position:absolute;left:0;right:0;bottom:2px;height:1px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .35s ease}
+.brand nav a[aria-current="true"]{color:var(--ink)}
+.brand nav a[aria-current="true"]::after{transform:scaleX(1)}
+/* fundido para los saltos largos del menú: no se ve la obra pasar a toda velocidad */
+.veil{position:fixed;inset:0;z-index:32;background:var(--bg);opacity:0;pointer-events:none;transition:opacity .28s ease}
+.veil.on{opacity:1}
+.cta,.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:46px;font:600 12px var(--serif);font-stretch:112%;letter-spacing:.14em;text-transform:uppercase;color:#17120E;background:var(--accent);padding:12px 20px;border:0;border-radius:2px;text-decoration:none;transition:background .2s}
+.cta:hover,.btn:hover{background:#E08A5A}
+.btn.ghost{background:none;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.btn.ghost:hover{box-shadow:inset 0 0 0 1px var(--ink)}
+.eyebrow{font:600 11px var(--serif);font-stretch:112%;letter-spacing:.22em;text-transform:uppercase;color:var(--accent)}
+.note{font:600 10px var(--serif);letter-spacing:.2em;text-transform:uppercase;color:var(--ink3)}
+.h-l{font:300 clamp(34px,4vw,62px)/1 var(--serif);font-stretch:116%;letter-spacing:-.015em;text-transform:uppercase}
+.h-l em,.step h2 em,.hero h1 em{font-style:normal;font-weight:600;color:var(--accent)}
+.lead{color:var(--ink2);max-width:520px}
+.sec{position:relative;padding:clamp(96px,14vh,150px) var(--g)}
+/* Patrón de planos (tipo blueprint, en línea clara, sin azul) solo en las secciones oscuras */
+.sec:not(.plan-sec):not(.light){isolation:isolate}
+/* muy tenue y en degradado de esquina a esquina: aparece arriba a la izquierda y se pierde hacia la esquina contraria */
+.sec:not(.plan-sec):not(.light)::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background-size:640px 640px;opacity:.5;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='640' fill='none' stroke='rgb(241,238,233)'%3E%3Cpath stroke-opacity='.035' d='M0 40H640M0 80H640M0 120H640M0 160H640M0 200H640M0 240H640M0 280H640M0 320H640M0 360H640M0 400H640M0 440H640M0 480H640M0 520H640M0 560H640M0 600H640M40 0V640M80 0V640M120 0V640M160 0V640M200 0V640M240 0V640M280 0V640M320 0V640M360 0V640M400 0V640M440 0V640M480 0V640M520 0V640M560 0V640M600 0V640'/%3E%3Cpath stroke-opacity='.06' d='M0 .5H640M.5 0V640M0 320H640M320 0V640'/%3E%3Cg stroke-opacity='.11'%3E%3Cpath d='M80 100H300V280H80Z'/%3E%3Cpath d='M88 108H292V272H88Z'/%3E%3Cpath d='M190 100V170M190 210V280M80 190H150'/%3E%3Cpath d='M150 190A40 40 0 0 1 190 150' stroke-dasharray='3 3'/%3E%3Cpath d='M80 320H300M80 314V326M300 314V326M190 316V324'/%3E%3Cpath d='M340 100H420V280H340Z'/%3E%3Cpath d='M340 120H420M340 140H420M340 160H420M340 180H420M340 200H420M340 220H420M340 240H420M340 260H420M380 260V110M376 116L380 108L384 116'/%3E%3C/g%3E%3Cg stroke-opacity='.08' stroke-dasharray='10 6 2 6'%3E%3Cpath d='M520 60V600M40 520H600'/%3E%3C/g%3E%3Cg stroke-opacity='.12'%3E%3Ccircle cx='520' cy='44' r='14'/%3E%3Ccircle cx='24' cy='520' r='14'/%3E%3Ccircle cx='520' cy='420' r='46'/%3E%3Cpath d='M520 374V466M474 420H566M520 374L530 400H510Z'/%3E%3Cpath d='M120 420H260L300 470H160Z M160 470V560 M300 470V560'/%3E%3C/g%3E%3Cg fill='rgb(241,238,233)' fill-opacity='.14' stroke='none' font-family='monospace' font-size='11'%3E%3Ctext x='176' y='340'%3E2.20%3C/text%3E%3Ctext x='515' y='48'%3EA%3C/text%3E%3Ctext x='20' y='524'%3E3%3C/text%3E%3Ctext x='515' y='365'%3EN%3C/text%3E%3Ctext x='96' y='126'%3ERE-02%3C/text%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-image:linear-gradient(135deg,#000 0%,rgba(0,0,0,.35) 40%,transparent 75%);mask-image:linear-gradient(135deg,#000 0%,rgba(0,0,0,.35) 40%,transparent 75%)}
+#pagos::before{-webkit-mask-image:linear-gradient(315deg,#000 0%,rgba(0,0,0,.35) 40%,transparent 75%);mask-image:linear-gradient(315deg,#000 0%,rgba(0,0,0,.35) 40%,transparent 75%)}
+/* Secciones claras (papel): alternan con las oscuras */
+.light{background:var(--paper);color:var(--dk)}
+.light .lead{color:var(--dk2)}
+.light .note{color:#77736B}
+.light .eyebrow,.light .h-l em{color:#B4602F}
+.light .near{border-color:var(--line-d)}.light .near li{border-color:var(--line-d)}
+.light .near small{color:#77736B}
+.light .gmap{background:#DDD8CF;box-shadow:inset 0 0 0 1px var(--line-d)}
+.light .gmap iframe{filter:grayscale(1) contrast(1.05) brightness(1.02) sepia(.12)}
+.light .gmap figcaption{background:rgba(236,232,225,.92);color:#55514A}
+.light .trust p{color:var(--dk2)}
+#amenidades::before{background-position:220px 140px}
+#ubicacion::before{background-position:-180px 60px}
+#pagos::before{background-position:90px -220px}
+#certeza::before{background-position:-260px -120px}
+#preguntas::before{background-position:340px 260px}
+
+/* ===== 3D: la torre se construye con el scroll (también es el hero) ===== */
+#build{position:relative;height:580vh}
+.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+canvas{display:block;width:100%;height:100%}
+.stage::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(21,23,26,.92) 0%,rgba(21,23,26,.7) 28%,rgba(21,23,26,0) 48%),radial-gradient(ellipse 70% 70% at 60% 52%,transparent 50%,rgba(8,9,10,.55) 100%)}
+.copy{position:absolute;left:var(--g);top:54%;transform:translateY(-50%);width:min(420px,36vw);z-index:2}
+.step{position:absolute;left:0;top:0;transform:translateY(-50%);display:flex;flex-direction:column;gap:14px;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility .45s}
+.step.on{opacity:1;visibility:visible}
+.step h2{font:300 clamp(26px,2.4vw,38px)/1.05 var(--serif);font-stretch:112%;letter-spacing:-.01em;text-transform:uppercase}
+.step p{color:var(--ink2);font-size:16px;line-height:1.55}
+.hero{width:min(560px,44vw);gap:20px}
+.stage::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .6s;background:linear-gradient(90deg,rgba(21,23,26,.96) 0%,rgba(21,23,26,.88) 36%,rgba(21,23,26,0) 62%)}
+.stage.start::before{opacity:1}
+.hero h1{font:300 clamp(40px,4.8vw,78px)/.95 var(--serif);font-stretch:118%;letter-spacing:-.02em;text-transform:uppercase}
+.hero .from{display:flex;align-items:baseline;gap:12px;margin-top:4px}
+.hero .from b{font:300 30px/1 var(--serif);font-stretch:116%}
+.hero .acts{display:flex;gap:12px;flex-wrap:wrap}
+.hint{font:600 10px var(--serif);letter-spacing:.22em;text-transform:uppercase;color:var(--ink3);display:flex;align-items:center;gap:10px}
+.hint i{width:1px;height:28px;background:var(--line);position:relative;overflow:hidden}
+.hint i::after{content:"";position:absolute;left:0;top:-40%;width:1px;height:40%;background:var(--accent);animation:drip 1.8s ease-in-out infinite}
+@keyframes drip{to{top:100%}}
+.meter{position:absolute;left:var(--g);right:var(--g);bottom:36px;z-index:2;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;transition:opacity .4s}
+.meter b{font:300 34px/1 var(--serif);font-stretch:118%}
+.meter span{font:600 10px var(--serif);letter-spacing:.2em;text-transform:uppercase;color:var(--ink3)}
+.bar{height:2px;background:var(--line);position:relative;overflow:hidden}
+.bar i{position:absolute;inset:0;background:var(--accent);transform-origin:left;transform:scaleX(0)}
+.lvl{position:absolute;right:var(--g);top:124px;z-index:2;text-align:right;transition:opacity .4s}
+.lvl b{display:block;font:200 72px/.9 var(--serif);font-stretch:125%}
+.lvl span{font:600 10px var(--serif);letter-spacing:.2em;text-transform:uppercase;color:var(--ink3)}
+.stage.start .meter,.stage.start .lvl{opacity:0}
+
+/* ===== Elige tu piso ===== */
+.pick{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(32px,5vw,72px);align-items:start}
+.pick-head{grid-column:1/-1;display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.pick-head>div{display:flex;flex-direction:column;gap:16px;max-width:640px}
+.tower{display:flex;flex-direction:column;gap:6px;padding:22px;background:var(--bg2);border:1px solid var(--line);border-radius:4px}
+.tower .row{display:grid;grid-template-columns:44px repeat(4,1fr);gap:6px;align-items:center}
+.tower .lv{font:600 10px var(--serif);letter-spacing:.16em;color:var(--ink3);text-transform:uppercase}
+.u{height:34px;border:0;border-radius:2px;font:600 11px var(--serif);letter-spacing:.06em;transition:background .2s,box-shadow .2s,color .2s}
+.u.disp{background:rgba(241,238,233,.08);color:var(--ink);box-shadow:inset 0 0 0 1px rgba(241,238,233,.22)}
+.u.disp:hover{background:rgba(208,122,75,.25);box-shadow:inset 0 0 0 1px var(--accent)}
+.u.apar{background:repeating-linear-gradient(135deg,rgba(208,122,75,.22) 0 4px,transparent 4px 8px);color:var(--ink2);box-shadow:inset 0 0 0 1px rgba(208,122,75,.35)}
+.u.vend{background:rgba(241,238,233,.03);color:#87827A;cursor:default;text-decoration:line-through;text-decoration-color:rgba(135,130,122,.6)}
+.u.sel{background:var(--accent)!important;color:#17120E!important;box-shadow:none}
+.tower .pb{grid-template-columns:44px 1fr}
+.tower .pb span{height:34px;display:grid;place-items:center;border-radius:2px;background:rgba(241,238,233,.04);font:600 10px var(--serif);letter-spacing:.16em;color:var(--ink3);text-transform:uppercase}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px}
+.legend span{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2)}
+.legend i{width:16px;height:12px;border-radius:2px}
+.unit{display:flex;flex-direction:column;gap:22px}
+.view{position:relative;aspect-ratio:3/2;border-radius:4px;overflow:hidden;background:var(--bg2)}
+.view img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity .5s}
+.view figcaption{position:absolute;left:14px;bottom:12px;background:rgba(14,15,17,.75);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);padding:8px 12px;border-radius:2px;font:500 13px/1.35 var(--sans);max-width:calc(100% - 28px)}
+.view figcaption i{font-style:normal}
+.view figcaption span{display:block;margin-bottom:2px;font:600 10px var(--serif);letter-spacing:.18em;text-transform:uppercase;color:rgba(236,232,225,.68)}
+.spec{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.spec h3{font:300 40px/1 var(--serif);font-stretch:118%;text-transform:uppercase}
+.spec .st{font:600 10px var(--serif);letter-spacing:.2em;text-transform:uppercase;padding:6px 10px;border-radius:2px;background:rgba(208,122,75,.18);color:var(--accent)}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.facts div{padding:16px 0;display:flex;flex-direction:column;gap:4px}
+.facts div+div{padding-left:16px;border-left:1px solid var(--line)}
+.facts b{font:300 26px/1 var(--serif);font-stretch:116%}
+.facts span{font-size:13px;color:var(--ink3)}
+.price{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.price b{font:300 34px/1 var(--serif);font-stretch:116%}
+
+/* ===== Entra al depa (plano sobre papel) ===== */
+.plan-sec{background:var(--paper);color:var(--dk)}
+.plan-sec .lead{color:var(--dk2)}
+.plan-sec .note{color:#77736B}
+.plan-grid{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);gap:clamp(32px,5vw,72px);align-items:center}
+.plan-grid .txt{display:flex;flex-direction:column;gap:18px}
+.rooms{display:flex;flex-direction:column;border-top:1px solid var(--line-d)}
+.rooms li{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line-d);font-size:15px}
+.rooms li b{font:600 13px var(--serif);letter-spacing:.08em}
+.rooms li.tot{font-weight:600}
+svg.plan{width:100%;height:auto;overflow:visible}
+.plan .wall{fill:none;stroke:#1A1C1F;stroke-width:9;stroke-linejoin:miter}
+.plan .iw{fill:none;stroke:#1A1C1F;stroke-width:5}
+.plan .win{stroke:#ECE8E1;stroke-width:5}
+.plan .win2{stroke:#1A1C1F;stroke-width:1.5}
+.plan .door{fill:none;stroke:#77736B;stroke-width:1.5}
+.plan .fur{fill:none;stroke:#C46A3A;stroke-width:2}
+.plan .lab{font:600 15px "Archivo",sans-serif;letter-spacing:.12em;text-transform:uppercase;fill:#1A1C1F}
+.plan .m2{font:400 14px "Hanken Grotesk",sans-serif;fill:#77736B}
+.plan .balc{fill:rgba(196,106,58,.08);stroke:#1A1C1F;stroke-width:2;stroke-dasharray:8 6}
+.interior{margin-top:clamp(56px,8vh,96px);position:relative;border-radius:4px;overflow:hidden;aspect-ratio:21/9}
+.interior img{width:100%;height:116%;object-fit:cover;position:absolute;top:-8%}
+.interior figcaption{position:absolute;left:18px;bottom:16px;background:rgba(236,232,225,.9);color:var(--dk);padding:8px 12px;border-radius:2px;font:600 10px var(--serif);letter-spacing:.18em;text-transform:uppercase}
+
+/* ===== Amenidades ===== */
+.amen{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+.amen-head{grid-column:1/-1;display:flex;flex-direction:column;gap:16px;margin-bottom:28px;max-width:640px}
+.ph{position:relative;border-radius:4px;overflow:hidden}
+.ph img{width:100%;height:116%;object-fit:cover;position:absolute;top:-8%}
+.ph figcaption{position:absolute;left:16px;bottom:14px;display:flex;flex-direction:column;gap:2px}
+.ph figcaption b{font:300 26px/1 var(--serif);font-stretch:116%;text-transform:uppercase;text-shadow:0 2px 20px rgba(0,0,0,.5)}
+.ph figcaption span{font-size:14px;color:#E7E2DA;text-shadow:0 1px 10px rgba(0,0,0,.6)}
+.ph::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(10,11,13,.65),rgba(10,11,13,0) 45%)}
+.ph figcaption{z-index:1}
+.ph.big{grid-column:1/8;aspect-ratio:4/3}
+.ph.tall{grid-column:8/13;aspect-ratio:auto}
+.amen-list{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);margin-top:20px}
+.amen-list li{padding:20px 16px 0 0;display:flex;flex-direction:column;gap:6px}
+.amen-list li+li{padding-left:16px;border-left:1px solid var(--line)}
+.amen-list b{font:600 13px var(--serif);letter-spacing:.12em;text-transform:uppercase}
+.amen-list span{font-size:14px;color:var(--ink3)}
+
+/* ===== Ubicación ===== */
+.loc{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(32px,5vw,72px);align-items:center}
+.loc .txt{display:flex;flex-direction:column;gap:18px}
+.near{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.near li{display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}
+.near i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font:600 10px var(--serif);font-style:normal;color:#17120E;background:var(--ink2)}
+.near b{font:300 22px/1 var(--serif);font-stretch:116%}
+.near small{font-size:12px;color:var(--ink3)}
+.near i{width:8px;height:8px;background:var(--accent)}
+/* Google Maps teñido al tono oscuro de OCRE */
+.gmap{position:relative;aspect-ratio:10/7;border-radius:4px;overflow:hidden;background:#1B1E22;box-shadow:inset 0 0 0 1px var(--line)}
+.gmap iframe{position:absolute;inset:0;width:100%;height:100%;border:0;filter:grayscale(1) invert(.9) contrast(.88) brightness(.9)}
+.gmap figcaption{position:absolute;left:12px;bottom:12px;background:rgba(14,15,17,.82);padding:7px 11px;border-radius:2px;pointer-events:none}
+
+/* ===== Plan de pagos ===== */
+.pay{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(32px,5vw,72px);align-items:start}
+.pay .txt{display:flex;flex-direction:column;gap:18px}
+.calc{background:var(--bg2);border:1px solid var(--line);border-radius:4px;padding:clamp(22px,3vw,36px);display:flex;flex-direction:column;gap:24px}
+.calc-top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.calc-top b{font:300 36px/1 var(--serif);font-stretch:116%}
+.calc label{display:flex;justify-content:space-between;font:600 11px var(--serif);letter-spacing:.16em;text-transform:uppercase;color:var(--ink2)}
+.calc input[type=range]{width:100%;accent-color:var(--accent);height:28px}
+.split{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.split div{background:var(--bg2);padding:16px;display:flex;flex-direction:column;gap:6px}
+.split span{font:600 10px var(--serif);letter-spacing:.16em;text-transform:uppercase;color:var(--ink3)}
+.split b{font:300 22px/1.1 var(--serif);font-stretch:112%}
+.split small{font-size:12px;color:var(--ink3)}
+.bars{display:flex;height:10px;border-radius:2px;overflow:hidden;gap:2px}
+.bars i{display:block;height:100%;transition:flex-grow .4s}
+
+/* ===== Certeza ===== */
+.trust{display:grid;grid-template-columns:repeat(3,1fr);gap:36px 24px;margin-top:40px}
+.trust li{border-top:2px solid var(--accent);padding-top:18px;display:flex;flex-direction:column;gap:10px}
+.trust b{font:300 22px/1.1 var(--serif);font-stretch:114%;text-transform:uppercase}
+.trust p{font-size:15px;color:var(--ink2)}
+
+/* ===== Preguntas ===== */
+.faq-grid{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);gap:clamp(32px,5vw,72px);align-items:start}
+.faq details{border-bottom:1px solid var(--line)}
+.faq details:first-child{border-top:1px solid var(--ink)}
+.faq summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:20px 0;cursor:pointer;font:300 20px/1.2 var(--serif);font-stretch:110%}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";flex:none;width:12px;height:12px;background:linear-gradient(var(--accent),var(--accent)) center/12px 1.5px no-repeat,linear-gradient(var(--accent),var(--accent)) center/1.5px 12px no-repeat;transition:transform .25s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{padding:0 40px 22px 0;color:var(--ink2);max-width:640px}
+
+/* ===== Cierre ===== */
+.close{position:relative;min-height:80vh;display:flex;align-items:center;padding:120px var(--g);overflow:hidden;isolation:isolate}
+.close img{position:absolute;inset:-8% 0;width:100%;height:116%;object-fit:cover;z-index:-2}
+.close::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(21,23,26,.92) 25%,rgba(21,23,26,.2) 70%)}
+.close .txt{display:flex;flex-direction:column;gap:20px;max-width:600px}
+.legal{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:22px var(--g);border-top:1px solid var(--line)}
+
+/* Diálogo para agendar visita */
+dialog{border:0;padding:0;background:var(--bg2);color:var(--ink);border-radius:6px;width:min(520px,calc(100vw - 32px));box-shadow:0 40px 100px -30px rgba(0,0,0,.8)}
+dialog::backdrop{background:rgba(8,9,10,.7);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.dlg{padding:28px;display:flex;flex-direction:column;gap:20px}
+.dlg h2{font:300 28px/1 var(--serif);font-stretch:116%;text-transform:uppercase}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{min-height:44px;padding:8px 14px;border:0;border-radius:2px;background:rgba(241,238,233,.06);box-shadow:inset 0 0 0 1px var(--line);font:500 14px var(--sans)}
+.chips button[aria-pressed=true]{background:var(--accent);color:#17120E;box-shadow:none}
+.dlg .row{display:flex;justify-content:flex-end;gap:10px}
+.vnote{font-size:14px;color:var(--ink2)}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fields label{display:flex;flex-direction:column;gap:6px;font:600 10px var(--serif);letter-spacing:.16em;text-transform:uppercase;color:var(--ink2)}
+.fields input{min-height:44px;padding:10px 12px;border:0;border-radius:2px;background:rgba(241,238,233,.06);box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);font:400 16px var(--sans)}
+.fields input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.toast{position:fixed;left:50%;bottom:28px;z-index:60;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#F1EEE9;color:#17120E;padding:14px 20px;border-radius:4px;font:500 14px/1.45 var(--sans);max-width:min(460px,calc(100vw - 32px));box-shadow:0 20px 50px -20px rgba(0,0,0,.6);transition:opacity .25s,transform .25s}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.toast small{display:block;color:#55514A;font-size:13px}
+
+/* Cierre del ejemplo (fuera de la marca) */
+.exit{background:#0E0F11;color:#F4F0E8;padding:72px var(--g)}
+.exit-in{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:32px 64px;align-items:end}
+/* franja de Héctor: neutra, sin fuentes ni colores de ninguna demo */
+.exit p.k{font:500 11px system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#B9B4AB;margin-bottom:12px}
+.exit h2{font:500 clamp(28px,3vw,42px)/1.1 system-ui,sans-serif;letter-spacing:-.02em}
+.exit .acts{display:flex;gap:12px;flex-wrap:wrap}
+.exit .b1,.exit .b2{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 22px;border-radius:999px;font:600 15px var(--sans);text-decoration:none}
+.exit .b1{background:#F4F0E8;color:#151513}.exit .b2{border:1px solid rgba(244,240,232,.25)}
+
+body::after{content:"";position:fixed;inset:0;z-index:30;pointer-events:none;opacity:.05;mix-blend-mode:screen;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+@media (prefers-reduced-motion:reduce){.hint i::after{animation:none}}
+/* Móvil: pendiente de revisión con Héctor (escritorio primero) */
+@media (max-width:860px){
+  .brand nav{display:none}.brand{grid-template-columns:1fr auto}
+  .copy{top:auto;bottom:110px;transform:none;width:auto;right:var(--g)}
+  .step{top:auto;bottom:0;transform:none}.hero{width:auto}
+  .step h2{font-size:30px}.step p{font-size:15px}
+  .stage::after{background:linear-gradient(0deg,rgba(21,23,26,.96) 34%,rgba(21,23,26,0) 62%)}
+  .lvl{top:110px}.lvl b{font-size:44px}
+  .pick,.plan-grid,.loc,.pay,.faq-grid{grid-template-columns:1fr}
+  .facts,.split,.trust,.amen-list{grid-template-columns:repeat(2,1fr)}
+  .ph.big,.ph.tall{grid-column:1/-1;aspect-ratio:4/3}
+  .exit-in{grid-template-columns:1fr}
+  /* Elige tu piso: la vista va arriba y se queda fija bajo el menú mientras eliges en la lista */
+  .pick{display:flex;flex-direction:column;align-items:stretch;gap:16px}
+  .unit{display:contents}
+  .pick-head{order:0}
+  .view{order:1;position:sticky;top:100px;z-index:6;aspect-ratio:auto;height:min(56.25vw,38vh);box-shadow:0 22px 30px -20px rgba(0,0,0,.85)}
+  .spec{order:2}.tw{order:3}.facts{order:4}.price{order:5}
+  .vmini{display:block!important}
+  .view figcaption{left:10px;bottom:10px;padding:6px 10px}
+  .view figcaption span{margin:0;letter-spacing:.12em}
+  .view figcaption i{display:none}
+}
+/* Menú: nunca se parte en varias líneas; si ya no cabe, se oculta como en celular */
+@media (min-width:861px){.brand nav a,.brand .cta{white-space:nowrap}}
+@media (min-width:861px) and (max-width:1139px){.brand{gap:20px}.brand nav ul{gap:14px}.brand nav a{letter-spacing:.08em}}
+@media (max-width:1023px){.brand nav{display:none}.brand{grid-template-columns:1fr auto}}
+/* Celulares bajos: el hero debe caber entre el menú y el avance de la obra. "Agendar visita" sigue fijo en el menú */
+@media (max-width:860px) and (max-height:760px){
+  .hero{gap:14px}
+  .hero .eyebrow{font-size:10px;letter-spacing:.12em}
+  .hero h1{font-size:clamp(30px,9.5vw,40px)}
+  .hero .from b{font-size:24px;white-space:nowrap}
+  .hero [data-visit],.hero .hint{display:none}
+}
+/* Rejillas que no caben sin cortar palabras ni cifras */
+@media (max-width:1279px){.split{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:400px){.split{grid-template-columns:1fr}}
+@media (max-width:380px){
+  .trust,.amen-list{grid-template-columns:1fr}
+  .amen-list li+li{padding-left:0;border-left:0}
+}
+.vmini{display:none;position:absolute;left:10px;top:10px;margin:0;padding:6px 10px;border-radius:2px;background:rgba(14,15,17,.78);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font:600 11px var(--serif);letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
+.vmini b{color:var(--accent);font-weight:600}
+</style>
+<!-- favicono -->
+<link rel="icon" href="../../favicon.ico" sizes="48x48">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../icono-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+</head>
+<body>
+<div class="demo" role="note"><a href="../../servicios/pagina-web#ejemplos">‹ Volver a los ejemplos</a><span>Proyecto de ejemplo · Héctor Aguilar</span></div>
+
+<header class="brand" id="brand">
+  <a class="logo" href="#build" aria-label="OCRE, inicio">Ocre<small>Residencias Narvarte</small></a>
+  <nav aria-label="OCRE"><ul>
+    <li><a href="#piso">Disponibilidad</a></li>
+    <li><a href="#depa">El depto</a></li>
+    <li><a href="#amenidades">Amenidades</a></li>
+    <li><a href="#ubicacion">Ubicación</a></li>
+    <li><a href="#pagos">Plan de pagos</a></li>
+  </ul></nav>
+  <button class="cta" type="button" data-visit>Agendar visita</button>
+</header>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="veil" id="veil" aria-hidden="true"></div>
+
+<main>
+<section id="build" aria-label="OCRE se construye con el scroll">
+  <div class="stage start" id="stage">
+    <canvas id="c" aria-hidden="true"></canvas>
+    <div class="lvl" aria-hidden="true"><b id="lvl">0</b><span>de 12 niveles</span></div>
+    <div class="copy">
+      <div class="step hero on" data-i="0">
+        <p class="eyebrow">Preventa · Narvarte, CDMX</p>
+        <h1>Del terreno vacío <em>a tu piso 11.</em></h1>
+        <p>44 departamentos de 56 y 68 m², con entrega en diciembre de 2028. Desliza y mira cómo se construye.</p>
+        <div class="from"><span class="note">Desde</span><b>$3.86 MDP</b><span class="note">Precio de ejemplo</span></div>
+        <div class="acts"><button class="btn" type="button" data-visit>Agendar visita</button><a class="btn ghost" href="#piso">Ver disponibilidad</a></div>
+        <p class="hint" aria-hidden="true"><i></i>Desliza</p>
+      </div>
+      <div class="step" data-i="1"><p class="eyebrow">01 · El terreno</p><h2>574 m² <em>en una esquina.</em></h2><p>Sobre un eje vial, con certificado de uso de suelo para vivienda en 12 niveles. A seis minutos caminando del metro.</p><p class="note">Datos de ejemplo</p></div>
+      <div class="step" data-i="2"><p class="eyebrow">02 · Cimentación</p><h2>Primero, <em>lo que no se ve.</em></h2><p>Muros Milán y cajón de cimentación sobre pilotes de fricción, con tres sótanos de estacionamiento.</p></div>
+      <div class="step" data-i="3"><p class="eyebrow">03 · Estructura</p><h2>Un nivel <em>cada dos semanas.</em></h2><p>Concreto armado. La grúa sube con la obra.</p></div>
+      <div class="step" data-i="4"><p class="eyebrow">04 · Fachada</p><h2>Luz de piso <em>a techo.</em></h2><p>Cancelería completa y celosías verticales que filtran el sol de la tarde.</p></div>
+      <div class="step" data-i="5"><p class="eyebrow">05 · Entrega</p><h2>44 hogares <em>prenden la luz.</em></h2><p>Diciembre de 2028. Roof garden, lobby de 4.6 m de altura y jardín en la esquina.</p><p class="note">Datos de ejemplo</p></div>
+    </div>
+    <div class="meter" aria-hidden="true"><span>La obra, paso a paso</span><div class="bar"><i id="bar"></i></div><b id="pct">0 %</b></div>
+  </div>
+</section>
+
+<!-- Elige tu piso -->
+<section class="sec" id="piso" aria-labelledby="h-piso">
+  <div class="pick">
+    <div class="pick-head">
+      <div><p class="eyebrow">Disponibilidad</p><h2 class="h-l" id="h-piso">Elige tu piso <em>y mira tu vista.</em></h2><p class="lead">Toca un departamento para ver su precio, su plan de pagos y la vista que le toca según su piso y su orientación.</p></div>
+      <p class="note">Disponibilidad y precios de ejemplo</p>
+    </div>
+    <div class="tw">
+      <div class="tower" id="tower" role="group" aria-label="Departamentos por nivel"></div>
+      <div class="legend" aria-hidden="true"><span><i style="background:rgba(241,238,233,.08);box-shadow:inset 0 0 0 1px rgba(241,238,233,.22)"></i>Disponible</span><span><i style="background:repeating-linear-gradient(135deg,rgba(208,122,75,.4) 0 3px,transparent 3px 6px)"></i>Apartado</span><span><i style="background:rgba(241,238,233,.03);box-shadow:inset 0 0 0 1px rgba(241,238,233,.08)"></i>Vendido</span></div>
+    </div>
+    <p class="sr-only" id="usum" aria-live="polite"></p>
+    <div class="unit" id="unit">
+      <figure class="view"><img id="vimg" src="../imagenes/65-ocre-vista-media.webp" alt="" width="1536" height="1024" loading="lazy"><p class="vmini" id="vmini" aria-hidden="true"></p><figcaption id="vcap">Vista de referencia · Nivel 5 · Sobre las azoteas de la colonia</figcaption></figure>
+      <div class="spec"><h3 id="uname">Depto 502 · Tipo A</h3><span class="st" id="ust">Disponible</span></div>
+      <div class="facts">
+        <div><b id="um2">68 m²</b><span>Interiores</span></div>
+        <div><b id="urec">2</b><span>Recámaras</span></div>
+        <div><b id="uban">2</b><span>Baños</span></div>
+        <div><b id="ubal">9 m²</b><span>Balcón</span></div>
+      </div>
+      <div class="price"><div><span class="note">Precio de lista</span><br><b id="uprice">$4,982,000</b></div><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" type="button" id="apartar">Apartar con $50,000</button><a class="btn ghost" href="#pagos">Ver plan de pagos</a></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Entra al depa -->
+<section class="sec plan-sec" id="depa" aria-labelledby="h-depa">
+  <div class="plan-grid">
+    <div class="txt">
+      <p class="eyebrow">Tipo A · 68 m²</p>
+      <h2 class="h-l" id="h-depa">Entra <em>a tu depto.</em></h2>
+      <p class="lead">Dos recámaras, dos baños y un balcón de 9 m² hacia la calle. La estancia y la cocina con barra comparten la luz del ventanal.</p>
+      <ul class="rooms">
+        <li><span>Estancia y cocina con barra</span><b>34.1 m²</b></li>
+        <li><span>Recámara principal</span><b>10.9 m²</b></li>
+        <li><span>Baño principal</span><b>4.6 m²</b></li>
+        <li><span>Recámara 2</span><b>10.2 m²</b></li>
+        <li><span>Baño 2 y vestíbulo</span><b>8.4 m²</b></li>
+        <li class="tot"><span>Total interior</span><b>68.2 m²</b></li>
+        <li><span>Balcón</span><b>9 m²</b></li>
+      </ul>
+      <p class="note">Plano y medidas de ejemplo</p>
+    </div>
+    <svg class="plan" id="plan" viewBox="-30 -30 1160 880" role="img" aria-label="Plano del departamento tipo A: recámaras a la izquierda, baños y vestíbulo al centro, estancia y cocina con barra a la derecha, y balcón al frente con cancel corredizo">
+      <!-- muros -->
+      <rect class="wall dr" x="0" y="0" width="1100" height="620"/>
+      <path class="iw dr" d="M340 0V620 M550 0V200 M550 400V620 M340 300H0 M340 200H550 M340 400H550"/>
+      <!-- entrada desde el pasillo del edificio -->
+      <path class="win" d="M570 0H660"/><path class="door dr" d="M570 0a90 90 0 0 0 90 90 M570 0V90"/>
+      <!-- ventanas: frente (balcón) y fachada lateral de la esquina -->
+      <path class="win" d="M60 620H280 M600 620H1060 M0 60V240"/><path class="win2 dr" d="M60 614H280M60 626H280M600 614H1060M600 626H1060M-6 60V240M6 60V240"/>
+      <!-- puertas interiores (el vestíbulo abre a la sala sin muro) -->
+      <path class="door dr" d="M340 230a70 70 0 0 1 -70 70 M340 310a70 70 0 0 0 -70 70 M380 200a70 70 0 0 0 70 -70 M340 440a70 70 0 0 1 -70 70"/>
+      <!-- balcón -->
+      <rect class="balc" x="600" y="620" width="460" height="190"/>
+      <!-- muebles: aparecen al final -->
+      <g class="fur">
+        <rect x="40" y="40" width="200" height="210" rx="6"/><rect x="40" y="40" width="200" height="40" rx="4"/>
+        <rect x="40" y="350" width="220" height="230" rx="6"/><rect x="40" y="350" width="220" height="44" rx="4"/>
+        <rect x="380" y="30" width="140" height="70" rx="20"/><circle cx="410" cy="150" r="22"/>
+        <rect x="380" y="440" width="140" height="70" rx="20"/><circle cx="410" cy="560" r="22"/>
+        <rect x="1010" y="20" width="70" height="260"/><rect x="820" y="20" width="190" height="70"/><rect x="820" y="170" width="140" height="70" rx="4"/>
+        <circle cx="850" cy="275" r="16"/><circle cx="930" cy="275" r="16"/>
+        <rect x="600" y="300" width="80" height="250" rx="10"/><rect x="740" y="370" width="120" height="110" rx="8"/><rect x="1060" y="330" width="30" height="190"/>
+        <circle cx="700" cy="720" r="34"/><circle cx="640" cy="720" r="14"/><circle cx="760" cy="720" r="14"/>
+      </g>
+      <!-- etiquetas -->
+      <g class="labs">
+        <text class="lab" x="170" y="150" text-anchor="middle">Recámara 2</text><text class="m2" x="170" y="172" text-anchor="middle">10.2 m²</text>
+        <text class="lab" x="170" y="470" text-anchor="middle">Principal</text><text class="m2" x="170" y="492" text-anchor="middle">10.9 m²</text>
+        <text class="lab" x="445" y="260" text-anchor="middle">Vestíbulo</text>
+        <text class="lab" x="485" y="160" text-anchor="middle">Baño 2</text><text class="lab" x="492" y="572" text-anchor="middle">Baño ppal.</text><text class="m2" x="492" y="594" text-anchor="middle">4.6 m²</text>
+        <text class="lab" x="615" y="125" text-anchor="middle">Entrada</text>
+        <text class="lab" x="900" y="135" text-anchor="middle">Cocina y barra</text>
+        <text class="lab" x="900" y="560" text-anchor="middle">Estancia</text><text class="m2" x="900" y="582" text-anchor="middle">34.1 m² con cocina</text>
+        <text class="m2" x="830" y="660" text-anchor="middle">Cancel corredizo</text>
+        <text class="lab" x="830" y="790" text-anchor="middle">Balcón · 9 m²</text>
+      </g>
+    </svg>
+  </div>
+  <figure class="interior"><img src="../imagenes/61-ocre-interior.webp" alt="Sala y cocina de un departamento tipo A con balcón y vista a la colonia arbolada" width="1536" height="1024" loading="lazy"><figcaption>Render de ejemplo · Tipo A</figcaption></figure>
+</section>
+
+<!-- Amenidades -->
+<section class="sec" id="amenidades" aria-labelledby="h-amen">
+  <div class="amen">
+    <div class="amen-head"><p class="eyebrow">Amenidades</p><h2 class="h-l" id="h-amen">Amenidades <em>que sí vas a usar.</em></h2><p class="lead">Pocas amenidades, pensadas para usarse todos los días y fáciles de mantener.</p></div>
+    <figure class="ph big"><img src="../imagenes/62-ocre-roof.jpg" alt="Roof garden con deck de madera, jardineras y vista a la ciudad al atardecer" width="1536" height="1024" loading="lazy"><figcaption><b>Roof garden</b><span>Mesa larga, camastros y atardeceres sobre la ciudad.</span></figcaption></figure>
+    <figure class="ph tall"><img src="../imagenes/63-ocre-lobby.webp" alt="Lobby con madera, piso de terrazo y ventanal a la calle arbolada" width="1536" height="1024" loading="lazy"><figcaption><b>Lobby</b><span>4.6 m de altura y recepción.</span></figcaption></figure>
+    <ul class="amen-list">
+      <li><b>Gimnasio</b><span>En planta baja, con luz natural.</span></li>
+      <li><b>Coworking</b><span>Ocho lugares y sala de juntas.</span></li>
+      <li><b>Estacionamiento</b><span>Un cajón por departamento en tres sótanos.</span></li>
+      <li><b>Bicicletero</b><span>Para 30 bicis, junto al lobby.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- Ubicación -->
+<section class="sec light" id="ubicacion" aria-labelledby="h-ubi">
+  <div class="loc">
+    <div class="txt">
+      <p class="eyebrow">Ubicación</p>
+      <h2 class="h-l" id="h-ubi">Todo <em>a pie.</em></h2>
+      <p class="lead">Una esquina sobre eje vial en la Narvarte, rodeada de calles arboladas, con mercado y metro cerca.</p>
+      <ul class="near">
+        <li><i></i><span>Parque</span><span><b>3</b> <small>min</small></span></li>
+        <li><i></i><span>Escuelas</span><span><b>4</b> <small>min</small></span></li>
+        <li><i></i><span>Mercado</span><span><b>5</b> <small>min</small></span></li>
+        <li><i></i><span>Metro</span><span><b>6</b> <small>min</small></span></li>
+        <li><i></i><span>Supermercado</span><span><b>7</b> <small>min</small></span></li>
+      </ul>
+      <p class="note">Tiempos caminando · Datos de ejemplo</p>
+    </div>
+    <figure class="gmap">
+      <iframe title="Mapa de Google de la colonia Narvarte, Ciudad de México" src="https://www.google.com/maps?q=Narvarte+Poniente,+Benito+Ju%C3%A1rez,+Ciudad+de+M%C3%A9xico&z=15&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+      <figcaption class="note">Ubicación aproximada · El predio es de ejemplo</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- Plan de pagos -->
+<section class="sec" id="pagos" aria-labelledby="h-pagos">
+  <div class="pay">
+    <div class="txt">
+      <p class="eyebrow">Plan de pagos</p>
+      <h2 class="h-l" id="h-pagos">Paga mientras <em>se construye.</em></h2>
+      <p class="lead">Apartas, das un enganche, pagas 24 mensualidades durante la obra y liquidas el 60 % a la entrega, con recursos propios o con crédito hipotecario.</p>
+      <p class="note">Precios y plan de ejemplo</p>
+    </div>
+    <div class="calc">
+      <div class="calc-top"><div><span class="note" id="cunit">Depto 502 · Tipo A</span><br><b id="cprice">$4,982,000</b></div><a class="btn ghost" href="#piso">Cambiar departamento</a></div>
+      <div><label for="eng"><span>Enganche</span><span id="engv">20 %</span></label><input type="range" id="eng" min="10" max="30" step="5" value="20" aria-valuetext="20 por ciento"></div>
+      <div class="bars" aria-hidden="true"><i id="b1" style="background:#F1EEE9"></i><i id="b2" style="background:var(--accent)"></i><i id="b3" style="background:#55514A"></i></div>
+      <div class="split">
+        <div><span>Apartado</span><b>$50,000</b><small>Se descuenta del enganche</small></div>
+        <div><span>Enganche · 20 %</span><b id="s1">$946,400</b><small>Al firmar, menos los $50,000 del apartado</small></div>
+        <div><span>24 mensualidades · 20 %</span><b id="s2">$41,517</b><small>Dic 2026 a nov 2028</small></div>
+        <div><span>A la entrega · 60 %</span><b id="s3">$2,989,200</b><small>Dic 2028</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Certeza -->
+<section class="sec light" id="certeza" aria-labelledby="h-cert">
+  <p class="eyebrow">Certeza</p>
+  <h2 class="h-l" id="h-cert" style="margin-top:16px;max-width:900px">Comprar en preventa <em>sin adivinar.</em></h2>
+  <ul class="trust">
+    <li><b>Uso de suelo</b><p>Certificado Único de Zonificación de Uso del Suelo (SEDUVI) para vivienda en 12 niveles.</p></li>
+    <li><b>Permisos de obra</b><p>Manifestación de construcción registrada en la Alcaldía Benito Juárez.</p></li>
+    <li><b>Estructura</b><p>Proyecto estructural conforme a las Normas Técnicas vigentes, firmado por el Director Responsable de Obra (DRO) y el corresponsable en seguridad estructural.</p></li>
+    <li><b>Contrato claro</b><p>Contrato de adhesión registrado ante Profeco, conforme a la NOM-247-SE-2021.</p></li>
+    <li><b>Tu dinero, protegido</b><p>Tus pagos van a un fideicomiso bancario que los libera según el avance de obra. Cada mes recibes fotos del avance.</p></li>
+    <li><b>Escritura</b><p>Firmas promesa de compraventa. La escritura individual se firma ante notario a la entrega, con el régimen de condominio constituido.</p></li>
+  </ul>
+  <p class="note" style="margin-top:28px">Documentos de ejemplo · En la visita se muestran los originales</p>
+</section>
+
+<!-- Preguntas -->
+<section class="sec" id="preguntas" aria-labelledby="h-faq">
+  <div class="faq-grid">
+    <div><p class="eyebrow">Preguntas</p><h2 class="h-l" id="h-faq" style="margin-top:16px">Antes <em>de apartar.</em></h2></div>
+    <div class="faq">
+      <details><summary>¿Qué pasa si la obra se retrasa?</summary><p>El contrato fija la fecha de entrega y una penalización a favor del comprador si se rebasa.</p></details>
+      <details><summary>¿Puedo pagar con crédito?</summary><p>Sí. El pago a la entrega se puede cubrir con crédito bancario o Cofinavit.</p></details>
+      <details><summary>¿Puedo elegir acabados?</summary><p>Hay dos paquetes de acabados. Se eligen antes de que la obra llegue a tu nivel.</p></details>
+      <details><summary>¿Cuánto es el mantenimiento?</summary><p>Un estimado de $40 por m² al mes, según el tamaño de tu departamento (indiviso): unos $2,720 en el tipo A y $2,240 en el tipo B. Incluye recepción, vigilancia, elevadores y amenidades.</p></details>
+      <details><summary>¿Cuánto cuesta escriturar?</summary><p>Calcula entre 6 y 8 % del precio: impuesto de adquisición (ISAI), honorarios del notario y registro.</p></details>
+      <details><summary>¿Me devuelven el apartado?</summary><p>Sí, completo, si decides no firmar el contrato en los siguientes 15 días.</p></details>
+      <details><summary>¿Puedo ceder mi departamento antes de la entrega?</summary><p>Sí, con una cesión de derechos autorizada por la desarrolladora, una vez pagado el enganche.</p></details>
+      <details><summary>¿Cuántos elevadores tiene?</summary><p>Dos, para 44 departamentos. Bajan hasta los tres sótanos de estacionamiento.</p></details>
+      <details><summary>¿Aceptan mascotas?</summary><p>Sí, con el reglamento del condominio.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- Cierre -->
+<section class="close" aria-labelledby="h-close">
+  <img src="../imagenes/66-ocre-vista-alta.webp" alt="" width="1536" height="1024" loading="lazy">
+  <div class="txt">
+    <p class="eyebrow">Sala de ventas con maqueta física</p>
+    <h2 class="h-l" id="h-close">Ven a ver <em>tu vista.</em></h2>
+    <p class="lead">Agenda una visita y te mostramos la maqueta, los acabados y los documentos del proyecto.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap"><button class="btn" type="button" data-visit>Agendar visita</button></div>
+  </div>
+</section>
+<p class="legal note"><span>© 2026 OCRE Residencias</span><span>Marca, datos e imágenes de ejemplo</span></p>
+</main>
+
+<dialog id="visit" aria-labelledby="h-visit">
+  <form method="dialog" class="dlg">
+    <p class="eyebrow">Agendar visita</p>
+    <h2 id="h-visit">Elige día y hora</h2>
+    <p class="vnote">Sala de ventas con maqueta física, a una calle del desarrollo. Narvarte, CDMX.</p>
+    <div class="chips" id="days" role="group" aria-label="Día"></div>
+    <div class="chips" id="hours" role="group" aria-label="Hora"></div>
+    <div class="fields">
+      <label>Nombre<input id="vname" type="text" autocomplete="name"></label>
+      <label>WhatsApp<input id="vtel" type="tel" inputmode="tel" autocomplete="tel" placeholder="55 1234 5678"></label>
+    </div>
+    <p class="vnote">Para confirmar, elige día y hora, y escribe tu nombre y un WhatsApp de 10 dígitos. Es un desarrollo de ejemplo: no se envía ningún dato.</p>
+    <div class="row"><button class="btn ghost" value="cancel">Cancelar</button><button class="btn" id="confirm" value="ok" disabled>Confirmar visita</button></div>
+  </form>
+</dialog>
+
+<footer class="exit" aria-labelledby="exit-t">
+  <div class="exit-in">
+    <div><p class="k">Proyecto de ejemplo · Héctor Aguilar</p><h2 id="exit-t">¿Tu desarrollo también tiene una historia que contar?</h2></div>
+    <div class="acts"><a class="b1" href="https://wa.me/525545249906?text=Hola%20H%C3%A9ctor%2C%20vi%20el%20ejemplo%20de%20OCRE%20y%20quiero%20algo%20as%C3%AD%20para%20mi%20desarrollo.">Quiero algo así</a><a class="b2" href="../../servicios/pagina-web#ejemplos">Ver más ejemplos</a></div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
+import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
+import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
+import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
+
+/* ---------- Escena ---------- */
+const canvas=document.getElementById('c');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.92;
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+const scene=new THREE.Scene();
+const BG=new THREE.Color('#15171A');scene.background=BG;scene.fog=new THREE.Fog(BG,150,280);
+/* el reflejo del entorno solo va en el vidrio: así los blancos conservan sus sombras */
+const pmrem=new THREE.PMREMGenerator(renderer);
+const envTex=pmrem.fromScene(new RoomEnvironment(),.04).texture;
+const camera=new THREE.PerspectiveCamera(28,1,1,600);
+
+/* Luz de tarde: sol cálido con sombras suaves y cielo que rellena */
+const sun=new THREE.DirectionalLight(0xFFEBD2,3.4);sun.position.set(-55,58,42);sun.castShadow=true;
+sun.shadow.mapSize.set(innerWidth<861?2048:4096,innerWidth<861?2048:4096);const sc=sun.shadow.camera;sc.left=-60;sc.right=60;sc.top=60;sc.bottom=-60;sc.near=1;sc.far=220;
+sun.shadow.bias=-0.0004;sun.shadow.normalBias=0.03;sun.shadow.radius=5;scene.add(sun);
+const hemi=new THREE.HemisphereLight(0xDDE3EA,0x3A3530,.75);scene.add(hemi);
+/* luz de relleno fría desde el lado contrario, como en una sala de exhibición */
+const rim=new THREE.DirectionalLight(0xBFD0E0,.6);rim.position.set(60,30,-40);scene.add(rim);
+
+/* ---------- Materiales de maqueta ---------- */
+const M={
+  white:new THREE.MeshStandardMaterial({color:0xF3F0EA,roughness:.88,metalness:0}),
+  slab:new THREE.MeshStandardMaterial({color:0xFBF9F5,roughness:.8}),
+  soft:new THREE.MeshStandardMaterial({color:0xF1EEE8,roughness:.95}),
+  glass:new THREE.MeshStandardMaterial({color:0x2E3A38,roughness:.08,metalness:.35,envMapIntensity:1.6}),
+  rail:new THREE.MeshStandardMaterial({color:0x8FA19C,roughness:.05,metalness:.2,transparent:true,opacity:.4,envMapIntensity:1.2}),
+  wood:new THREE.MeshStandardMaterial({color:0x2B2724,roughness:.55,metalness:.05}),
+  ground:new THREE.MeshStandardMaterial({color:0xD3CDC3,roughness:1}),
+  street:new THREE.MeshStandardMaterial({color:0xB9B2A7,roughness:1}),
+  pit:new THREE.MeshStandardMaterial({color:0xBFB4A3,roughness:1}),
+  leaf:new THREE.MeshStandardMaterial({color:0xDCE2D3,roughness:.9}),
+  sage:new THREE.MeshStandardMaterial({color:0xC86F40,roughness:.6})
+};
+M.glass.envMap=envTex;M.rail.envMap=envTex;
+const box=(w,h,d,m,x=0,y=0,z=0,cast=true)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.castShadow=cast;o.receiveShadow=true;return o;};
+
+/* ---------- Base de la maqueta: madera, calles, vecinos y árboles ---------- */
+const site=new THREE.Group();scene.add(site);
+site.add(box(96,2.4,70,M.wood,0,-1.2,0));
+site.add(box(92,.12,66,M.ground,0,.06,0,false));
+/* calles con banqueta a ambos lados: frente (z 13–20) y lateral de la esquina (x 18–24) */
+site.add(box(92,.14,7,M.street,0,.08,16.5,false));
+site.add(box(6,.14,66,M.street,21,.08,0,false));
+const curbs=[[0,.22,13,92,.26,.3],[0,.22,20,92,.26,.3],[18,.22,0,.3,.26,66],[24,.22,0,.3,.26,66]];
+curbs.forEach(c=>site.add(box(c[3],c[4],c[5],M.white,c[0],c[1],c[2],false)));
+/* cruces peatonales en la esquina */
+for(let k=0;k<6;k++){site.add(box(.5,.02,6.4,M.white,10.4+k*1.05,.16,16.5,false));site.add(box(5.6,.02,.5,M.white,21,.16,10.6-k*1.05,false));}
+/* vecinos: volúmenes blancos de distintas alturas, como en una maqueta de contexto */
+[[-28,-6,14,16,7],[-28,-24,14,12,11],[-6,-26,18,10,6],[34,-6,12,18,9],[34,-25,12,12,13],[34,6,12,6,5]]
+  .forEach(([x,z,w,d,h])=>site.add(box(w,h,d,M.soft,x,h/2,z)));
+/* árboles abstractos */
+const trunkG=new THREE.CylinderGeometry(.12,.16,1.6,8),crownG=new THREE.IcosahedronGeometry(1.25,1);
+function tree(x,z,s=1){const g=new THREE.Group();const t=new THREE.Mesh(trunkG,M.white);t.position.y=.8;t.castShadow=true;const c=new THREE.Mesh(crownG,M.leaf);c.position.y=2.3;c.castShadow=true;c.receiveShadow=true;g.add(t,c);g.position.set(x,0,z);g.scale.setScalar(s);return g;}
+/* árboles solo en banquetas (nunca dentro de la calle) */
+[[-40,11.8],[-30,11.8],[-20,11.8],[-40,21.4],[-26,21.4],[-12,21.4],[2,21.4],[34,21.4],[16.2,-30],[16.2,-18],[25.6,-26],[25.6,-12],[25.6,30]].forEach((p,k)=>site.add(tree(p[0],p[1],.85+(k%3)*.1)));
+
+/* farolas: poste, brazo hacia la calle, lámpara que se enciende de noche y su charco de luz */
+const lampMat=new THREE.MeshBasicMaterial({color:0x4A4741,toneMapped:false});
+const poolTex=(()=>{const c=document.createElement('canvas');c.width=c.height=128;const g=c.getContext('2d');const r=g.createRadialGradient(64,64,0,64,64,64);r.addColorStop(0,'rgba(255,200,140,1)');r.addColorStop(.45,'rgba(255,180,110,.35)');r.addColorStop(1,'rgba(255,170,100,0)');g.fillStyle=r;g.fillRect(0,0,128,128);return new THREE.CanvasTexture(c);})();
+const poolMat=new THREE.MeshBasicMaterial({map:poolTex,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false,toneMapped:false});
+const poleG=new THREE.CylinderGeometry(.07,.09,3.6,8),poolG=new THREE.PlaneGeometry(8,8);
+function lamp(x,z,dx,dz){
+  const g=new THREE.Group();g.position.set(x,0,z);
+  const pole=new THREE.Mesh(poleG,M.white);pole.position.y=1.8;pole.castShadow=true;g.add(pole);
+  const arm=box(Math.abs(dx)?1:.08,.08,Math.abs(dz)?1:.08,M.white,dx*.5,3.55,dz*.5);g.add(arm);
+  const head=new THREE.Mesh(new THREE.BoxGeometry(.6,.14,.32),lampMat);head.position.set(dx*1,3.48,dz*1);if(Math.abs(dz))head.rotation.y=Math.PI/2;g.add(head);
+  const pool=new THREE.Mesh(poolG,poolMat);pool.rotation.x=-Math.PI/2;pool.position.set(dx*1.2,.2,dz*1.2);g.add(pool);
+  site.add(g);
+}
+[[-35,11.6,0,1],[-15,11.6,0,1],[6,11.6,0,1],[-34,21.6,0,-1],[-19,21.6,0,-1],[-4,21.6,0,-1],[10,21.6,0,-1],[16.4,-24,1,0],[16.4,-6,1,0],[25.4,-19,-1,0],[25.4,-3,-1,0],[25.4,26,-1,0]].forEach(l=>lamp(...l));
+
+/* ---------- La torre (paramétrica) ---------- */
+const N=12,L=4.6,H=3.2,W=22,D=14,X0=0,Z0=0;
+const tower=new THREE.Group();tower.position.set(X0,0,Z0);scene.add(tower);
+const levelY=i=>i===0?0:L+(i-1)*H, levelH=i=>i===0?L:H, TOP=L+(N-1)*H;
+
+/* lindero del terreno: línea punteada que se dibuja */
+const lotPts=[[-14,-10],[14,-10],[14,10.5],[-14,10.5],[-14,-10]].map(p=>new THREE.Vector3(p[0],.3,p[1]));
+const lot=new THREE.Line(new THREE.BufferGeometry().setFromPoints(lotPts),new THREE.LineDashedMaterial({color:0xC86F40,dashSize:.9,gapSize:.6,transparent:true,opacity:0}));
+lot.computeLineDistances();tower.add(lot);
+/* excavación y cimentación */
+const pit=box(W+3,.2,D+3,M.pit,0,.1,0,false);pit.scale.y=.001;tower.add(pit);
+const found=box(W+1.2,.6,D+1.2,M.white,0,.3,0);found.visible=false;tower.add(found);
+
+const floors=[];
+const finG=new THREE.BoxGeometry(.14,1,.55);
+/* luces de los departamentos: paneles cálidos detrás del vidrio que se encienden de noche */
+const winWarm=new THREE.MeshBasicMaterial({color:new THREE.Color(1.15,.72,.36),toneMapped:false});
+const winSoft=new THREE.MeshBasicMaterial({color:new THREE.Color(.9,.66,.42),toneMapped:false});
+const gWinF=new THREE.PlaneGeometry(W/4-.6,H-.36-.6),gWinS=new THREE.PlaneGeometry(D/2-.9,H-.36-.6),gLobby=new THREE.PlaneGeometry(W/2-1,L-1.2);
+const wins=[];
+function addWin(group,geo,x,y,z,ry,mat){const w=new THREE.Mesh(geo,mat);w.position.set(x,y,z);w.rotation.y=ry;w.visible=false;group.add(w);wins.push(w);return w;}
+function instFins(h,positions,rotY){
+  const im=new THREE.InstancedMesh(finG,M.white,positions.length);im.castShadow=true;im.receiveShadow=true;
+  const m=new THREE.Matrix4(),q=new THREE.Quaternion().setFromEuler(new THREE.Euler(0,rotY,0)),s=new THREE.Vector3(1,h,1);
+  positions.forEach((p,k)=>{m.compose(new THREE.Vector3(p[0],h/2+.36,p[1]),q,s);im.setMatrixAt(k,m);});return im;
+}
+for(let i=0;i<N;i++){
+  const y=levelY(i),h=levelH(i),gh=h-.36;
+  /* estructura: losa, columnas y núcleo (cae desde arriba al construirse) */
+  const st=new THREE.Group();st.position.y=y;
+  st.add(box(W+.8,.36,D+.8,M.slab,0,.18,0));
+  [[-W/2+.4,-D/2+.4],[W/2-.4,-D/2+.4],[-W/2+.4,D/2-.4],[W/2-.4,D/2-.4],[0,-D/2+.4],[0,D/2-.4]].forEach(c=>st.add(box(.7,gh,.7,M.white,c[0],.36+gh/2,c[1])));
+  st.add(box(4,gh,5,M.white,-2,.36+gh/2,-1));
+  /* fachada: cancelería, celosías y balcones escalonados (sube como cortina) */
+  const fa=new THREE.Group();fa.position.y=y;
+  fa.add(box(W-.6,gh,D-.6,M.glass,0,.36+gh/2,0,false));
+  const front=[],back=[],left=[],right=[];
+  for(let x=-W/2+.9;x<=W/2-.8;x+=1.15){front.push([x,D/2+.05]);back.push([x,-D/2-.05]);}
+  for(let z=-D/2+.9;z<=D/2-.8;z+=1.15){left.push([-W/2-.05,z]);right.push([W/2+.05,z]);}
+  if(i>0){fa.add(instFins(gh,back,0),instFins(gh,left,Math.PI/2),instFins(gh,right,Math.PI/2));
+    /* balcones al frente, alternados por nivel */
+    const bays=i%2?[-8.2,2.8]:[-2.7,8.2];
+    bays.forEach(bx=>{fa.add(box(5,.24,2,M.slab,bx,.12,D/2+1.1));fa.add(box(5,1.05,.06,M.rail,bx,.24+.52,D/2+2.07,false));});
+    fa.add(instFins(gh,front.filter(p=>!bays.some(b=>Math.abs(p[0]-b)<2.6)),0));
+    /* 4 departamentos por nivel: ventanas al frente, atrás y a los lados */
+    const wy=.36+gh/2,fz=(D-.6)/2+.03,sx=(W-.6)/2+.03;
+    for(let k=0;k<4;k++){const x=-W/2+W/8+k*W/4,m=(i+k)%3?winWarm:winSoft;addWin(fa,gWinF,x,wy,fz,0,m);addWin(fa,gWinF,x,wy,-fz,Math.PI,m);}
+    [-D/4,D/4].forEach((z,k)=>{addWin(fa,gWinS,sx,wy,z,Math.PI/2,(i+k)%2?winWarm:winSoft);addWin(fa,gWinS,-sx,wy,z,-Math.PI/2,winWarm);});
+  }else{
+    const lob=addWin(fa,gLobby,4.5,L/2,(D-.6)/2+.03,0,winWarm);lob.userData.lobby=true;
+    /* planta baja: lobby a doble altura y marquesina */
+    fa.add(box(9,.3,3.2,M.slab,4,h-.6,D/2+1.6));
+    [[-.4,D/2+3],[8.4,D/2+3]].forEach(c=>fa.add(box(.22,h-.75,.22,M.white,4+c[0]-4,(h-.75)/2,c[1])));
+  }
+  tower.add(st,fa);floors.push({st,fa,y});
+}
+/* azotea: pretil, pérgola y jardineras */
+const roof=new THREE.Group();roof.position.y=TOP;
+roof.add(box(W+.8,1.1,.25,M.white,0,.55+.36,D/2+.28),box(W+.8,1.1,.25,M.white,0,.55+.36,-D/2-.28),box(.25,1.1,D+.8,M.white,W/2+.28,.55+.36,0),box(.25,1.1,D+.8,M.white,-W/2-.28,.55+.36,0));
+roof.add(box(W+.8,.36,D+.8,M.slab,0,.18,0));
+for(let x=-6;x<=6;x+=1.2)roof.add(box(.12,.12,7,M.white,x,3.2,2.2));
+[[-6.4,-.6],[6.4,-.6],[-6.4,5],[6.4,5]].forEach(c=>roof.add(box(.2,2.9,.2,M.white,c[0],1.8,c[1])));
+[[-8,-4],[-3,-4.5],[5,-4],[9,3]].forEach(c=>{roof.add(box(2.4,.7,1.4,M.white,c[0],.7,c[1]));const t=tree(c[0],c[1],.55);t.position.y=1;roof.add(t);});
+tower.add(roof);
+/* jardín de la esquina */
+const garden=new THREE.Group();[[12.5,7.5],[-12.5,7.5],[12.5,-8]].forEach(p=>garden.add(tree(p[0],p[1],1.05)));garden.add(box(6,.3,2.4,M.sage,-9,.15,9.4));tower.add(garden);
+
+/* grúa torre: sube con la obra y se va al terminar */
+const crane=new THREE.Group();crane.position.set(-W/2-4,0,-D/2-2);
+const mast=box(1,1,1,M.sage,0,.5,0);crane.add(mast);
+const jibPivot=new THREE.Group();crane.add(jibPivot);
+jibPivot.add(box(30,.7,.9,M.sage,9,0,0),box(1.6,1.6,1.6,M.white,-5,-.4,0),box(.5,4,.5,M.sage,0,2,0));
+const hook=box(.08,6,.08,M.white,18,-3,0,false);jibPivot.add(hook);
+tower.add(crane);
+
+/* ---------- Animación por avance de obra (0 a 1) ---------- */
+const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),seg=(p,a,b)=>clamp((p-a)/(b-a)),eo=t=>1-Math.pow(1-t,3),eio=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+const S0=.18,STEP=.04,DUR=.07,LAG=3;
+function build(p){
+  lot.material.opacity=seg(p,.0,.05)*(1-seg(p,.86,.92));lot.material.dashSize=.9;
+  pit.scale.y=Math.max(.001,eo(seg(p,.07,.12)))*8;pit.position.y=-.8*eo(seg(p,.07,.12))+.1;pit.visible=p<.2;
+  const fT=seg(p,.12,.17);found.visible=fT>0;found.scale.y=Math.max(.001,eo(fT));
+  let built=0,lastY=0;
+  floors.forEach((f,i)=>{
+    const a=S0+i*STEP,t=seg(p,a,a+DUR),u=seg(p,a+LAG*STEP,a+LAG*STEP+DUR);
+    f.st.visible=t>0;f.st.position.y=f.y+(1-eo(t))*7;
+    f.fa.visible=u>0;f.fa.scale.y=Math.max(.001,eo(u));f.fa.position.y=f.y;
+    if(t>.5){built=i+1;lastY=f.y+levelH(i);}
+  });
+  const rT=seg(p,.8,.86);roof.visible=rT>0;roof.position.y=TOP+(1-eo(rT))*6;
+  const gT=seg(p,.84,.92);garden.visible=gT>0;garden.scale.setScalar(Math.max(.001,eo(gT)));
+  /* la grúa crece con la obra y se retira al final */
+  const ch=Math.max(10,lastY+7);mast.scale.y=ch;mast.position.y=ch/2;jibPivot.position.y=ch;
+  const cOut=seg(p,.84,.9);crane.visible=p>.12&&cOut<1;crane.scale.setScalar(1-cOut*.999);
+  jibPivot.rotation.y=-.6+p*2.2;
+  return {built:Math.min(built,N),lastY};
+}
+/* orden fijo (pseudoaleatorio) en que se prenden las luces: siempre igual al ir y regresar */
+const order=wins.filter(w=>!w.userData.lobby).map((w,k)=>({w,r:((k*9301+49297)%233280)/233280})).sort((a,b)=>a.r-b.r).map(o=>o.w);
+const lobbyWin=wins.find(w=>w.userData.lobby);
+
+/* ---------- Luz: días que pasan durante la obra y noche al entregar ---------- */
+const cWarm=new THREE.Color(0xFF9A5C),cDay=new THREE.Color(0xFFEFDC),cMoon=new THREE.Color(0x9DB2D6),tmp=new THREE.Color();
+const bgDay=new THREE.Color('#15171A'),bgNight=new THREE.Color('#0B0D10'),hSky=new THREE.Color(0xDDE3EA),hNight=new THREE.Color(0x5A6B88);
+let night=0;
+function lightAt(p){
+  /* f = hora del día (0 amanecer, .5 mediodía, 1 anochecer). Durante la obra pasan 5 días. */
+  let f;
+  if(p<.14)f=.42;
+  else if(p<.84)f=(.42+seg(p,.14,.84)*5)%1;
+  else f=.42+seg(p,.84,.92)*.55;
+  const day=Math.pow(Math.sin(Math.PI*f),.55);
+  night=eio(seg(p,.9,.98));
+  const az=-1.45+f*2.9,el=.08+Math.sin(Math.PI*f)*.95,R=95;
+  sun.position.set(Math.cos(el)*Math.sin(az)*R,Math.sin(el)*R+4,Math.cos(el)*Math.cos(az)*R);
+  tmp.copy(cWarm).lerp(cDay,day);sun.color.copy(tmp).lerp(cMoon,night);
+  sun.intensity=(.35+3.1*day)*(1-night)+.9*night;
+  hemi.intensity=(.3+.5*day)*(1-night)+.4*night;hemi.color.copy(hSky).lerp(hNight,night);
+  rim.intensity=.6*(1-night)+.3*night;
+  scene.background.copy(bgDay).lerp(bgNight,night);scene.fog.color.copy(scene.background);
+  /* luces: farolas y lobby primero, luego los departamentos uno por uno */
+  const lamps=seg(p,.9,.94);lampMat.color.setRGB(.29+1.4*lamps,.28+.95*lamps,.26+.5*lamps);poolMat.opacity=.4*lamps;
+  lobbyWin.visible=lamps>.2&&floors[0].fa.visible;
+  const on=Math.floor(seg(p,.92,1)*order.length*.64);order.forEach((w,k)=>w.visible=k<on);
+  bloom.strength=night*.32;
+}
+
+/* cámara: órbita lenta que sube con la torre y termina en la vista de presentación */
+const camT=new THREE.Vector3();
+function cam(p,lastY){
+  const a=-.95+eio(p)*.7,el=.5-eio(p)*.2;
+  const portrait=camera.aspect<1;const r=(portrait?190:128)+eio(p)*10;
+  const ty=Math.max(4,Math.min(TOP*.42,lastY*.45+3));
+  camT.set(portrait?0:-14,ty,0);
+  camera.position.set(camT.x+Math.sin(a)*r*Math.cos(el),ty+Math.sin(el)*r,camT.z+Math.cos(a)*r*Math.cos(el));
+  camera.lookAt(camT);
+}
+
+/* ---------- Texto y medidor ---------- */
+const steps=[...document.querySelectorAll('.step')],lvl=document.getElementById('lvl'),pct=document.getElementById('pct'),bar=document.getElementById('bar');
+const ranges=[[0,.04],[.04,.1],[.1,.18],[.18,.62],[.62,.84],[.84,1.01]];
+const stageEl=document.getElementById('stage');
+function ui(p,built){
+  /* con movimiento reducido: la torre ya terminada y el hero siempre visible */
+  const k=window.__rm?0:ranges.findIndex(r=>p>=r[0]&&p<r[1]);steps.forEach((s,i)=>s.classList.toggle('on',i===k));
+  stageEl.classList.toggle('start',p<.03||!!window.__rm);
+  lvl.textContent=built;const v=Math.round(clamp(p/.92)*100);pct.textContent=v+' %';bar.style.transform='scaleX('+v/100+')';
+}
+
+/* ---------- Bucle ---------- */
+const state={p:0};let shown=-1;
+/* brillo suave solo en lo que emite luz (ventanas y farolas) */
+const composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
+const bloom=new UnrealBloomPass(new THREE.Vector2(256,256),0,.35,.95);composer.addPass(bloom);composer.addPass(new OutputPass());
+function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;renderer.setSize(w,h,false);composer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();shown=-1;}
+addEventListener('resize',resize);resize();
+function frame(){
+  if(Math.abs(state.p-shown)>1e-4){const r=build(state.p);lightAt(state.p);cam(state.p,r.lastY);ui(state.p,r.built);composer.render();shown=state.p;}
+  requestAnimationFrame(frame);
+}
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(reduce||!window.gsap){state.p=1;window.__rm=true;document.getElementById('build').style.height='100vh';}
+else{gsap.registerPlugin(ScrollTrigger);gsap.to(state,{p:1,ease:'none',scrollTrigger:{trigger:'#build',start:'top top',end:'bottom bottom',scrub:1.2}});}
+frame();
+window.__maq={state,renderer};
+</script>
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s);},$$=function(s){return [].slice.call(document.querySelectorAll(s));};
+  var money=function(n){return '$'+Math.round(n).toLocaleString('en-US');};
+  var toast=$('#toast'),tt,eng=$('#eng');
+  function say(t,s){toast.innerHTML=t+'<small>'+(s||'Es un desarrollo de ejemplo: no se envía ni se cobra nada.')+'</small>';toast.classList.add('on');clearTimeout(tt);tt=setTimeout(function(){toast.classList.remove('on');},3600);}
+
+  /* ---------- Departamentos: mismos datos en disponibilidad, plan de pagos y textos ---------- */
+  /* 11 niveles x 4 deptos = 44. 01 y 02 al frente (tipo A, con balcón); 03 y 04 atrás (tipo B). */
+  var TYPES={A:{m2:68,rec:2,ban:2,bal:9,pm2:71000},B:{m2:56,rec:2,ban:1,bal:0,pm2:69000}};
+  var units=[];
+  for(var l=11;l>=1;l--){for(var u=1;u<=4;u++){
+    var t=u<=2?'A':'B',T=TYPES[t];
+    var price=Math.round(T.m2*T.pm2*(1+.008*(l-1))/1000)*1000;
+    /* estado repartido sin patrón visible (se venden más los pisos altos y los del frente) */
+    var r=Math.abs(Math.sin(l*12.9898+u*78.233)*43758.5453)%1,pv=.22+l*.025+(u<=2?.08:0);
+    var st=r<pv?'vend':(r<pv+.1?'apar':'disp');
+    units.push({id:l*100+u,lvl:l,u:u,t:t,price:price,st:st});
+  }}
+  var stLabel={disp:'Disponible',apar:'Apartado',vend:'Vendido'};
+  var tower=$('#tower');
+  var lvls={};units.forEach(function(x){(lvls[x.lvl]=lvls[x.lvl]||[]).push(x);});
+  Object.keys(lvls).sort(function(a,b){return b-a;}).forEach(function(l){
+    var row=document.createElement('div');row.className='row';
+    row.innerHTML='<span class="lv">N'+l+'</span>'+lvls[l].map(function(x){
+      return '<button type="button" class="u '+x.st+'" data-id="'+x.id+'" aria-label="Depto '+x.id+', tipo '+x.t+', '+stLabel[x.st]+'"'+(x.st==='vend'?' aria-disabled="true"':'')+'>'+x.id+'</button>';
+    }).join('');
+    tower.appendChild(row);
+  });
+  var pb=document.createElement('div');pb.className='row pb';pb.innerHTML='<span class="lv">PB</span><span>Lobby · gimnasio · coworking</span>';tower.appendChild(pb);
+
+  /* vista por orientación (columna del depto) y altura (banda de niveles);
+     dentro de cada banda el encuadre baja con el piso, así cada depto tiene su propia vista */
+  var IMG='../imagenes/';
+  var VIEWS={
+    1:{o:'Frente, oriente',baja:['64-ocre-vista-baja.jpg','Entre las copas de los árboles'],media:['65-ocre-vista-media.webp','Sobre las azoteas de la colonia'],alta:['66-ocre-vista-alta.webp','Ciudad y volcanes en días claros']},
+    2:{o:'Esquina, oriente y sur',baja:['67-ocre-esquina-baja.webp','La esquina y el eje vial entre jacarandas'],media:['68-ocre-esquina-media.webp','El eje vial y las torres al fondo'],alta:['69-ocre-esquina-alta.jpg','La avenida y el sur de la ciudad']},
+    3:{o:'Posterior, poniente',baja:['70-ocre-posterior-baja.jpg','Jardines y patios del interior de la manzana'],media:['71-ocre-posterior-media.webp','Azoteas y el sol de la tarde'],alta:['72-ocre-posterior-alta.webp','Atardeceres sobre la sierra del poniente']},
+    4:{o:'Lateral, sur',baja:['73-ocre-lateral-baja.jpg','La calle lateral arbolada'],media:['74-ocre-lateral-media.webp','Un parque y las azoteas del sur'],alta:['75-ocre-lateral-alta.webp','El sur de la ciudad y el Ajusco al anochecer']}
+  };
+  var BANDS={baja:[1,4],media:[5,8],alta:[9,11]};
+  var sel=null,vimg=$('#vimg'),curView='';
+  function choose(x){
+    sel=x;$$('.u').forEach(function(b){b.classList.toggle('sel',+b.dataset.id===x.id);b.setAttribute('aria-pressed',+b.dataset.id===x.id);});
+    var T=TYPES[x.t],band=x.lvl<=4?'baja':(x.lvl<=8?'media':'alta'),O=VIEWS[x.u],V=O[band];
+    var B=BANDS[band],k=(x.lvl-B[0])/(B[1]-B[0]),tf='scale(1.1) translateY('+(-3.5+7*k).toFixed(2)+'%)';
+    var key=x.u+'-'+x.lvl;
+    if(key!==curView){curView=key;vimg.style.opacity=0;setTimeout(function(){vimg.src=IMG+V[0];vimg.style.transform=tf;vimg.alt='Vista desde el depto '+x.id+', nivel '+x.lvl+', '+O.o.toLowerCase()+': '+V[1].toLowerCase();vimg.style.opacity=1;},250);}
+    $('#vcap').innerHTML='<span>Vista de referencia · Nivel '+x.lvl+' · '+O.o+'</span><i>'+V[1]+'</i>';
+    $('#usum').textContent='Depto '+x.id+', tipo '+x.t+', '+T.m2+' metros cuadrados, '+stLabel[x.st]+', '+money(x.price);
+    $('#uname').textContent='Depto '+x.id+' · Tipo '+x.t;
+    $('#ust').textContent=stLabel[x.st];
+    $('#um2').textContent=T.m2+' m²';$('#urec').textContent=T.rec;$('#uban').textContent=T.ban;$('#ubal').textContent=T.bal?T.bal+' m²':'Sin';
+    $('#uprice').textContent=money(x.price);
+    $('#vmini').innerHTML='Depto '+x.id+' · <b>'+money(x.price)+'</b>';
+    $('#apartar').disabled=x.st!=='disp';$('#apartar').textContent=x.st==='disp'?'Apartar con $50,000':(x.mine?'Apartado por ti':'Apartado por otra persona');
+    calc();
+  }
+  tower.addEventListener('click',function(e){var b=e.target.closest('.u');if(!b)return;var x=units.filter(function(y){return y.id===+b.dataset.id;})[0];
+    if(x.st==='vend'){say('El depto '+x.id+' ya se vendió.','Elige otro para ver su vista y su precio.');return;}choose(x);});
+  $('#apartar').addEventListener('click',function(){
+    if(!sel||sel.st!=='disp')return;sel.st='apar';sel.mine=true;
+    var b=$('.u[data-id="'+sel.id+'"]');b.className='u apar sel';b.setAttribute('aria-label','Depto '+sel.id+', tipo '+sel.t+', Apartado');
+    choose(sel);say('Depto '+sel.id+' apartado con $50,000.','Tienes 15 días para firmar. Si decides no hacerlo, te devolvemos los $50,000. Es un ejemplo: no se cobra nada.');
+  });
+  /* arranca en un depto disponible de piso medio */
+  choose(units.filter(function(x){return x.st==='disp'&&x.lvl>=5&&x.lvl<=9&&x.t==='A';}).pop()||units.filter(function(x){return x.st==='disp';})[0]);
+
+  /* ---------- Plan de pagos: apartado + enganche, 12 mensualidades, 50 % a la entrega ---------- */
+  function calc(){
+    /* esquema: enganche E % + mensualidades (40 - E) % en 24 meses + 60 % a la entrega */
+    if(!sel)return;var P=sel.price,e=+eng.value/100,ent=.6,men=1-ent-e;
+    $('#cunit').textContent='Depto '+sel.id+' · Tipo '+sel.t;$('#cprice').textContent=money(P);
+    $('#engv').textContent=eng.value+' %';eng.setAttribute('aria-valuetext',eng.value+' por ciento');
+    $('#s1').textContent=money(P*e-50000);
+    $('#s2').textContent=money(P*men/24);
+    $('#s3').textContent=money(P*ent);
+    $('#b1').style.flexGrow=e;$('#b2').style.flexGrow=men;$('#b3').style.flexGrow=ent;
+    $('#s2').previousElementSibling.textContent='24 mensualidades · '+Math.round(men*100)+' %';
+    $('#s1').previousElementSibling.textContent='Enganche · '+eng.value+' %';
+  }
+  eng.addEventListener('input',calc);calc();
+
+  /* ---------- Agendar visita ---------- */
+  var dlg=$('#visit'),days=$('#days'),hours=$('#hours'),pick={d:null,h:null};
+  var dn=['dom','lun','mar','mié','jue','vie','sáb'],mn=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  var d0=new Date();for(var k=1,c=0;c<6;k++){var d=new Date(d0.getFullYear(),d0.getMonth(),d0.getDate()+k);if(d.getDay()===1)continue;c++;
+    days.insertAdjacentHTML('beforeend','<button type="button" aria-pressed="false" data-v="'+dn[d.getDay()]+' '+d.getDate()+' de '+mn[d.getMonth()]+'">'+dn[d.getDay()]+' '+d.getDate()+'</button>');}
+  ['10:00','12:00','16:00','18:00'].forEach(function(h){hours.insertAdjacentHTML('beforeend','<button type="button" aria-pressed="false" data-v="'+h+'">'+h+'</button>');});
+  function chip(group,key){group.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;$$('#'+group.id+' button').forEach(function(x){x.setAttribute('aria-pressed',x===b);});pick[key]=b.dataset.v;ready();});}
+  chip(days,'d');chip(hours,'h');
+  function ready(){$('#confirm').disabled=!(pick.d&&pick.h&&$('#vname').value.trim()&&$('#vtel').value.replace(/\D/g,'').length>=10);}
+  $('#vname').addEventListener('input',ready);$('#vtel').addEventListener('input',ready);
+  $$('[data-visit]').forEach(function(b){b.addEventListener('click',function(){dlg.returnValue='';if(dlg.showModal)dlg.showModal();});});
+  dlg.addEventListener('close',function(){if(dlg.returnValue==='ok'&&pick.d&&pick.h)say('Visita agendada: '+pick.d+', '+pick.h+'.');dlg.returnValue='';});
+
+  /* ---------- Animaciones de la página (después del 3D) ---------- */
+  var brand=$('#brand');
+  addEventListener('scroll',function(){brand.classList.toggle('on',scrollY>10);},{passive:true});
+
+  /* ---------- Navegación propia: anclas exactas bajo la barra y desplazamiento suave ---------- */
+  var reduceM=matchMedia('(prefers-reduced-motion: reduce)').matches,veil=$('#veil'),going=null;
+  var topOff=function(){return parseInt(getComputedStyle(document.documentElement).getPropertyValue('--top'))||100;};
+  function targetY(id){if(id==='#build'||id==='#top')return 0;var el=$(id);return el?Math.max(0,el.getBoundingClientRect().top+scrollY-topOff()):null;}
+  function glide(to,ms,done){
+    var from=scrollY,d=to-from,t0=performance.now();if(going)cancelAnimationFrame(going);
+    var ease=function(t){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;};
+    (function step(now){var t=Math.min(1,(now-t0)/ms);scrollTo(0,from+d*ease(t));if(t<1)going=requestAnimationFrame(step);else{going=null;done&&done();}})(t0);
+  }
+  function goTo(id){
+    var y=targetY(id);if(y===null)return;
+    var land=function(){history.pushState(null,'',id);if(window.__markNav)window.__markNav();var el=$(id);if(el&&id!=='#build'){el.setAttribute('tabindex','-1');el.focus({preventScroll:true});}};
+    if(reduceM){scrollTo(0,y);land();return;}
+    var dist=Math.abs(y-scrollY),vh=innerHeight;
+    if(dist<2.2*vh){glide(y,Math.min(1300,600+dist*.35),land);return;}
+    /* salto largo: fundido, aparece cerca del destino y se desliza el último tramo */
+    veil.classList.add('on');
+    setTimeout(function(){
+      var pre=y+(y>scrollY?-.55:.55)*vh;scrollTo(0,Math.max(0,pre));
+      requestAnimationFrame(function(){y=targetY(id);veil.classList.remove('on');glide(y,900,land);});
+    },300);
+  }
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a[href^="#"]');if(!a)return;var id=a.getAttribute('href');if(id.length<2)return;
+    e.preventDefault();goTo(id);
+  });
+  /* el menú marca la sección en la que estás */
+  var navLinks=$$('.brand nav a'),secs=navLinks.map(function(a){return $(a.getAttribute('href'));});
+  function markNav(){var mid=scrollY+innerHeight*.4,cur=-1;secs.forEach(function(s,i){if(s&&s.offsetTop<=mid)cur=i;});
+    if(secs[cur]&&mid>secs[cur].offsetTop+secs[cur].offsetHeight)cur=-1;
+    navLinks.forEach(function(a,i){a.setAttribute('aria-current',i===cur?'true':'false');});}
+  addEventListener('scroll',markNav,{passive:true});markNav();window.__markNav=markNav;
+  if(!window.gsap||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  gsap.registerPlugin(ScrollTrigger);
+  var S=1;
+  function rev(sel,trg,o){gsap.from(sel,Object.assign({y:36,opacity:0,stagger:.08,ease:'power2.out',scrollTrigger:{trigger:trg||sel,start:'top 90%',end:'top 62%',scrub:S}},o||{}));}
+  rev('.pick-head>*','.pick-head');rev('.tower','.tower');rev('.unit>*','.unit');
+  rev('.plan-grid .txt>*','.plan-grid .txt');
+  /* el plano se dibuja con el scroll y luego se amuebla */
+  var dr=$$('#plan .dr');dr.forEach(function(p){p.setAttribute('pathLength',1);p.style.strokeDasharray=1;p.style.strokeDashoffset=1;});
+  gsap.timeline({scrollTrigger:{trigger:'#plan',start:'top 80%',end:'bottom 70%',scrub:S}})
+    .to(dr,{strokeDashoffset:0,stagger:.08,duration:.6,ease:'none'},0)
+    .from('#plan .balc',{opacity:0,duration:.2},.4)
+    .from('#plan .fur > *',{opacity:0,scale:.9,transformOrigin:'center',stagger:.02,duration:.25},.7)
+    .from('#plan .labs > *',{opacity:0,stagger:.02,duration:.2},.9);
+  rev('.interior','.interior',{y:60});
+  gsap.fromTo('.interior img',{yPercent:-5},{yPercent:5,ease:'none',scrollTrigger:{trigger:'.interior',start:'top bottom',end:'bottom top',scrub:true}});
+  rev('.amen-head>*','.amen-head');rev('.ph','.amen',{stagger:.12});rev('.amen-list li','.amen-list');
+  $$('.ph img,.close img').forEach(function(img){gsap.fromTo(img,{yPercent:-5},{yPercent:5,ease:'none',scrollTrigger:{trigger:img.parentElement,start:'top bottom',end:'bottom top',scrub:true}});});
+  rev('.loc .txt>*','.loc .txt');rev('.gmap','.gmap',{y:50});
+  rev('.pay .txt>*','.pay .txt');rev('.calc','.calc',{y:50});
+  rev('#certeza > *','#certeza');rev('.trust li','.trust',{stagger:.1});
+  rev('.faq-grid > div','.faq-grid');rev('.faq details','.faq',{stagger:.05});
+  rev('.close .txt>*','.close .txt');
+})();
+</script>
+</body>
+</html>

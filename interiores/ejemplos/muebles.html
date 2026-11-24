@@ -1,0 +1,751 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tabaco & Roble · Muebles de piel y madera en Ciudad de México</title>
+<meta name="description" content="Tienda de ejemplo de Héctor Aguilar: sillones, sofás y mesas que ves en tu sala, a escala real, con la cámara de tu celular.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="muebles/portada.webp" media="(min-width:861px)" fetchpriority="high">
+<link rel="preload" as="image" href="muebles/portada-cel.webp" media="(max-width:860px)" fetchpriority="high">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<style>
+:root{
+  --cal:#F3F2EE;--cal2:#E9E6DE;--blanco:#FBFAF7;--carbon:#1C1B19;--gris:#5C5850;--linea:rgba(28,27,25,.14);
+  --tabaco:#6B4A33;--musgo:#4F5B3A;--musgo2:#414C2F;--laton:#B08D57;
+  --g:max(24px,calc((100vw - 1280px)/2));--tope:104px;
+  --ser:'Fraunces',Georgia,serif;--sans:'DM Sans',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{overflow-x:clip;-webkit-text-size-adjust:100%}
+html:has(dialog[open]),html.guia-on{overflow:hidden}
+body{margin:0;padding-top:36px;background:var(--cal);color:var(--carbon);font:400 16px/1.55 var(--sans);overflow-x:clip}
+img{display:block;max-width:100%}
+h1,h2,h3,p,ul,dl,dd{margin:0;padding:0}
+ul{list-style:none}
+a{color:inherit}
+button,select{font:inherit;color:inherit}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--tabaco);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.k{font:500 12px/1.3 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--tabaco)}
+[id]{scroll-margin-top:calc(var(--tope) + 24px)}
+
+.demo{position:fixed;top:0;left:0;right:0;z-index:60;height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 var(--g);background:#0E0F11;color:#E9E5DC;font:500 12px system-ui,sans-serif}
+.demo a{color:inherit;text-decoration:none;min-height:36px;display:inline-flex;align-items:center}
+.demo span{font:500 11px system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#B9B4AB}
+
+.top{position:sticky;top:36px;z-index:50;height:68px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 var(--g);background:rgba(243,242,238,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--linea)}
+.logo{font:400 24px/1 var(--ser);letter-spacing:-.01em;text-decoration:none;white-space:nowrap}
+.logo i{color:var(--tabaco);font-weight:400}
+.nav{display:flex;gap:32px}
+.nav a{font-size:15px;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.nav a:hover{color:var(--tabaco)}
+.bolsa{position:relative;width:44px;height:44px;display:grid;place-items:center;background:none;border:0;cursor:pointer;border-radius:4px}
+.bolsa b{position:absolute;top:2px;right:0;min-width:18px;height:18px;padding:0 4px;border-radius:9px;background:var(--tabaco);color:#fff;font:600 11px/18px var(--sans);text-align:center}
+.bolsa b:empty{display:none}
+
+.b{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:48px;padding:11px 20px;border:1px solid transparent;border-radius:3px;font:500 15px/1.2 var(--sans);text-decoration:none;cursor:pointer;transition:background .18s,color .18s,border-color .18s}
+.b svg{flex:none}
+.b-c{background:var(--carbon);color:var(--cal)}.b-c:hover{background:#34322E}
+.b-ar{background:var(--musgo);color:#fff}.b-ar:hover{background:var(--musgo2)}
+.b-l{background:transparent;border-color:rgba(28,27,25,.32)}.b-l:hover{background:var(--carbon);color:var(--cal);border-color:var(--carbon)}
+
+.hero{position:relative;min-height:min(calc(100svh - 104px),760px);display:flex;align-items:center;padding:56px var(--g);isolation:isolate;overflow:hidden}
+.hero picture{position:absolute;inset:0;z-index:-1}
+.hero picture img{width:100%;height:100%;object-fit:cover;object-position:12% 100%}
+.hero-t{max-width:min(520px,42vw)}
+.hero h1{font:400 clamp(40px,4.6vw,68px)/1.04 var(--ser);letter-spacing:-.02em;margin:14px 0 18px}
+.hero p.lead{font-size:18px;color:#3B3832;max-width:38ch}
+.acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+
+.sec{padding:88px var(--g)}
+.cab{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:32px}
+.cab h2,.h2{font:400 clamp(32px,3.4vw,46px)/1.1 var(--ser);letter-spacing:-.015em}
+.filtros{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{min-height:44px;padding:8px 16px;background:transparent;border:1px solid var(--linea);border-radius:999px;font-size:14px;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--carbon);border-color:var(--carbon);color:var(--cal)}
+.orden{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--gris)}
+.orden select{appearance:none;-webkit-appearance:none;height:44px;padding:0 40px 0 14px;background:var(--blanco) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%231C1B19' stroke-width='1.6'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 14px center;border:1px solid var(--linea);border-radius:3px;font-size:14px;color:var(--carbon);cursor:pointer}
+.barra{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+.rejilla{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:40px 24px}
+.card{display:flex;flex-direction:column;min-width:0}
+.foto{position:relative;display:block;aspect-ratio:1;background:var(--cal2);overflow:hidden}
+.foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transition:opacity .28s}
+.foto img+img{opacity:0}
+@media (hover:hover){.card:hover .foto img+img{opacity:1}}
+.card h3{font:400 20px/1.2 var(--ser);margin-top:14px}
+.card h3 a{text-decoration:none}
+.card .med{font-size:14px;color:var(--gris);margin-top:2px}
+.card .pre{font:400 19px/1.2 var(--ser);margin:10px 0 14px}
+.card .btns{display:grid;gap:8px;margin-top:auto}
+.card .b{width:100%;padding:10px 12px;font-size:14.5px}
+
+.ar{background:var(--carbon);color:var(--cal);display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:64px;align-items:center}
+.ar .k{color:#C9A976}
+.ar .h2{margin:14px 0 28px}
+.visor{position:relative;height:min(62vh,560px);background:#26241F;border-radius:4px;overflow:hidden}
+.visor model-viewer{width:100%;height:100%;--poster-color:transparent;background:transparent}
+.visor small{position:absolute;left:16px;bottom:12px;font-size:13px;color:#C9C4B8;pointer-events:none}
+.pasos{display:grid;gap:22px}
+.pasos li{display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px}
+.pasos b{font:400 22px/1.2 var(--ser);color:#C9A976}
+.pasos strong{display:block;font-weight:500}
+.pasos span{color:#C5C0B5;font-size:15.5px}
+.ar .b-ar{margin-top:32px}
+
+.datos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:32px;border-top:1px solid var(--linea);padding-top:28px}
+.datos h3{font:400 20px/1.25 var(--ser);margin-bottom:6px}
+.datos p{color:var(--gris);font-size:15.5px}
+.nota{margin-top:24px;font-size:13.5px;color:var(--gris)}
+.faq{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:48px;background:var(--blanco)}
+.faq details{border-bottom:1px solid var(--linea)}
+.faq summary{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:60px;padding:14px 0;cursor:pointer;list-style:none;font-weight:500}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";flex:none;width:10px;height:10px;border-right:1.6px solid var(--carbon);border-bottom:1.6px solid var(--carbon);transform:rotate(45deg) translate(-2px,-2px);transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(-135deg) translate(-2px,-2px)}
+.faq details p{padding:0 32px 20px 0;color:var(--gris)}
+
+.pie{background:var(--cal2);padding:40px var(--g);display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+.pie p{font-size:14px;color:var(--gris)}
+.pie button{background:none;border:0;padding:0;min-height:44px;font-size:14px;text-decoration:underline;cursor:pointer}
+.exit{background:#0E0F11;color:#F4F0E8;padding:72px var(--g)}
+.exit-in{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:32px 64px;align-items:end}
+.exit p.ej{font:500 11px system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#B9B4AB;margin:0 0 12px}
+.exit h2{font:500 clamp(28px,3vw,42px)/1.1 system-ui,sans-serif;letter-spacing:-.02em;margin:0}
+.exit .dis{font:400 13px/1.5 system-ui,sans-serif;color:#9D9890;margin-top:14px}
+.exit .sal{display:flex;gap:12px;flex-wrap:wrap}
+.exit .b1,.exit .b2{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 22px;border-radius:999px;font:600 15px system-ui,sans-serif;text-decoration:none;color:#F4F0E8}
+.exit .b1{background:#F4F0E8;color:#151513}.exit .b2{border:1px solid rgba(244,240,232,.25)}
+
+/* Ficha de producto */
+.ficha{padding:28px var(--g) 72px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:56px;align-items:start}
+.gal{position:sticky;top:calc(var(--tope) + 20px);min-width:0}
+.esc{position:relative;height:min(calc(100svh - 240px),640px);min-height:320px;background:var(--cal2);overflow:hidden}
+.esc>img{width:100%;height:100%;object-fit:contain;cursor:zoom-in}
+.esc model-viewer{width:100%;height:100%;background:transparent}
+.ampl{position:absolute;top:12px;right:12px;display:inline-flex;gap:8px;align-items:center;min-height:44px;padding:0 14px;background:rgba(251,250,247,.92);border:1px solid var(--linea);border-radius:3px;font-size:14px;cursor:pointer}
+.mini{display:flex;gap:10px;margin-top:12px}
+.mini button{width:72px;height:72px;padding:0;background:var(--cal2);border:1px solid transparent;border-radius:2px;cursor:pointer;overflow:hidden;font-size:14px;font-weight:500}
+.mini button img{width:100%;height:100%;object-fit:contain}
+.mini button[aria-pressed=true]{border-color:var(--carbon)}
+.info{min-width:0}
+.volver{display:inline-flex;align-items:center;min-height:44px;font-size:14.5px;text-decoration:none;color:var(--gris)}
+.info h1{font:400 clamp(34px,3.4vw,46px)/1.08 var(--ser);letter-spacing:-.015em;margin:8px 0 10px}
+.info .pre{font:400 26px/1.2 var(--ser)}
+.info .des{margin:14px 0 22px;color:#3B3832;max-width:46ch}
+.compra{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px}
+.compra .b-ar{grid-column:1/-1}
+.cant{display:inline-flex;align-items:center;height:48px;border:1px solid rgba(28,27,25,.32);border-radius:3px}
+.cant button{width:44px;height:46px;background:none;border:0;cursor:pointer;font-size:18px}
+.cant output{min-width:24px;text-align:center;font-size:15px}
+.tabla{margin-top:30px;border-top:1px solid var(--linea)}
+.tabla div{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;padding:13px 0;border-bottom:1px solid var(--linea)}
+.tabla dt{color:var(--gris);font-size:15px}
+.tabla dd{font-size:15px}
+.rel{padding:0 var(--g) 88px}
+.rel h2{font:400 30px/1.15 var(--ser);margin-bottom:24px}
+.barra-cel{display:none}
+
+/* Ventanas */
+dialog{border:0;padding:0;color:var(--carbon);background:var(--blanco)}
+dialog::backdrop{background:rgba(20,18,16,.62)}
+.x{position:absolute;top:10px;right:10px;z-index:3;width:44px;height:44px;display:grid;place-items:center;background:none;border:0;cursor:pointer;border-radius:3px}
+#ar-v{width:min(900px,calc(100vw - 32px));max-height:calc(100dvh - 32px);margin:auto;border-radius:6px;overflow:auto}
+.ar-g{display:grid;grid-template-columns:minmax(0,1fr) 340px}
+.ar-3d{position:relative;background:var(--cal2);min-height:min(540px,calc(100dvh - 32px))}
+.ar-3d model-viewer{position:absolute;inset:0;width:100%;height:100%;background:transparent}
+.ar-3d small{position:absolute;left:16px;bottom:12px;font-size:13px;color:var(--gris);pointer-events:none}
+.ar-i{padding:30px 28px 26px}
+.ar-i h2{font:400 26px/1.15 var(--ser);margin:8px 34px 8px 0}
+.ar-i p.t{font-size:15px;color:#3B3832}
+.qr{width:172px;height:172px;margin:16px 0 8px;padding:10px;background:#fff;border:1px solid var(--linea);border-radius:3px}
+.qr svg{display:block;width:100%;height:100%}
+.ar-i .med{font-size:14px;color:var(--gris)}
+.ar-a{display:grid;gap:8px;margin-top:14px}
+.ar-a .b{width:100%}
+.local{margin-top:12px;font-size:13px;color:var(--tabaco)}
+#ar-v[open]:not(:modal){position:fixed;inset:0;z-index:75;height:fit-content}
+#arFondo{position:fixed;inset:0;z-index:74;background:rgba(20,18,16,.62)}
+#xrUI{position:fixed;inset:0;z-index:90;display:flex;flex-direction:column;justify-content:space-between;padding:calc(14px + env(safe-area-inset-top)) 14px calc(18px + env(safe-area-inset-bottom));touch-action:none;color:#fff;font:400 16px/1.4 var(--sans);-webkit-user-select:none;user-select:none}
+#xrUI[hidden]{display:none}
+.xr-a{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.xr-a>div{padding:9px 13px;background:rgba(20,18,16,.68);border-radius:4px}
+.xr-a b{display:block;font:400 18px/1.2 var(--ser)}
+.xr-a span{font-size:13.5px;color:#E2DED5}
+#xrSalir{flex:none;width:48px;height:48px;display:grid;place-items:center;background:rgba(20,18,16,.68);border:0;border-radius:4px;color:#fff;cursor:pointer}
+.xr-b{display:grid;gap:12px;justify-items:center}
+#xrMsg{max-width:320px;padding:10px 16px;background:rgba(20,18,16,.68);border-radius:4px;text-align:center}
+#xrPoner{width:min(320px,100%);min-height:56px;font-size:17px}
+#xrCtl{display:grid;grid-template-columns:60px minmax(0,1fr) 60px;gap:8px;width:min(360px,100%)}
+#xrCtl[hidden]{display:none}
+#xrCtl button{height:60px;background:rgba(251,250,247,.95);border:0;border-radius:4px;color:var(--carbon);font-size:15.5px;display:grid;place-items:center;cursor:pointer;touch-action:none}
+#ar-v.hoja .qr,#ar-v.hoja .solo-pc{display:none}
+#ar-v:not(.hoja) .solo-cel{display:none}
+
+#car{position:fixed;inset:0 0 0 auto;margin:0;width:min(440px,100vw);height:100dvh;max-height:none;max-width:none}
+.car-f{display:flex;flex-direction:column;height:100%}
+.car-c{padding:22px 24px;border-bottom:1px solid var(--linea)}
+.car-c h2{font:400 26px/1.15 var(--ser)}
+.car-l{flex:1;overflow:auto;padding:0 24px}
+.lin{display:grid;grid-template-columns:84px minmax(0,1fr) auto;gap:14px;padding:18px 0;border-bottom:1px solid var(--linea)}
+.lin img{width:84px;height:84px;background:var(--cal2);object-fit:contain}
+.lin h3{font:400 17px/1.2 var(--ser)}
+.lin .cant{height:40px;margin-top:8px}.lin .cant button{height:38px;width:38px}
+.lin .imp{font:400 16px/1.2 var(--ser);text-align:right}
+.quitar{background:none;border:0;padding:0;min-height:44px;font-size:13.5px;text-decoration:underline;color:var(--gris);cursor:pointer}
+.vacio{padding:56px 0;text-align:center}
+.vacio p{color:var(--gris);margin:6px 0 20px}
+.vacio h3{font:400 22px/1.2 var(--ser)}
+.car-p{padding:18px 24px calc(18px + env(safe-area-inset-bottom));border-top:1px solid var(--linea);background:var(--blanco)}
+.fila{display:flex;justify-content:space-between;font-size:15px;padding:3px 0}
+.fila.tot{font:400 22px/1.3 var(--ser);margin:6px 0 14px}
+.car-p .b{width:100%}
+.car-p small{display:block;margin-top:10px;font-size:13px;color:var(--gris);text-align:center}
+
+#lb{width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;background:rgba(18,16,14,.96);overflow:hidden}
+.lb-e{position:absolute;inset:0;overflow:hidden;cursor:grab;touch-action:none}
+.lb-e.drag{cursor:grabbing}
+.lb-e img{position:absolute;left:50%;top:50%;max-width:none;width:min(92vw,calc(100dvh - 150px));user-select:none;-webkit-user-drag:none}
+#lb .x{color:#fff;top:14px;right:16px;background:rgba(0,0,0,.4)}
+.lb-cap{position:absolute;z-index:2;top:24px;left:24px;color:#EDE9E0;font-size:14px}
+.lb-b{position:absolute;z-index:2;left:50%;bottom:24px;transform:translateX(-50%);display:flex;align-items:center;gap:4px;padding:5px;background:var(--cal);border-radius:3px}
+.lb-b button{min-width:44px;height:44px;padding:0 10px;background:none;border:0;cursor:pointer;font-size:18px}
+.lb-b button:last-child{font-size:14px}
+.lb-b span{font-size:13px;min-width:54px;text-align:center}
+
+/* Guía de bienvenida */
+#guia{position:fixed;inset:0;z-index:80}
+.g-spot{position:fixed;border-radius:6px;box-shadow:0 0 0 200vmax rgba(18,16,14,.74),0 0 0 3px var(--laton);transition:opacity .25s}
+.g-tip{position:fixed;width:min(320px,calc(100vw - 32px));padding:20px;background:var(--blanco);border-radius:5px;box-shadow:0 18px 50px rgba(0,0,0,.35)}
+.g-tip::after{content:"";position:absolute;left:var(--fx,50%);width:14px;height:14px;margin-left:-7px;background:var(--blanco);transform:rotate(45deg)}
+.g-tip[data-p=arriba]::after{bottom:-6px}.g-tip[data-p=abajo]::after{top:-6px}.g-tip[data-p=der]::after{left:-1px;bottom:27px}
+.g-tip h2{font:400 23px/1.15 var(--ser);margin-bottom:6px}
+.g-tip p{font-size:15.5px;color:#3B3832;margin-bottom:14px}
+.g-tip .b{width:100%}
+
+.toast{position:fixed;z-index:70;left:50%;bottom:24px;transform:translate(-50%,20px);max-width:calc(100vw - 32px);padding:12px 18px;background:var(--carbon);color:var(--cal);border-radius:3px;font-size:15px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:1100px){
+  .nav{gap:20px}
+  .ar{gap:40px}
+}
+@media (max-width:899px){
+  .rejilla{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .datos{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:860px){
+  :root{--tope:92px}
+  .demo span{display:none}.demo a{white-space:nowrap}
+  .top{height:56px}.nav{display:none}.logo{font-size:22px}
+  .hero{display:block;min-height:0;padding:0}
+  .hero picture{position:static;display:block}
+  .hero picture img{height:min(100vw,50vh);object-position:50% 100%}
+  .hero-t{max-width:none;padding:28px 24px 8px}
+  .hero h1{font-size:clamp(38px,10.5vw,56px)}
+  .acts .b{flex:1 1 180px}
+  .sec{padding:60px 24px}
+  .ar,.faq{grid-template-columns:minmax(0,1fr);gap:32px}
+  .visor{height:min(92vw,52vh)}
+  .ar .b-ar{width:100%}
+  .exit{padding:56px 24px}.exit-in{grid-template-columns:minmax(0,1fr)}
+  .pie{padding:32px 24px}
+  .ficha{display:block;padding:0 0 32px}
+  .gal{position:static}
+  .esc{height:min(100vw,52vh);min-height:0}
+  .mini{padding:0 24px}
+  .info{padding:10px 24px 0}
+  .compra{display:none}
+  .rel{padding:0 24px 112px}
+  .barra-cel{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;position:fixed;z-index:45;left:0;right:0;bottom:0;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:var(--blanco);border-top:1px solid var(--linea)}
+  .barra-cel .b{padding:10px 14px;white-space:nowrap}
+  body.en-ficha .toast{bottom:88px}
+  .ar-g{grid-template-columns:minmax(0,1fr)}
+  .ar-3d{min-height:0;height:min(84vw,44dvh)}
+  .ar-i{padding:22px 20px 20px}
+}
+@media (max-width:479px){
+  .rejilla{grid-template-columns:minmax(0,1fr)}
+  .barra{align-items:stretch;flex-direction:column}
+  .orden select{flex:1}
+  .datos{grid-template-columns:minmax(0,1fr);gap:24px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+<!-- favicono -->
+<link rel="icon" href="../../favicon.ico" sizes="48x48">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../icono-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+</head>
+<body>
+<div class="demo" role="note"><a href="../..#soluciones">‹ Volver a las soluciones</a><span>Proyecto de ejemplo · Héctor Aguilar</span></div>
+
+<header class="top">
+  <a class="logo" href="#inicio" aria-label="Tabaco y Roble, inicio">Tabaco <i>&amp;</i> Roble</a>
+  <nav class="nav" aria-label="Principal">
+    <a href="#coleccion">Colección</a><a href="#en-tu-sala">Míralo en tu sala</a><a href="#entregas">Entregas</a><a href="#preguntas">Preguntas</a>
+  </nav>
+  <button type="button" class="bolsa" id="abrirCar" aria-label="Abrir carrito">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 8h14l1 13H4L5 8Z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg><b id="cuenta"></b>
+  </button>
+</header>
+
+<main>
+  <div id="vista-tienda">
+    <section class="hero" id="inicio">
+      <picture>
+        <source media="(max-width:860px)" srcset="muebles/portada-cel.webp">
+        <img src="muebles/portada.webp" width="2064" height="1152" alt="Sillón lounge de piel y nogal frente a una credenza de listones, en una sala con luz de tarde" fetchpriority="high">
+      </picture>
+      <div class="hero-t">
+        <p class="k">Muebles · Ciudad de México</p>
+        <h1>Piel y nogal para toda la vida.</h1>
+        <p class="lead">Sillones, sofás y mesas que puedes ver en tu sala, a escala real, antes de comprarlos.</p>
+        <div class="acts">
+          <a class="b b-c" href="#coleccion">Ver colección</a>
+          <button type="button" class="b b-ar" data-ar="lounge-nogal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9"/></svg>Ver en tu espacio</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="coleccion">
+      <div class="cab"><h2>Colección</h2></div>
+      <div class="barra">
+        <div class="filtros" role="group" aria-label="Filtrar por tipo" id="filtros"></div>
+        <label class="orden">Ordenar
+          <select id="orden"><option value="d">Destacados</option><option value="a">Precio: menor a mayor</option><option value="z">Precio: mayor a menor</option></select>
+        </label>
+      </div>
+      <div class="rejilla" id="rejilla"></div>
+      <p class="nota">Precios en pesos mexicanos, IVA incluido. Datos de ejemplo.</p>
+    </section>
+
+    <section class="sec ar" id="en-tu-sala">
+      <div class="visor">
+        <model-viewer id="visorHome" src="muebles/glb/mid_century_lounge_chair.glb" poster="muebles/fotos/mid_century_lounge_chair-a.webp" loading="lazy" reveal="auto" camera-controls touch-action="pan-y" disable-zoom interaction-prompt="none" environment-image="neutral" exposure="1.05" shadow-intensity="1" camera-orbit="-32deg 76deg auto" field-of-view="18deg" alt="Sillón lounge Nogal en 3D. Arrástralo para girarlo."></model-viewer>
+        <small>Arrástralo para girarlo</small>
+      </div>
+      <div>
+        <p class="k">Sin instalar nada</p>
+        <h2 class="h2">Míralo en tu sala antes de comprarlo.</h2>
+        <ol class="pasos" style="list-style:none;padding:0;margin:0">
+          <li><b>1</b><div><strong>Toca “Ver en tu espacio”</strong><span>Desde tu celular se abre la cámara. En computadora, escanea el código.</span></div></li>
+          <li><b>2</b><div><strong>Apunta al piso</strong><span>El mueble aparece de su tamaño real.</span></div></li>
+          <li><b>3</b><div><strong>Muévelo y decide</strong><span>Camina alrededor y comprueba si cabe en ese rincón.</span></div></li>
+        </ol>
+        <button type="button" class="b b-ar" data-ar="lounge-nogal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9"/></svg>Ver en tu espacio</button>
+      </div>
+    </section>
+
+    <section class="sec" id="entregas">
+      <div class="cab"><h2>Entregas y garantía</h2></div>
+      <div class="datos">
+        <div><h3>Entrega incluida</h3><p>En Ciudad de México y zona metropolitana. Por lo general, 15 días hábiles.</p></div>
+        <div><h3>Lo llevamos hasta tu sala</h3><p>Subimos por elevador o escalera. Si necesita volado, te lo cotizamos antes.</p></div>
+        <div><h3>30 días para cambiar de opinión</h3><p>Pasamos por él sin costo y te devolvemos tu dinero. Debe estar sin daños ni manchas.</p></div>
+        <div><h3>Garantía de 5 años</h3><p>En estructura y herrajes. En piel y costuras, 12 meses. No cubre el desgaste natural.</p></div>
+      </div>
+      <p class="nota">Datos de ejemplo.</p>
+    </section>
+
+    <section class="sec faq" id="preguntas">
+      <h2 class="h2">Preguntas</h2>
+      <div>
+        <details open><summary>¿Tengo que instalar una aplicación?</summary><p>No. La cámara se abre desde el navegador de tu celular.</p></details>
+        <details><summary>¿Con qué celulares funciona?</summary><p>Con iPhone y con la mayoría de los Android recientes. Si el tuyo no abre la cámara, puedes girar el mueble en 3D.</p></details>
+        <details><summary>¿El tamaño que veo es el real?</summary><p>Sí. El mueble aparece con las medidas de su ficha y no se puede agrandar ni encoger.</p></details>
+        <details><summary>¿Y si no pasa por mi puerta o elevador?</summary><p>Antes de entregar revisamos los accesos contigo. Si necesita volado, te lo cotizamos antes de cobrarte.</p></details>
+        <details><summary>¿Cómo se paga?</summary><p>Con tarjeta, transferencia o a meses sin intereses con tarjetas participantes. Esta tienda es de ejemplo: no cobra nada.</p></details>
+      </div>
+    </section>
+  </div>
+
+  <div id="vista-ficha" hidden></div>
+</main>
+
+<footer>
+  <div class="pie">
+    <a class="logo" href="#inicio">Tabaco <i>&amp;</i> Roble</a>
+    <p>Muebles · Ciudad de México</p>
+    <button type="button" id="verGuia">Ver la guía otra vez</button>
+  </div>
+  <div class="exit">
+    <div class="exit-in">
+      <div>
+        <p class="ej">Proyecto de ejemplo · Héctor Aguilar</p>
+        <h2>¿Tus clientes podrían ver tus productos en su casa?</h2>
+        <p class="dis">Marca, precios y entregas de ejemplo: aquí no se vende ni se cobra. Modelos 3D de Poly Haven (CC0).</p>
+      </div>
+      <div class="sal"><a class="b1" href="https://wa.me/525545249906?text=Hola%20H%C3%A9ctor%2C%20vi%20el%20ejemplo%20de%20Tabaco%20%26%20Roble%20y%20quiero%20algo%20as%C3%AD%20para%20mi%20tienda.">Quiero algo así</a><a class="b2" href="../../servicios/pagina-web#ejemplos">Ver más ejemplos</a></div>
+    </div>
+  </div>
+</footer>
+
+<div class="barra-cel" id="barraCel" hidden></div>
+<p class="toast" id="toast" role="status"></p>
+
+<div id="xrUI" hidden>
+  <div class="xr-a">
+    <div><b id="xrN"></b><span id="xrM"></span></div>
+    <button type="button" id="xrSalir" aria-label="Salir de la cámara"><svg width="18" height="18" viewBox="0 0 18 18" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2 2l14 14M16 2 2 16"/></svg></button>
+  </div>
+  <div class="xr-b">
+    <p id="xrMsg" role="status"></p>
+    <button type="button" class="b b-ar" id="xrPoner" hidden>Poner aquí</button>
+    <div id="xrCtl" hidden>
+      <button type="button" id="xrIzq" aria-label="Girar a la izquierda"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.5-5.8L4 8.5"/><path d="M4 3.5v5h5"/></svg></button>
+      <button type="button" id="xrMover">Cambiar de lugar</button>
+      <button type="button" id="xrDer" aria-label="Girar a la derecha"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.5-5.8L20 8.5"/><path d="M20 3.5v5h-5"/></svg></button>
+    </div>
+  </div>
+</div>
+<div id="arFondo" hidden></div>
+<dialog id="ar-v" aria-labelledby="arT">
+  <button type="button" class="x" data-cerrar aria-label="Cerrar"><svg width="18" height="18" viewBox="0 0 18 18" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 2l14 14M16 2 2 16"/></svg></button>
+  <div class="ar-g">
+    <div class="ar-3d"><model-viewer id="arMv" camera-controls touch-action="pan-y" disable-zoom interaction-prompt="none" environment-image="neutral" exposure="1.05" shadow-intensity="1" camera-orbit="-32deg 76deg auto" field-of-view="18deg"></model-viewer><small>Arrástralo para girarlo</small></div>
+    <div class="ar-i">
+      <p class="k">Ver en tu espacio</p>
+      <h2 id="arT"></h2>
+      <p class="t" id="arTxt"></p>
+      <div class="qr" id="qr" role="img" aria-label="Código QR para abrir este mueble en tu celular"></div>
+      <p class="med" id="arMed"></p>
+      <div class="ar-a">
+        <button type="button" class="b b-ar solo-cel" id="arAbrir">Abrir la cámara</button>
+        <a class="b b-l solo-pc" id="arWa" target="_blank" rel="noopener">Enviar por WhatsApp</a>
+        <button type="button" class="b b-l" id="arCopia">Copiar enlace</button>
+      </div>
+      <p class="local solo-pc" id="arLocal" hidden>Esta copia aún no está publicada: el código abrirá en un celular cuando la página esté en internet.</p>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="car" aria-labelledby="carT">
+  <div class="car-f">
+    <button type="button" class="x" data-cerrar aria-label="Cerrar carrito"><svg width="18" height="18" viewBox="0 0 18 18" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 2l14 14M16 2 2 16"/></svg></button>
+    <div class="car-c"><h2 id="carT">Tu carrito</h2></div>
+    <div class="car-l" id="carL"></div>
+    <div class="car-p" id="carP"></div>
+  </div>
+</dialog>
+
+<dialog id="lb" aria-labelledby="lbC">
+  <p class="lb-cap" id="lbC"></p>
+  <button type="button" class="x" data-cerrar aria-label="Cerrar"><svg width="18" height="18" viewBox="0 0 18 18" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 2l14 14M16 2 2 16"/></svg></button>
+  <div class="lb-e" id="lbE"><img id="lbI" alt=""></div>
+  <div class="lb-b"><button type="button" id="lbM" aria-label="Alejar">−</button><span id="lbP">100 %</span><button type="button" id="lbA" aria-label="Acercar">+</button><button type="button" id="lbF">Ajustar</button></div>
+</dialog>
+
+<div id="guia" hidden>
+  <div class="g-spot" id="gSpot"></div>
+  <div class="g-tip" id="gTip" role="dialog" aria-modal="true" aria-labelledby="gT" aria-describedby="gD">
+    <h2 id="gT">Pruébalo en tu casa</h2>
+    <p id="gD">Con este botón ves el mueble en tu sala, a escala real, con la cámara de tu celular.</p>
+    <button type="button" class="b b-c" id="gOk">Entendido</button>
+  </div>
+</div>
+
+<script>
+(function(){
+var CUBO='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"/><path d="m4 7.5 8 4.5 8-4.5M12 12v9"/></svg>';
+var P=[
+ {id:'lounge-nogal',m:'mid_century_lounge_chair',n:'Sillón lounge Nogal',t:'Sillones',p:38900,a:76,h:88,f:89,d:'Concha curva de chapa de nogal, cojines de piel color tabaco y base giratoria de aluminio.',mat:'Chapa de nogal, piel vacuna y aluminio'},
+ {id:'sillon-marco',m:'modern_arm_chair_01',n:'Sillón Marco',t:'Sillones',p:21500,a:82,h:102,f:99,d:'Estructura de roble a la vista con cojines sueltos de piel negra.',mat:'Roble macizo y piel vacuna'},
+ {id:'sofa-chester',m:'sofa_02',n:'Sofá Chester',t:'Sofás',p:46800,a:181,h:71,f:82,d:'Sofá capitonado de piel negra, con brazos curvos y patas de madera oscura.',mat:'Piel vacuna y patas de madera tintada'},
+ {id:'credenza-persiana',m:'modern_wooden_cabinet',n:'Credenza Persiana',t:'Guardado',p:29900,a:244,h:68,f:52,d:'Frente de listones sobre un cuerpo de madera oscura, con patas delgadas de metal.',mat:'Chapa de nogal, listones de roble y acero'},
+ {id:'otomana-bruna',m:'ottoman_01',n:'Otomana Bruna',t:'Sillones',p:12800,a:66,h:47,f:47,d:'Dos cuerpos acojinados de piel oscura sobre patas negras.',mat:'Piel vacuna y patas de madera tintada'},
+ {id:'mesa-losa',m:'modern_coffee_table_01',n:'Mesa de centro Losa',t:'Mesas',p:14900,a:120,h:39,f:60,d:'Cubierta de concreto pulido con incrustaciones de madera, sobre un marco de roble.',mat:'Roble macizo y concreto pulido'},
+ {id:'mesa-repisa',m:'side_table_01',n:'Mesa auxiliar Repisa',t:'Mesas',p:6500,a:55,h:55,f:45,d:'Tres niveles de roble con cubiertas deslavadas, para tener todo a la mano.',mat:'Roble macizo con acabado deslavado'},
+ {id:'silla-capitone',m:'dining_chair_02',n:'Silla Capitoné',t:'Sillas',p:9800,a:43,h:97,f:58,d:'Respaldo alto capitonado en piel oscura, con patas negras. Precio por pieza.',mat:'Piel vacuna y patas de madera tintada'}
+];
+var $=function(s,r){return (r||document).querySelector(s);},$$=function(s,r){return [].slice.call((r||document).querySelectorAll(s));};
+var dinero=function(n){return '$'+n.toLocaleString('es-MX');},porId=function(id){return P.filter(function(x){return x.id===id;})[0];};
+var foto=function(p,v){return 'muebles/fotos/'+p.m+'-'+v+'.webp';};
+var medidas=function(p){return p.a+' × '+p.h+' × '+p.f+' cm';};
+var guarda=function(k,v){try{localStorage.setItem(k,v);}catch(e){}},lee=function(k){try{return localStorage.getItem(k);}catch(e){return null;}};
+var quieto=matchMedia('(prefers-reduced-motion: reduce)').matches;
+var ua=navigator.userAgent,esIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),esAndroid=/Android/.test(ua);
+var sopQL=(function(){
+  var a=document.createElement('a');if(!(a.relList&&a.relList.supports&&a.relList.supports('ar')))return false;
+  /* dentro de Instagram o Facebook la cámara no abre: solo Safari y navegadores conocidos */
+  var integrado=!!(window.webkit&&window.webkit.messageHandlers);
+  return !integrado||/CriOS|EdgiOS|FxiOS|GSA|DuckDuckGo/.test(ua);
+})();
+var abs=function(r){return new URL(r,location.href).href;};
+var enlace=function(p){return location.origin+location.pathname+'?ar='+p.id;};
+
+/* Catálogo */
+var filtro='Todo',orden='d';
+function tarjeta(p){
+  return '<article class="card"><a class="foto" href="#/p/'+p.id+'" aria-label="'+p.n+'"><img src="'+foto(p,'a')+'" width="900" height="900" loading="lazy" alt="'+p.n+'"><img src="'+foto(p,'b')+'" width="900" height="900" loading="lazy" alt=""></a>'+
+  '<h3><a href="#/p/'+p.id+'">'+p.n+'</a></h3><p class="med">'+medidas(p)+'</p><p class="pre">'+dinero(p.p)+'</p>'+
+  '<div class="btns"><button type="button" class="b b-ar" data-ar="'+p.id+'" aria-label="Ver en tu espacio: '+p.n+'">'+CUBO+'Ver en tu espacio</button><button type="button" class="b b-l" data-add="'+p.id+'" aria-label="Agregar al carrito: '+p.n+'">Agregar al carrito</button></div></article>';
+}
+function pinta(){
+  var l=P.filter(function(p){return filtro==='Todo'||p.t===filtro;});
+  if(orden==='a')l=l.slice().sort(function(x,y){return x.p-y.p;});
+  if(orden==='z')l=l.slice().sort(function(x,y){return y.p-x.p;});
+  $('#rejilla').innerHTML=l.map(tarjeta).join('');
+}
+var TIPOS=['Todo','Sillones','Sofás','Sillas','Mesas','Guardado'];
+$('#filtros').innerHTML=TIPOS.map(function(t){return '<button type="button" class="chip" aria-pressed="'+(t==='Todo')+'" data-f="'+t+'">'+t+'</button>';}).join('');
+$('#filtros').addEventListener('click',function(e){var b=e.target.closest('[data-f]');if(!b)return;filtro=b.dataset.f;$$('.chip').forEach(function(c){c.setAttribute('aria-pressed',c===b);});pinta();});
+$('#orden').addEventListener('change',function(e){orden=e.target.value;pinta();});
+pinta();
+
+/* Carrito */
+var car={};try{car=JSON.parse(lee('tr-carrito'))||{};}catch(e){car={};}
+Object.keys(car).forEach(function(k){if(!porId(k))delete car[k];});
+var toastT;
+function toast(t){var el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove('on');},3200);}
+function total(){return Object.keys(car).reduce(function(s,k){return s+porId(k).p*car[k];},0);}
+function unidades(){return Object.keys(car).reduce(function(s,k){return s+car[k];},0);}
+function pintaCar(){
+  guarda('tr-carrito',JSON.stringify(car));
+  var u=unidades();$('#cuenta').textContent=u||'';
+  $('#abrirCar').setAttribute('aria-label',u?'Abrir carrito, '+u+(u===1?' producto':' productos'):'Abrir carrito, vacío');
+  var ks=Object.keys(car);
+  if(!ks.length){
+    $('#carL').innerHTML='<div class="vacio"><h3>Tu carrito está vacío</h3><p>Agrega un mueble para verlo aquí.</p><a class="b b-c" href="#coleccion" data-cerrar>Ver colección</a></div>';
+    $('#carP').innerHTML='';$('#carP').hidden=true;return;
+  }
+  $('#carP').hidden=false;
+  $('#carL').innerHTML=ks.map(function(k){var p=porId(k);return '<div class="lin"><img src="'+foto(p,'a')+'" alt="" width="84" height="84"><div><h3>'+p.n+'</h3><div class="cant"><button type="button" data-m="'+k+'" aria-label="Quitar una unidad de '+p.n+'">−</button><output aria-label="Cantidad">'+car[k]+'</output><button type="button" data-s="'+k+'" aria-label="Agregar una unidad más de '+p.n+'">+</button></div></div><div class="imp">'+dinero(p.p*car[k])+'<br><button type="button" class="quitar" data-q="'+k+'" aria-label="Quitar '+p.n+' del carrito">Quitar</button></div></div>';}).join('');
+  $('#carP').innerHTML='<div class="fila"><span>Subtotal</span><span>'+dinero(total())+'</span></div><div class="fila"><span>Entrega en CDMX y zona metropolitana</span><span>Incluida</span></div><div class="fila tot"><span>Total</span><span>'+dinero(total())+'</span></div><button type="button" class="b b-c" id="finalizar">Finalizar compra</button><small>Tienda de ejemplo: no se cobra nada.</small>';
+}
+function agrega(id,n){car[id]=(car[id]||0)+(n||1);pintaCar();toast('Se agregó '+porId(id).n+' al carrito.');}
+$('#carL').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var d=b.dataset;
+  if(d.s)car[d.s]++;else if(d.m){car[d.m]--;if(car[d.m]<1)delete car[d.m];}else if(d.q)delete car[d.q];else return;
+  var foco=d.s?'[data-s="'+d.s+'"]':d.m?'[data-m="'+d.m+'"]':null;pintaCar();
+  var f=foco&&$(foco,$('#carL'));if(f)f.focus();else $('#car .x').focus();});
+$('#carP').addEventListener('click',function(e){if(e.target.id!=='finalizar')return;car={};pintaCar();
+  $('#carL').innerHTML='<div class="vacio"><h3>Pedido de ejemplo listo</h3><p>En una tienda real, aquí seguiría el pago. No se cobró nada.</p><a class="b b-c" href="#coleccion" data-cerrar>Seguir viendo</a></div>';$('#car .x').focus();});
+$('#abrirCar').addEventListener('click',function(){$('#car').showModal();});
+pintaCar();
+
+/* Ver en tu espacio */
+var mvAR=$('#arMv'),actual=null;
+function dispara(url){document.documentElement.dataset.arUltimo=url;}
+function lanzarCamara(p){
+  if(esIOS){
+    var a=document.createElement('a');a.setAttribute('rel','ar');a.href=abs('muebles/usdz/'+p.m+'.usdz')+'#allowsContentScaling=0';
+    a.appendChild(document.createElement('img'));dispara(a.href);a.click();return;
+  }
+  /* mismo formato que usa model-viewer 3.5: Scene Viewer vive en la app de Google */
+  var q='mode=ar_preferred&disable_occlusion=true&resizable=false&title='+encodeURIComponent(p.n)+'&file='+encodeURIComponent(abs('muebles/glb/'+p.m+'.glb'));
+  var res=encodeURIComponent(enlace(p)+'&sinar=1');
+  var u='intent://arvr.google.com/scene-viewer/1.2?'+q+'#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url='+res+';end;';
+  var ancla=document.createElement('a');ancla.href=u;dispara(u);ancla.click();
+}
+function llenaVentana(p,modo){
+  actual=p;
+  var v=$('#ar-v');v.classList.toggle('hoja',modo!=='pc');
+  $('#arT').textContent=p.n;$('#arMed').textContent='Ancho '+p.a+' · Alto '+p.h+' · Fondo '+p.f+' cm';
+  mvAR.setAttribute('alt',p.n+' en 3D');mvAR.setAttribute('src','muebles/glb/'+p.m+'.glb');mvAR.setAttribute('poster',foto(p,'a'));
+  var url=enlace(p);
+  $('#arWa').href='https://wa.me/?text='+encodeURIComponent('Mira '+p.n+' en tu espacio: '+url);
+  $('#arAbrir').hidden=modo==='sinar';
+  $('#arLocal').hidden=!/^(localhost|127\.|\[::1\])/.test(location.hostname);
+  if(modo==='pc'){
+    $('#arTxt').textContent='Escanea este código con la cámara de tu celular. El mueble se abre en tu sala, a escala real.';
+    try{var q=qrcode(0,'M');q.addData(url);q.make();$('#qr').innerHTML=q.createSvgTag({cellSize:4,margin:0,scalable:true});}
+    catch(e){$('#qr').innerHTML='';$('#arTxt').textContent='Copia el enlace y ábrelo en tu celular para ver el mueble en tu sala, a escala real.';$('#qr').hidden=true;}
+  }else if(modo==='sinar'){
+    $('#arTxt').textContent=esIOS?'Este navegador no abre la cámara. Copia el enlace y ábrelo en Safari.':'Tu celular no abre la cámara desde el navegador. Puedes girar el mueble aquí en 3D.';
+  }else{
+    $('#arTxt').textContent='Apunta al piso y el mueble aparece de su tamaño real.';
+  }
+  if(!v.open){
+    /* en celular va sin la capa superior del navegador, que estorbaba a la vista de cámara */
+    if(modo==='pc')v.showModal();else{v.show();$('#arFondo').hidden=false;$('#ar-v .x').focus({preventScroll:true});}
+  }
+}
+$('#ar-v').addEventListener('close',function(){$('#arFondo').hidden=true;});
+$('#arFondo').addEventListener('click',function(){$('#ar-v').close();});
+/* Android: experiencia propia con WebXR (muebles/ar.js). La sesión se pide dentro del toque,
+   antes de cargar nada, porque Chrome solo la permite con un gesto reciente. */
+var xrOk=false;
+if(esAndroid&&navigator.xr&&navigator.xr.isSessionSupported){
+  navigator.xr.isSessionSupported('immersive-ar').then(function(si){
+    xrOk=si;if(si)setTimeout(function(){import('./muebles/ar.js?v=2').catch(function(){});},2500);
+  }).catch(function(){});
+}
+function arPropio(p){
+  var ui=$('#xrUI');
+  if($('#ar-v').open)$('#ar-v').close();
+  $('#xrN').textContent=p.n;$('#xrM').textContent='Tamaño real · '+medidas(p);$('#xrMsg').textContent='Preparando el mueble…';$('#xrMsg').hidden=false;
+  ui.hidden=false;
+  dispara('webxr:'+p.m);
+  navigator.xr.requestSession('immersive-ar',{requiredFeatures:['hit-test','dom-overlay'],domOverlay:{root:ui}}).then(function(s){
+    return import('./muebles/ar.js?v=2').then(function(m){
+      return m.correr(s,{glb:'muebles/glb/'+p.m+'.glb'}).catch(function(e){s.end();throw e;});
+    });
+  }).catch(function(){ui.hidden=true;llenaVentana(p,'sinar');});
+}
+function camaraSegunTelefono(p){
+  if(esAndroid&&xrOk)return arPropio(p);
+  lanzarCamara(p);
+}
+function verEnEspacio(p){
+  if(esIOS&&sopQL)return lanzarCamara(p);
+  if(esAndroid)return camaraSegunTelefono(p);
+  if(esIOS)return llenaVentana(p,'sinar');
+  llenaVentana(p,'pc');
+}
+$('#arAbrir').addEventListener('click',function(){if(actual)camaraSegunTelefono(actual);});
+$('#arCopia').addEventListener('click',function(){
+  var b=this,u=enlace(actual),ok=function(){b.textContent='Enlace copiado';setTimeout(function(){b.textContent='Copiar enlace';},2200);},mal=function(){$('#arTxt').textContent='Copia este enlace: '+u;};
+  if(navigator.clipboard)navigator.clipboard.writeText(u).then(ok,mal);else mal();
+});
+
+/* Clics generales */
+document.addEventListener('click',function(e){
+  var a=e.target.closest('[data-ar]');if(a){verEnEspacio(porId(a.dataset.ar));return;}
+  var b=e.target.closest('[data-add]');if(b){agrega(b.dataset.add,fichaCant(b));return;}
+  var c=e.target.closest('[data-cerrar]');if(c){var d=c.closest('dialog');if(d)d.close();}
+});
+$$('dialog').forEach(function(d){d.addEventListener('click',function(e){if(e.target===d)d.close();});});
+function fichaCant(b){return b.hasAttribute('data-usa-cant')?cantFicha:1;}
+
+/* Visor de fotos */
+(function(){
+  var lb=$('#lb'),st=$('#lbE'),im=$('#lbI'),pct=$('#lbP');var s=1,x=0,y=0,drag=null,pts={},pinch=null;
+  function apply(){im.style.transform='translate(calc(-50% + '+x+'px),calc(-50% + '+y+'px)) scale('+s+')';pct.textContent=Math.round(s*100)+' %';}
+  function clampPan(){var w=im.offsetWidth*s,h=im.offsetHeight*s,mx=Math.max(0,(w-innerWidth)/2+80),my=Math.max(0,(h-innerHeight)/2+80);x=Math.max(-mx,Math.min(mx,x));y=Math.max(-my,Math.min(my,y));}
+  function zoom(f){s=Math.max(1,Math.min(4,s*f));if(s===1){x=0;y=0;}clampPan();apply();}
+  window.__abrirLb=function(src,alt,cap){im.src=src;im.alt=alt;$('#lbC').textContent=cap;s=1;x=0;y=0;apply();lb.showModal();};
+  $('#lbA').addEventListener('click',function(){zoom(1.4);});
+  $('#lbM').addEventListener('click',function(){zoom(1/1.4);});
+  $('#lbF').addEventListener('click',function(){s=1;x=0;y=0;apply();});
+  st.addEventListener('wheel',function(e){e.preventDefault();zoom(e.deltaY<0?1.15:1/1.15);},{passive:false});
+  st.addEventListener('dblclick',function(){if(s>1){s=1;x=0;y=0;apply();}else zoom(2);});
+  st.addEventListener('pointerdown',function(e){pts[e.pointerId]=[e.clientX,e.clientY];st.setPointerCapture(e.pointerId);
+    var k=Object.keys(pts);if(k.length===2){var a=pts[k[0]],b=pts[k[1]];pinch={d:Math.hypot(a[0]-b[0],a[1]-b[1]),s:s};drag=null;}else{drag={sx:e.clientX,sy:e.clientY,x:x,y:y};st.classList.add('drag');}});
+  st.addEventListener('pointermove',function(e){if(!pts[e.pointerId])return;pts[e.pointerId]=[e.clientX,e.clientY];var k=Object.keys(pts);
+    if(pinch&&k.length===2){var a=pts[k[0]],b=pts[k[1]];s=Math.max(1,Math.min(4,pinch.s*Math.hypot(a[0]-b[0],a[1]-b[1])/pinch.d));clampPan();apply();}
+    else if(drag){x=drag.x+e.clientX-drag.sx;y=drag.y+e.clientY-drag.sy;clampPan();apply();}});
+  function up(e){delete pts[e.pointerId];if(Object.keys(pts).length<2)pinch=null;drag=null;st.classList.remove('drag');}
+  st.addEventListener('pointerup',up);st.addEventListener('pointercancel',up);
+  addEventListener('keydown',function(e){if(!lb.open)return;if(e.key==='+'||e.key==='=')zoom(1.4);else if(e.key==='-')zoom(1/1.4);});
+})();
+
+/* Ficha de producto */
+var cantFicha=1,vista='a';
+function pintaFicha(p){
+  cantFicha=1;vista='a';
+  var vistas=[['a','Vista tres cuartos'],['b','Vista de frente'],['c','Vista de lado']];
+  $('#vista-ficha').innerHTML=
+  '<div class="ficha"><div class="gal"><div class="esc" id="esc"></div><div class="mini" role="group" aria-label="Vistas del mueble">'+
+    vistas.map(function(v){return '<button type="button" data-v="'+v[0]+'" aria-pressed="'+(v[0]==='a')+'" aria-label="'+v[1]+'"><img src="'+foto(p,v[0])+'" alt=""></button>';}).join('')+
+    '<button type="button" data-v="3d" aria-pressed="false" aria-label="Girar en 3D">3D</button></div></div>'+
+  '<div class="info"><a class="volver" href="#coleccion">‹ Colección</a><h1 tabindex="-1">'+p.n+'</h1><p class="pre">'+dinero(p.p)+'</p><p class="des">'+p.d+'</p>'+
+    '<div class="compra"><div class="cant"><button type="button" id="cm" aria-label="Quitar uno">−</button><output id="cv" aria-label="Cantidad">1</output><button type="button" id="cs" aria-label="Agregar uno">+</button></div>'+
+    '<button type="button" class="b b-c" data-add="'+p.id+'" data-usa-cant>Agregar al carrito</button><button type="button" class="b b-ar" data-ar="'+p.id+'">'+CUBO+'Ver en tu espacio</button></div>'+
+    '<dl class="tabla"><div><dt>Medidas</dt><dd>Ancho '+p.a+' · Alto '+p.h+' · Fondo '+p.f+' cm</dd></div><div><dt>Materiales</dt><dd>'+p.mat+'</dd></div><div><dt>Entrega</dt><dd>Incluida en CDMX y zona metropolitana. Por lo general, 15 días hábiles.</dd></div><div><dt>Garantía</dt><dd>5 años en estructura y herrajes; 12 meses en piel y costuras. Datos de ejemplo.</dd></div></dl></div></div>'+
+  '<section class="rel"><h2>También te puede gustar</h2><div class="rejilla">'+P.filter(function(x){return x.id!==p.id;}).slice(0,4).map(tarjeta).join('')+'</div></section>';
+  function esc(){
+    var e=$('#esc');
+    if(vista==='3d'){e.innerHTML='<model-viewer src="muebles/glb/'+p.m+'.glb" poster="'+foto(p,'a')+'" camera-controls touch-action="pan-y" disable-zoom interaction-prompt="none" environment-image="neutral" exposure="1.05" shadow-intensity="1" camera-orbit="-32deg 76deg auto" field-of-view="18deg" alt="'+p.n+' en 3D"></model-viewer>';return;}
+    var s=foto(p,vista);
+    e.innerHTML='<img src="'+s+'" width="900" height="900" alt="'+p.n+'"><button type="button" class="ampl"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M11 8v6M8 11h6"/></svg>Ampliar</button>';
+    var ab=function(){window.__abrirLb(s,p.n,p.n);};$('img',e).addEventListener('click',ab);$('.ampl',e).addEventListener('click',ab);
+  }
+  esc();
+  $('.mini').addEventListener('click',function(e){var b=e.target.closest('[data-v]');if(!b)return;vista=b.dataset.v;$$('.mini button').forEach(function(x){x.setAttribute('aria-pressed',x===b);});esc();});
+  function setCant(n){cantFicha=Math.max(1,Math.min(9,n));$('#cv').textContent=cantFicha;}
+  $('#cm').addEventListener('click',function(){setCant(cantFicha-1);});$('#cs').addEventListener('click',function(){setCant(cantFicha+1);});
+  $('#barraCel').innerHTML='<button type="button" class="b b-ar" data-ar="'+p.id+'">'+CUBO+'Ver en tu espacio</button><button type="button" class="b b-c" data-add="'+p.id+'">Agregar</button>';
+}
+
+/* Rutas */
+var TITULO=document.title,primera=true,yTienda=0;
+function ruta(){
+  var h=location.hash,m=h.match(/^#\/p\/([\w-]+)/),p=m&&porId(m[1]);
+  if(p&&!$('#vista-tienda').hidden)yTienda=scrollY;
+  var volvia=!p&&$('#vista-tienda').hidden;
+  $('#vista-tienda').hidden=!!p;$('#vista-ficha').hidden=!p;$('#barraCel').hidden=!p;document.body.classList.toggle('en-ficha',!!p);
+  if(p){pintaFicha(p);document.title=p.n+' · Tabaco & Roble';scrollTo(0,0);if(!primera){var t=$('#vista-ficha h1');if(t)t.focus({preventScroll:true});}}
+  else{
+    $('#vista-ficha').innerHTML='';document.title=TITULO;
+    var d=h&&h.length>1&&document.getElementById(h.slice(1));
+    if(d)requestAnimationFrame(function(){d.scrollIntoView({behavior:primera||quieto?'auto':'smooth'});});
+    else if(volvia)requestAnimationFrame(function(){scrollTo(0,yTienda);});
+  }
+  primera=false;
+}
+addEventListener('hashchange',ruta);ruta();
+
+/* Guía de bienvenida */
+(function(){
+  var g=$('#guia'),spot=$('#gSpot'),tip=$('#gTip'),ok=$('#gOk'),meta=null,activo=false;
+  function coloca(){
+    if(!meta)return;
+    var r=meta.getBoundingClientRect(),P2=6;
+    spot.style.cssText='left:'+(r.left-P2)+'px;top:'+(r.top-P2)+'px;width:'+(r.width+P2*2)+'px;height:'+(r.height+P2*2)+'px';
+    var tw=tip.offsetWidth,th=tip.offsetHeight,cx=r.left+r.width/2,l=Math.max(16,Math.min(innerWidth-tw-16,cx-tw/2));
+    if(innerWidth>=900&&r.right+18+tw<=innerWidth-16){
+      tip.dataset.p='der';tip.style.left=(r.right+18)+'px';tip.style.top=(r.top+r.height/2-th+34)+'px';tip.style.removeProperty('--fx');return;
+    }
+    var arriba=r.top-th-22>=112;
+    tip.dataset.p=arriba?'arriba':'abajo';
+    tip.style.left=l+'px';tip.style.top=(arriba?r.top-th-18:r.bottom+18)+'px';
+    tip.style.setProperty('--fx',(cx-l)+'px');
+  }
+  function fin(){if(!activo)return;activo=false;g.hidden=true;document.documentElement.classList.remove('guia-on');guarda('tr-guia','1');removeEventListener('resize',coloca);if(meta)meta.focus({preventScroll:true});}
+  var cancelada=false;
+  function cancela(){cancelada=true;}
+  function muestra(){
+    ['wheel','touchstart','keydown'].forEach(function(n){removeEventListener(n,cancela);});
+    if(cancelada||location.hash.indexOf('#/p/')===0||$('dialog[open]')||!meta.offsetParent)return;
+    activo=true;g.hidden=false;document.documentElement.classList.add('guia-on');coloca();ok.focus({preventScroll:true});addEventListener('resize',coloca);
+  }
+  function inicia(){
+    if(location.hash.indexOf('#/p/')===0||!$('#rejilla .card'))return;
+    meta=$('#rejilla .card [data-ar]');
+    if(cancelada||$('dialog[open]'))return;
+    ['wheel','touchstart','keydown'].forEach(function(n){addEventListener(n,cancela,{passive:true});});
+    var r=meta.getBoundingClientRect(),y=scrollY+r.top+r.height/2-Math.max(innerHeight*.62,380);
+    var maxY=document.documentElement.scrollHeight-innerHeight,dest=Math.round(Math.max(0,Math.min(maxY,y)));
+    scrollTo({top:dest,behavior:quieto?'auto':'smooth'});
+    var t0=performance.now();
+    (function esp(){
+      if(cancelada)return muestra();
+      if(Math.abs(scrollY-dest)<=2)return muestra();
+      if(performance.now()-t0>1600){scrollTo({top:dest,behavior:'instant'});return requestAnimationFrame(muestra);}
+      requestAnimationFrame(esp);
+    })();
+  }
+  ok.addEventListener('click',fin);
+  g.addEventListener('click',function(e){
+    if(e.target===ok||!meta)return;
+    var r=meta.getBoundingClientRect();
+    if(e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom){fin();meta.click();}
+  });
+  addEventListener('keydown',function(e){if(!activo)return;if(e.key==='Escape'){fin();}else if(e.key==='Tab'){e.preventDefault();ok.focus();}});
+  $('#verGuia').addEventListener('click',function(){cancelada=false;location.hash='';scrollTo(0,0);setTimeout(inicia,150);});
+  var qs=new URLSearchParams(location.search);
+  if(qs.get('ar'))return;
+  if(lee('tr-guia')&&!qs.has('guia'))return;
+  if(location.hash&&location.hash!=='#inicio')return;
+  (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(function(){setTimeout(inicia,900);});
+})();
+
+/* Llegada desde el código QR o un enlace */
+(function(){
+  var qs=new URLSearchParams(location.search),p=porId(qs.get('ar')||'');if(!p)return;
+  var cel=esIOS||esAndroid;
+  addEventListener('load',function(){
+    if(!cel)return llenaVentana(p,'pc');
+    llenaVentana(p,(qs.has('sinar')||(esIOS&&!sopQL))?'sinar':'hoja');
+  });
+})();
+})();
+</script>
+</body>
+</html>
